@@ -21,7 +21,7 @@ function bibdk_cart_field_info(){
 function bibdk_cart_field_load($entity_type, $entities, $field, $instances, $langcode, &$items, $age) {
   foreach ($entities as $id => $entity) {
     $items[$id][] = array(
-      'link' => bibdk_cart_generate_link($id),
+      'link' => '', #bibdk_cart_generate_link($id),
     );
   }
 }
