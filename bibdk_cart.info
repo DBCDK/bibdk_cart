@@ -1,0 +1,8 @@
+name = Bibliotek.dk - Cart
+description = Module that provides the cart functionality for bibliotek.dk
+core = 7.x
+version = 7.x-0.1
+
+files[] = bibdk_cart.fields.inc
+files[] = BibdkCartObject.php
+files[] = test/bibdk_cart.test
