@@ -45,8 +45,9 @@ function bibdk_cart_field_formatter_info() {
  */
 function bibdk_cart_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
   $element = array();
-
-  foreach ($items as $delta => $item) {
+  fb($items);
+  foreach($items as $delta => $item){
+    $element[$delta]['#markup'] = theme('bibdk_cart_button', array());
   }
 
   return $element;

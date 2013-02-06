@@ -1,2 +1,16 @@
 <?php
 
+// Load Field module hooks.
+module_load_include('inc', 'bibdk_cart', 'bibdk_cart.field');
+
+/*
+ * Implementation of hook_theme().
+ */
+function bibdk_cart_theme(){
+  return array(
+    'bibdk_cart_button' => array(
+      'variables' => array(),
+      'template' => 'theme/bibdk_cart_button',
+    ),
+  );
+}

@@ -4,8 +4,15 @@
  * Implements ding_entity_fields().
  */
 
-function bibdk_cart_entity_fields() {
+function bibdk_cart_ding_entity_fields() {
   $display_full = array(
+    'default' => array (
+      'label' => 'hidden',
+      'type' => 'default',
+    ),
+    'reservation' => array(
+      'type' => 'hidden',
+    ),
     'full' => array(
       'type' => 'default',
     ),
