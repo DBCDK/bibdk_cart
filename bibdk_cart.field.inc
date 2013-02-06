@@ -53,11 +53,17 @@ function bibdk_cart_field_formatter_view($entity_type, $entity, $field, $instanc
 }
 
 function bibdk_cart_get_link($id) {
-  //TODO check if item is present in cart already
+
+  if (BibdkCart::checkInCart($id)) {
+    $title = t('remove_item_from_cart');
+  } else {
+    $title = t('add_item_to_cart');
+  }
+
   $link = array(
     '#type' => 'link',
     '#href' => '#' . $id,
-    '#title' => t('add_item_to_cart'),
+    '#title' => $title,
     '#attributes' => array(
       'class' => array('link-add-basket text-darkgrey text-small'),
       'data-pid' => $id,

@@ -12,8 +12,8 @@
     Drupal.addRemoveItem = function (element) {
         var pid = $(element).attr('data-pid');
         /* Add throbber*/
-        $(element).addClass('ajax-progress');
-        $(element).html('<span class="throbber">&nbsp;</span>');
+        //$(element).addClass('ajax-progress');
+        //$(element).html('<span class="throbber">&nbsp;</span>');
 
         var request = $.ajax({
             url:Drupal.settings.basePath + 'cart/ajax',
