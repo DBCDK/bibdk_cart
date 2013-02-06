@@ -15,7 +15,23 @@ class BibdkCartTestCase extends DrupalWebTestCase {
     variable_set('ting_search_url', 'lakiseks.dbc.dk/openbibdk/0.5/');
   }
 
-  public function checkAjaxReesponse() {
+  /**
+   * Tests the output data of bibdk_adhl.ajax.inc
+   */
+  public function testAjaxReesponse() {
+
+    $pid = '870970-basis:29225605';
+
+    $url = $this->getAbsoluteUrl('cart/ajax');
+
+    $options = array(
+      'query' => array(
+        'pid' => $pid,
+      ),
+    );
+
+    $result = $this->drupalGetAJAX($url, $options);
+    $this->assertRaw('pid', 'Received pid');
 
   }
 }
