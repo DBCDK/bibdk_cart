@@ -26,7 +26,6 @@ class BibdkCart {
       if (isset($_SESSION['bibdk_cart'][$pid]))
         unset($_SESSION['bibdk_cart'][$pid]);
     }
-
   }
 
   /**
@@ -37,6 +36,11 @@ class BibdkCart {
     if(!isset($_SESSION['bibdk_cart']))
       return array();
     return $_SESSION['bibdk_cart'];
+  }
+
+  public static function emptyCart(){
+    if (isset($_SESSION['bibdk_cart']))
+      unset($_SESSION['bibdk_cart']);
   }
 
   /**

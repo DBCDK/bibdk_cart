@@ -1,5 +1,4 @@
 <?php
-
 class BibdkCartTestCase extends DrupalWebTestCase {
 
   public static function getInfo() {
@@ -15,10 +14,55 @@ class BibdkCartTestCase extends DrupalWebTestCase {
     variable_set('ting_search_url', 'lakiseks.dbc.dk/openbibdk/0.5/');
   }
 
+  public function testRunner(){
+    $this->testAjaxReesponse();
+    $this->testBibdkCartObject();
+  }
+
+  private function testBibdkCartObject(){
+    BibdkCart::emptyCart();
+    // empty cart
+    $result = BibdkCart::getAll();
+    $expected_result = array();
+    $this->assertEqual($result, $expected_result);
+
+    // test add
+    BibdkCart::add('test1');
+    BibdkCart::add(array('test2', 'test3'));
+    $result = BibdkCart::getAll();
+    $expected_result = array(
+      'test1' => 'test1',
+      'test2' => 'test2',
+      'test3' => 'test3',
+    );
+    $this->assertEqual($result, $expected_result, 'objects added');
+
+    // test remove
+    BibdkCart::remove('test1');
+    BibdkCart::remove(array('test2'));
+    $result = BibdkCart::getAll();
+    $expected_result = array(
+      'test3' => 'test3',
+    );
+    $this->assertEqual($result, $expected_result, 'objects removed');
+
+    // test checkInCart
+    $this->assertTrue(BibdkCart::checkInCart('test3'), 'testObject 3 exists in card');
+    $this->assertFalse(BibdkCart::checkInCart('test1'), 'testObject 1 does not exists in card');
+
+
+    // test empty cart
+    BibdkCart::emptyCart();
+    $result = BibdkCart::getAll();
+    $expected_result = array();
+    $this->assertEqual($result, $expected_result);
+
+  }
+
   /**
    * Tests the output data of bibdk_adhl.ajax.inc
    */
-  public function testAjaxReesponse() {
+  private function testAjaxReesponse() {
     $pid = '870970-basis:29225605';
     $url = $this->getAbsoluteUrl('cart/ajax');
     $options = array(
