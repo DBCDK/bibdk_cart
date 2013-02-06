@@ -6,7 +6,7 @@ module_load_include('inc', 'bibdk_cart', 'bibdk_cart.field');
 /**
  * Implements hook_menu().
  */
-function bibdk_cart_menu(){
+function bibdk_cart_menu() {
   $items['cart/ajax'] = array(
     'page callback' => 'bibdk_cart_add_to_cart',
     'access arguments' => array('access content'),
@@ -19,7 +19,7 @@ function bibdk_cart_menu(){
 /*
  * Implementation of hook_theme().
  */
-function bibdk_cart_theme(){
+function bibdk_cart_theme() {
   return array(
     'bibdk_cart_button' => array(
       'variables' => array('add_to_cart' => ''),
