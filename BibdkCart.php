@@ -1,6 +1,6 @@
 <?php
 
-class BibdkCartObject {
+class BibdkCart {
 
   /**
    * @return BibdkCartObject
@@ -16,6 +16,6 @@ class BibdkCartObject {
    * @return BibdkCartObject
    */
   public static function SetObject() {
-    $_SESSION['orderobject'] = new BibdkCartObject();
+    $_SESSION['orderobject'] = new BibdkCart();
   }
 }
