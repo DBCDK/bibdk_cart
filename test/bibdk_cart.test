@@ -10,8 +10,12 @@ class BibdkCartTestCase extends DrupalWebTestCase {
     );
   }
 
-  public function setUp(){
+  public function setUp() {
     parent::setUp('bibdk_cart', 'ting_openformat');
     variable_set('ting_search_url', 'lakiseks.dbc.dk/openbibdk/0.5/');
+  }
+
+  public function checkAjaxReesponse() {
+
   }
 }

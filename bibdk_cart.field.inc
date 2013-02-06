@@ -3,7 +3,7 @@
 /**
  * Implements hook_field_info().
  */
-function bibdk_cart_field_info(){
+function bibdk_cart_field_info() {
   return array(
     'bibdk_cart_manifestation_link' => array(
       'label' => t('Add to cart'),
@@ -19,19 +19,9 @@ function bibdk_cart_field_info(){
  * Implements hook_field_load().
  */
 function bibdk_cart_field_load($entity_type, $entities, $field, $instances, $langcode, &$items, $age) {
-  fb($entities, 'entities');
-  fb($items, 'items');
   foreach ($entities as $id => $entity) {
-    $items[$id]['recommendations'] = array(
-      '#type' => 'fieldset',
-      '#title' => $id,
-      '#attributes' => array(
-        'class' => array('recommendation-load'),
-        'data-pid' => $id,
-      ),
-      '#attached' => array(
-        'js' => array(drupal_get_path('module', 'bibdk_cart') . '/js/bibdk_cart.js'),
-      ),
+    $items[$id][] = array(
+      'id' => $id,
     );
   }
 }
@@ -55,9 +45,26 @@ function bibdk_cart_field_formatter_info() {
  */
 function bibdk_cart_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
   $element = array();
-  foreach($items as $delta => $item){
-    $element[$delta]['#markup'] = theme('bibdk_cart_button', array());
+  foreach ($items as $delta => $item) {
+    $link = bibdk_cart_get_link($item['id']);
+    $element[$delta]['#markup'] = theme('bibdk_cart_button', array('add_to_cart' => $link));
   }
-
   return $element;
+}
+
+function bibdk_cart_get_link($id) {
+  //TODO check if item is present in cart already
+  $link = array(
+    '#type' => 'link',
+    '#href' => '#' . $id,
+    '#title' => t('add_item_to_cart'),
+    '#attributes' => array(
+      'class' => array('link-add-basket text-darkgrey text-small'),
+      'data-pid' => $id,
+    ),
+    '#attached' => array(
+      'js' => array(drupal_get_path('module', 'bibdk_cart') . '/js/bibdk_cart.js'),
+    ),
+  );
+  return $link;
 }

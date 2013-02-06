@@ -4,6 +4,7 @@ core = 7.x
 version = 7.x-0.1
 package = Bibliotek.dk
 
+files[] = bibdk_cart.ajax.inc
 files[] = bibdk_cart.field.inc
-files[] = BibdkCartObject.php
 files[] = test/bibdk_cart.test
+files[] = BibdkCartObject.php

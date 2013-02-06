@@ -3,13 +3,26 @@
 // Load Field module hooks.
 module_load_include('inc', 'bibdk_cart', 'bibdk_cart.field');
 
+/**
+ * Implements hook_menu().
+ */
+function bibdk_cart_menu(){
+  $items['cart/ajax'] = array(
+    'page callback' => 'bibdk_cart_add_to_cart',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'bibdk_cart.ajax.inc',
+  );
+  return $items;
+}
+
 /*
  * Implementation of hook_theme().
  */
 function bibdk_cart_theme(){
   return array(
     'bibdk_cart_button' => array(
-      'variables' => array(),
+      'variables' => array('add_to_cart' => ''),
       'template' => 'theme/bibdk_cart_button',
     ),
   );
