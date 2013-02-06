@@ -22,8 +22,16 @@ function bibdk_cart_field_load($entity_type, $entities, $field, $instances, $lan
   fb($entities, 'entities');
   fb($items, 'items');
   foreach ($entities as $id => $entity) {
-    $items[$id][] = array(
-      'link' => '', #bibdk_cart_generate_link($id),
+    $items[$id]['recommendations'] = array(
+      '#type' => 'fieldset',
+      '#title' => $id,
+      '#attributes' => array(
+        'class' => array('recommendation-load'),
+        'data-pid' => $id,
+      ),
+      '#attached' => array(
+        'js' => array(drupal_get_path('module', 'bibdk_cart') . '/js/bibdk_cart.js'),
+      ),
     );
   }
 }
