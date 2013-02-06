@@ -19,6 +19,8 @@ function bibdk_cart_field_info(){
  * Implements hook_field_load().
  */
 function bibdk_cart_field_load($entity_type, $entities, $field, $instances, $langcode, &$items, $age) {
+  fb($entities, 'entities');
+  fb($items, 'items');
   foreach ($entities as $id => $entity) {
     $items[$id][] = array(
       'link' => '', #bibdk_cart_generate_link($id),
@@ -45,7 +47,6 @@ function bibdk_cart_field_formatter_info() {
  */
 function bibdk_cart_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
   $element = array();
-  fb($items);
   foreach($items as $delta => $item){
     $element[$delta]['#markup'] = theme('bibdk_cart_button', array());
   }

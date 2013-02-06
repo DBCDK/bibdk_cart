@@ -1,3 +1,17 @@
 <?php
 
-//TODO write tests
+class BibdkCartTestCase extends DrupalWebTestCase {
+
+  public static function getInfo() {
+    return array(
+      'name' => t('Bibdk Cart test'),
+      'description' => t('Test Cart functionality'),
+      'group' => t('Bibliotek.dk - Cart'),
+    );
+  }
+
+  public function setUp(){
+    parent::setUp('bibdk_cart', 'ting_openformat');
+    variable_set('ting_search_url', 'lakiseks.dbc.dk/openbibdk/0.5/');
+  }
+}
