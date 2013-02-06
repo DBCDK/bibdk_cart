@@ -14,6 +14,7 @@ function bibdk_cart_ding_entity_fields() {
       'type' => 'hidden',
     ),
     'full' => array(
+      'label' => 'hidden',
       'type' => 'default',
     ),
   );
