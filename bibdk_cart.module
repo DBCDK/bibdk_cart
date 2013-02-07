@@ -25,7 +25,7 @@ function bibdk_cart_menu() {
 }
 
 /*
- * Implementation of hook_theme().
+ * Implements hook_theme().
  */
 function bibdk_cart_theme() {
   return array(
@@ -38,7 +38,9 @@ function bibdk_cart_theme() {
 
 
 /**
- * Implememts hook_user_profile_tabs (@see ding_user.module)
+ * Implememts hook_user_profile_tabs (
+ *
+ * @see ding_user.module)
  * */
 function bibdk_cart_user_profile2_tabs() {
   $ret = new stdClass();
@@ -51,15 +53,14 @@ function bibdk_cart_user_profile2_tabs() {
 
 /**
  * List view of cart
+ *
  * @param $form
  * @param $form_state
  * @return array
  */
-function bibdk_cart_view_form($form, &$form_state){
+function bibdk_cart_view_form($form, &$form_state) {
   $form['empty'] = array(
     '#markup' => t('This will be a cart view'),
   );
   return $form;
 }
-
-
