@@ -71,6 +71,7 @@ class BibdkCartTestCase extends DrupalWebTestCase {
       ),
     );
     $result = $this->drupalGetAJAX($url, $options);
-    $this->assertRaw('pid', 'Received pid');
+    $this->assertEqual($result['pid'], $pid, 'Received pid correctly');
+    $this->assertEqual($result['cartcount'], 1, 'Correct amount in cart');
   }
 }
