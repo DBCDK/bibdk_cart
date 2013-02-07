@@ -45,7 +45,7 @@ function bibdk_cart_theme() {
 function bibdk_cart_user_profile2_tabs() {
   $ret = new stdClass();
   $ret->label = t('cart');
-  $ret->form = 'bibdk_cart_view_form';
+  $ret->form = 'bibdk_cart_form';
   $ret->type = 'bibdk_cart_list';
   return $ret;
 }
@@ -59,6 +59,14 @@ function bibdk_cart_user_profile2_tabs() {
  * @return array
  */
 function bibdk_cart_view_form($form, &$form_state) {
+  global $user;
+  if ($user->uid) {
+    drupal_goto('user/' . $user->uid . '/edit/bibdk_cart_list');
+  }
+  return bibdk_cart_form($form);
+}
+
+function bibdk_cart_form($form) {
   $form['empty'] = array(
     '#markup' => t('This will be a cart view'),
   );
