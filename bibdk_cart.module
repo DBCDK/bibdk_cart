@@ -13,6 +13,14 @@ function bibdk_cart_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'bibdk_cart.ajax.inc',
   );
+  $items['user/cart'] = array(
+    'title' => t('Cart'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('bibdk_cart_view_form'),
+    'access arguments' => array('access content'),
+    'type' => MENU_LOCAL_TASK,
+    //'file' => 'bibdk_cart.ajax.inc',
+  );
   return $items;
 }
 
@@ -27,3 +35,31 @@ function bibdk_cart_theme() {
     ),
   );
 }
+
+
+/**
+ * Implememts hook_user_profile_tabs (@see ding_user.module)
+ * */
+function bibdk_cart_user_profile2_tabs() {
+  $ret = new stdClass();
+  $ret->label = t('cart');
+  $ret->form = 'bibdk_cart_view_form';
+  $ret->type = 'bibdk_cart_list';
+  return $ret;
+}
+
+
+/**
+ * List view of cart
+ * @param $form
+ * @param $form_state
+ * @return array
+ */
+function bibdk_cart_view_form($form, &$form_state){
+  $form['empty'] = array(
+    '#markup' => t('This will be a cart view'),
+  );
+  return $form;
+}
+
+
