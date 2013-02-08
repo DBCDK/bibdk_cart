@@ -33,6 +33,9 @@ function bibdk_cart_theme() {
       'variables' => array('add_to_cart' => ''),
       'template' => 'theme/bibdk_cart_button',
     ),
+  'bibdk_cart_manifestation' => array(
+    'template' => 'theme/bibdk-cart-manifestation',
+    ),
   );
 }
 
@@ -58,17 +61,61 @@ function bibdk_cart_user_profile2_tabs() {
  * @param $form_state
  * @return array
  */
+
 function bibdk_cart_view_form($form, &$form_state) {
   global $user;
   if ($user->uid) {
     drupal_goto('user/' . $user->uid . '/edit/bibdk_cart_list');
   }
-  return bibdk_cart_form($form);
+  return bibdk_cart_form($form, $form_state);
 }
 
-function bibdk_cart_form($form) {
-  $form['empty'] = array(
-    '#markup' => t('This will be a cart view'),
+function bibdk_cart_form($form, &$form_state){
+  $cart = BibdkCart::getAll();
+  foreach($cart as $pid)
+    $pids[] = $pid;
+  $manifestations = bibdk_cart_get_manifestations($pids);
+  foreach($manifestations as  $manifestation)
+    $views[] = bibdk_cart_manifestation_view($manifestation);
+
+  $form['wrapper'] = array(
+    '#type' => 'fieldset',
+    '#description' => t('cart_description'),
+  );
+  $form['wrapper']['content'] = array(
+    '#markup' => drupal_render($views),
   );
   return $form;
+}
+
+function bibdk_cart_get_manifestations($pids){
+  /**
+   * ting_openformat_get_manifestations returns a bibdkWork as an array and all
+   * the manifestations are saved in the manifestations variable.
+   * TODO :ting_openformat should have a method to return an array of manifestations
+   */
+  $works = ting_openformat_get_manifestations($pids);
+  $work = reset($works);
+  return (isset($work->manifestations)) ? $work->manifestations : null;
+}
+
+function bibdk_cart_manifestation_view(manifestation $manifestation){
+   return ting_openformat_manifestation_view($manifestation, 'cart');
+}
+
+
+/**
+ * Implements hook_entity_info_alter().
+ */
+function bibdk_cart_entity_info_alter(&$entity_info) {
+  $entity_info['bibdkManifestation']['view modes']['cart'] = array(
+    'label' => t('Cart'),
+    'custom settings' => TRUE,
+  );
+}
+
+function bibdk_cart_preprocess_ting_openformat_manifestation(&$vars){
+  if($vars['view_mode'] == 'cart') {
+    $vars['theme_hook_suggestions'][] = 'bibdk_cart_manifestation';
+  }
 }

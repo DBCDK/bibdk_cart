@@ -8,3 +8,4 @@ files[] = BibdkCart.php
 files[] = bibdk_cart.ajax.inc
 files[] = bibdk_cart.field.inc
 files[] = test/bibdk_cart.test
+files[] = theme/bibdk-cart-manifestation.tpl.php
