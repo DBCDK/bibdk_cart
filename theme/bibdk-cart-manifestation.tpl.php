@@ -1,4 +1,4 @@
-<article class="element-section">
+<article class="manifestation clearfix cart-item-id-<?php print $id; ?>">
     <div class="actions">
 
         <div class="primary-actions">
