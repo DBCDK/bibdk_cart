@@ -1,12 +1,11 @@
 (function ($) {
 
     Drupal.cartResponse = function (data) {
-        console.log(data);
         if (data.saved) {
             $('.link-add-basket[data-pid=' + data.pid + ']').text(Drupal.t('remove_item_from_cart', null, null));
         } else {
             $('.link-add-basket[data-pid=' + data.pid + ']').text(Drupal.t('add_item_to_cart', null, null));
-            Drupal.updateCartview(data.class);
+            Drupal.updateCartview(data.classid);
         }
 
         if (data.cartcount) {
@@ -33,9 +32,8 @@
     }
 
     Drupal.updateCartview = function (id) {
-        var cid = '.' + id;
+        var cid = '.cart-item-id-' + id;
         $(cid).remove();
-        console.log(cid);
     }
 
 

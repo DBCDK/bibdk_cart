@@ -15,6 +15,7 @@
     <!-- .actions -->
     <div class="manifestation-data text">
         <h3><?php print $title; ?></h3>
+
         <h3><?php print $author; ?></h3>
         <table>
             <tbody>

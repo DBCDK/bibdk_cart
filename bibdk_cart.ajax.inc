@@ -18,8 +18,8 @@ function bibdk_cart_add_to_cart() {
 
   $data['saved'] = $saved;
   $data['pid'] = $pid;
-  $data['class'] = strtolower(strtr($pid, array(':' => '', '-' => '')));
-  $data['cartcount'] = count(BibdkCart::getAll());
+  $data['classid'] = strtolower(strtr($pid, array(':' => '-')));
+  $data['cartcount'] = (string)count(BibdkCart::getAll());
 
   drupal_json_output($data);
 }
