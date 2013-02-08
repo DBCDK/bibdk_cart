@@ -69,7 +69,16 @@ function bibdk_cart_view_form($form, &$form_state) {
   if ($user->uid) {
     drupal_goto('user/' . $user->uid . '/edit/bibdk_cart_list');
   }
-  return bibdk_cart_form($form, $form_state);
+  $cart = bibdk_cart_form($form, $form_state);
+  $form['wrapper'] = array(
+    '#type' => 'container',
+    '#attributes' => array(
+      'class' => array('element-wrapper'),
+    ),
+  );
+
+  $form['wrapper']['cart'] = $cart;
+  return $form;
 }
 
 function bibdk_cart_form($form, &$form_state){
