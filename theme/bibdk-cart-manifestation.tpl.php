@@ -1,25 +1,24 @@
-<?php dpm($variables); ?>
-<article class="manifestation clearfix">
+<article class="element-section">
     <div class="actions">
 
         <div class="primary-actions">
             <div class="btn-wrapper">
-              <?php print drupal_render($fields['bibdk_reservation_button_default']); ?>
+              <?php print drupal_render($fields['bibdk_mani_reservation_button']); ?>
             </div>
         </div>
         <div class="secondary-actions">
             <ul>
-              <?php print drupal_render($fields['bibdk_cart_link_default']); ?>
-              <?php print drupal_render($fields['bibdk_linkme_permalink_default']); ?>
-              <?php print drupal_render($fields['bibdk_holdingstatus_favourite_default']); ?>
+              <?php print drupal_render($fields['bibdk_cart_manifestation_link']); ?>
             </ul>
         </div>
     </div>
     <!-- .actions -->
     <div class="manifestation-data text">
+        <h3><?php print $title; ?></h3>
+        <h3><?php print $author; ?></h3>
         <table>
             <tbody>
-            <?php print drupal_render($fields['ting_openformat_default_formatter']); ?>
+            <?php print drupal_render($fields); ?>
             </tbody>
         </table>
     </div>
