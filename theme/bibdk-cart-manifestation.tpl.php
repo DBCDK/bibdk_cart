@@ -1,4 +1,4 @@
-<article class="manifestation clearfix cart-item-id-<?php print $id; ?>">
+<article class="element-section manifestation clearfix cart-item-id-<?php print $pid; ?>">
     <div class="actions">
 
         <div class="primary-actions">
