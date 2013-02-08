@@ -31,7 +31,7 @@ function bibdk_cart_theme() {
   return array(
     'bibdk_cart_button' => array(
       'variables' => array('add_to_cart' => ''),
-      'template' => 'theme/bibdk_cart_button',
+      'template' => 'theme/bibdk-cart-button',
     ),
   'bibdk_cart_manifestation' => array(
     'template' => 'theme/bibdk-cart-manifestation',
