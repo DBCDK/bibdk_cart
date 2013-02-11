@@ -70,17 +70,24 @@ function bibdk_cart_view_form($form, &$form_state) {
     drupal_goto('user/' . $user->uid . '/edit/bibdk_cart_list');
   }
   $cart = bibdk_cart_form($form, $form_state);
-  $form['wrapper'] = array(
+  /*$form['wrapper'] = array(
     '#type' => 'container',
     '#attributes' => array(
       'class' => array('element-wrapper'),
     ),
-  );
+  );*/
 
-  $form['wrapper']['cart'] = $cart;
+  $form['Cart'] = $cart;
+  $form['#weight'] = -1;
   return $form;
 }
 
+/**
+ * Render cart view
+ * @param $form
+ * @param $form_state
+ * @return array
+ */
 function bibdk_cart_form($form, &$form_state){
   $cart = BibdkCart::getAll();
   if (empty($cart))
@@ -90,12 +97,29 @@ function bibdk_cart_form($form, &$form_state){
     $pids[] = $pid;
   $manifestations = bibdk_cart_get_manifestations($pids);
   foreach($manifestations as $delta => $manifestation){
-    $form['views'][$delta] = bibdk_cart_manifestation_view($manifestation);
+    $type = is_array($manifestation->getType()) ? reset($manifestation->getType()) : $manifestation->getType();
+    $form['views'][$type][] = bibdk_cart_manifestation_view($manifestation);
+  }
+  foreach($form['views'] as $type => $view){
+    $form['views'][$type] += array(
+      '#type' => 'fieldset',
+      '#title'=> t($type),
+      '#collapsible' => TRUE,
+      '#collapsed' => FALSE,
+      '#attributes' => array(
+        'class' => array('element-wrapper'),
+      ),
+    );
   }
 
   return $form;
 }
 
+/**
+ * Get manifestations
+ * @param $pids array
+ * @return array manifestations
+ */
 function bibdk_cart_get_manifestations($pids){
   /**
    * ting_openformat_get_manifestations returns a bibdkWork as an array and all
@@ -107,6 +131,11 @@ function bibdk_cart_get_manifestations($pids){
   return (isset($work->manifestations)) ? $work->manifestations : null;
 }
 
+/**
+ * Render cart view of single manifestation
+ * @param manifestation $manifestation
+ * @return array
+ */
 function bibdk_cart_manifestation_view(manifestation $manifestation){
   $view =  ting_openformat_manifestation_view($manifestation, 'cart');
   $view['#theme'] = 'bibdk_cart_manifestation';
