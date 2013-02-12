@@ -65,7 +65,6 @@ function bibdk_cart_get_link($id) {
     '#href' => '#' . $id,
     '#title' => $title,
     '#attributes' => array(
-      'class' => array('link-add-basket text-darkgrey text-small'),
       'data-pid' => $id,
     ),
     '#attached' => array(
