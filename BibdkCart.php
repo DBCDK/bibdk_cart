@@ -11,9 +11,8 @@ class BibdkCart {
     if (!is_array($pids)) {
       $pids = array($pids);
     }
-    foreach ($pids as $pid) {
-      $_SESSION['bibdk_cart'][$pid] = $pid;
-    }
+    $key = implode(',', $pids);
+    $_SESSION['bibdk_cart'][$key] = $pids;
   }
 
   /**
@@ -27,10 +26,10 @@ class BibdkCart {
       $pids = array($pids);
     }
 
-    foreach ($pids as $pid) {
-      if (isset($_SESSION['bibdk_cart'][$pid])) {
-        unset($_SESSION['bibdk_cart'][$pid]);
-      }
+    $key = implode(',', $pids);
+
+    if (isset($_SESSION['bibdk_cart'][$key])) {
+      unset($_SESSION['bibdk_cart'][$key]);
     }
   }
 
@@ -62,10 +61,13 @@ class BibdkCart {
     if (!isset($_SESSION['bibdk_cart'])) {
       return FALSE;
     }
-    if (in_array($pid, $_SESSION['bibdk_cart'])) {
+    if (!is_array($pid)) {
+      $pid = array($pid);
+    }
+    $pid = implode(',', $pid);
+    if (isset($_SESSION['bibdk_cart'][$pid])) {
       return TRUE;
     }
     return FALSE;
   }
-
 }

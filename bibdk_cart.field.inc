@@ -53,7 +53,6 @@ function bibdk_cart_field_formatter_view($entity_type, $entity, $field, $instanc
 }
 
 function bibdk_cart_get_link($id) {
-
   if (BibdkCart::checkInCart($id)) {
     $title = t('remove_item_from_cart');
   } else {
@@ -61,15 +60,10 @@ function bibdk_cart_get_link($id) {
   }
 
   $link = array(
-    '#type' => 'link',
     '#href' => '#' . $id,
     '#title' => $title,
-    '#attributes' => array(
-      'data-pid' => $id,
-    ),
-    '#attached' => array(
-      'js' => array(drupal_get_path('module', 'bibdk_cart') . '/js/bibdk_cart.js'),
-    ),
+    '#data-pid' => implode(',', array($id)),
   );
+  drupal_add_js(drupal_get_path('module', 'bibdk_cart') . '/js/bibdk_cart.js');
   return $link;
 }

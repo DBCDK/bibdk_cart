@@ -5,20 +5,19 @@ function bibdk_cart_add_to_cart() {
     throw new Exception('pid has to be set');
   }
 
-  $pid = $_REQUEST['pid'];
-
-  if (BibdkCart::checkInCart($pid)) {
-    BibdkCart::remove($pid);
+  $pids = $_REQUEST['pid'];
+  if (BibdkCart::checkInCart($pids)) {
+    BibdkCart::remove($pids);
     $saved = 0;
   }
   else {
-    BibdkCart::add($pid);
+    BibdkCart::add($pids);
     $saved = 1;
   }
 
   $data['saved'] = $saved;
-  $data['pid'] = $pid;
-  $data['classid'] = strtolower(strtr($pid, array(':' => '-')));
+  $data['pid'] = $_REQUEST['pid'];
+  $data['classid'] = strtolower(strtr($pids, array(':' => '-')));
   $data['cartcount'] = (string)count(BibdkCart::getAll());
 
   drupal_json_output($data);

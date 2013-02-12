@@ -1,6 +1,7 @@
 (function ($) {
 
     Drupal.cartResponse = function (data) {
+        console.log(data);
         if (data.saved) {
             $('.link-add-basket[data-pid=' + data.pid + ']').text(Drupal.t('remove_item_from_cart', null, null));
         } else {
@@ -18,7 +19,7 @@
         /* Add throbber*/
         $(element).addClass('ajax-progress');
         $(element).html('<span class="throbber">&nbsp;</span>');
-        
+
         var request = $.ajax({
             url:Drupal.settings.basePath + 'cart/ajax',
             type:'POST',
