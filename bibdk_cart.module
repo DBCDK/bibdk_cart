@@ -2,6 +2,7 @@
 
 // Load Field module hooks.
 module_load_include('inc', 'bibdk_cart', 'bibdk_cart.field');
+module_load_include('inc', 'bibdk_cart', 'bibdk_cart.webservice');
 
 /**
  * Implements hook_menu().
@@ -103,7 +104,10 @@ function bibdk_cart_form($form, &$form_state) {
     $pids[] = $pid;
   }
   $manifestations = bibdk_cart_get_manifestations($pids);
-  foreach ($manifestations as $delta => $manifestation) {
+  if (!isset($manifestations))
+    return array();
+
+  foreach($manifestations as $delta => $manifestation){
     $type = is_array($manifestation->getType()) ? reset($manifestation->getType()) : $manifestation->getType();
     $form['views'][$type][] = bibdk_cart_manifestation_view($manifestation);
   }
