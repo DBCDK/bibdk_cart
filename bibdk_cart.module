@@ -105,13 +105,15 @@ function bibdk_cart_form($form, &$form_state) {
     * We explode the list at take the first element.
     * TODO: We need to handle the multible pid's in the manifestation view
     */
-    $pids[] = reset(explode(',', $pid));
+    $p = explode(',', $pid);
+    $pids[] = reset($p);
   }
   $manifestations = bibdk_cart_get_manifestations($pids);
-  if (!isset($manifestations))
+  if (!isset($manifestations)) {
     return array();
+  }
 
-  foreach($manifestations as $delta => $manifestation){
+  foreach ($manifestations as $delta => $manifestation) {
     $type = is_array($manifestation->getType()) ? reset($manifestation->getType()) : $manifestation->getType();
     $form['views'][$type][] = bibdk_cart_manifestation_view($manifestation);
   }
@@ -190,24 +192,26 @@ function bibdk_cart_ting_openformat_subwork_materialtype_actions($ordered_subwor
 /**
  * Implements hook_user_login. Check if user had elements in cart before login.
  * If elements are not on webservice - then add to webservice.
+ *
  * @param $edit
  * @param $account
  */
-function bibdk_cart_user_login(&$edit, $account){
-  if (ding_user_is_provider_user($account)){
+function bibdk_cart_user_login(&$edit, $account) {
+  if (ding_user_is_provider_user($account)) {
     $user_cart = _bibdk_cart_get_cart_on_webservice($account);
-    if ($_SESSION['bibdk_cart']){
+    if ($_SESSION['bibdk_cart']) {
       $user_cart = _bibdk_cart_get_cart_on_webservice($account);
-      foreach($_SESSION['bibdk_cart'] as $element){
-        if (!in_array($element, $user_cart)){
+      foreach ($_SESSION['bibdk_cart'] as $element) {
+        if (!in_array($element, $user_cart)) {
           $add[] = $element;
         }
       }
-      if (isset($add)){
+      if (isset($add)) {
         _bibdk_cart_add_content_webservice($add);
       }
       $_SESSION['bibdk_cart'] += $user_cart;
-   } else {
+    }
+    else {
       $_SESSION['bibdk_cart'] = $user_cart;
     }
 

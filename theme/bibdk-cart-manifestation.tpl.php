@@ -1,4 +1,5 @@
-<article class="element-section manifestation clearfix cart-item-id-<?php print $pid; ?>">
+<article
+        class="element-section manifestation clearfix cart-item-id-<?php print $pid; ?>">
     <div class="actions">
 
         <div class="primary-actions">
@@ -14,13 +15,7 @@
     </div>
     <!-- .actions -->
     <div class="manifestation-data text">
-        <h3><?php print $title; ?></h3>
-
-        <h3><?php print $author; ?></h3>
-        <table>
-            <tbody>
-            <?php print drupal_render($fields); ?>
-            </tbody>
-        </table>
+        <h4><?php print $title; ?></h4>
+        <h6><?php print $author; ?></h6>
     </div>
 </article>
