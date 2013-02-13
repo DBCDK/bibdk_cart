@@ -18,7 +18,7 @@ class BibdkCartTestCase extends DrupalWebTestCase {
 
   public function testRunner(){
     $this->testAjaxReesponse();
-    #$this->testBibdkCartObject();
+    $this->testBibdkCartObject();
   }
 
   private function testBibdkCartObject(){
