@@ -4,6 +4,8 @@ core = 7.x
 version = 7.x-0.1
 package = Bibliotek.dk
 
+dependencies[] = ding_user
+
 files[] = BibdkCart.php
 files[] = bibdk_cart.ajax.inc
 files[] = bibdk_cart.field.inc

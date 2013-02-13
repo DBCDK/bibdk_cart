@@ -16,7 +16,7 @@ function bibdk_cart_add_to_cart() {
   }
 
   $data['saved'] = $saved;
-  $data['pid'] = $_REQUEST['pid'];
+  $data['pid'] = $pids;
   $data['classid'] = strtolower(strtr($pids, array(':' => '-')));
   $data['cartcount'] = (string)count(BibdkCart::getAll());
 

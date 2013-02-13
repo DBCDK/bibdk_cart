@@ -10,13 +10,15 @@ class BibdkCartTestCase extends DrupalWebTestCase {
   }
 
   public function setUp() {
-    parent::setUp('bibdk_cart', 'ting_openformat');
+    parent::setUp('bibdk_cart', 'ting_openformat', 'devel');
     variable_set('ting_search_url', 'lakiseks.dbc.dk/openbibdk/0.5/');
+    variable_set('bibdk_provider_webservice_url', 'http://guesstimate.dbc.dk/~svi/openuserinfo/server.php');
+    variable_set('bibdk_provider_security_code', 'testhest');
   }
 
   public function testRunner(){
     $this->testAjaxReesponse();
-    $this->testBibdkCartObject();
+    #$this->testBibdkCartObject();
   }
 
   private function testBibdkCartObject(){
@@ -63,6 +65,7 @@ class BibdkCartTestCase extends DrupalWebTestCase {
    * Tests the output data of bibdk_adhl.ajax.inc
    */
   private function testAjaxReesponse() {
+    //add to cart
     $pid = '870970-basis:29225605';
     $url = $this->getAbsoluteUrl('cart/ajax');
     $options = array(
@@ -72,6 +75,23 @@ class BibdkCartTestCase extends DrupalWebTestCase {
     );
     $result = $this->drupalGetAJAX($url, $options);
     $this->assertEqual($result['pid'], $pid, 'Received pid correctly');
-    $this->assertEqual($result['cartcount'], 1, 'Correct amount in cart');
+    $this->assertEqual($result['cartcount'], 1, 'Correct amount in cart: 1');
+    $this->assertEqual($result['saved'], 1, 'Correctly saved in cart');
+    $this->assertEqual($result['classid'], strtolower(strtr($pid, array(':' => '-'))), 'Correct classid specified');
+
+    //remove from cart
+    $pid = '870970-basis:29225605';
+    $url = $this->getAbsoluteUrl('cart/ajax');
+    $options = array(
+      'query' => array(
+        'pid' => $pid,
+      ),
+    );
+    $result = $this->drupalGetAJAX($url, $options);
+    $this->drupalGetAJAX($url, $options);
+    $this->assertEqual($result['pid'], $pid, 'Received pid correctly');
+    $this->assertEqual($result['cartcount'], 0, 'Correct amount in cart: 0');
+    $this->assertEqual($result['saved'], 0, 'Correctly removed from cart');
+    $this->assertEqual($result['classid'], strtolower(strtr($pid, array(':' => '-'))), 'Correct classid specified');
   }
 }
