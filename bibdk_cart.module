@@ -101,7 +101,11 @@ function bibdk_cart_form($form, &$form_state) {
   }
 
   foreach ($cart as $pid) {
-    $pids[] = $pid;
+    /* A cart element might contain a comma seperated list of pid's.
+    * We explode the list at take the first element.
+    * TODO: We need to handle the multible pid's in the manifestation view
+    */
+    $pids[] = reset(explode(',', $pid));
   }
   $manifestations = bibdk_cart_get_manifestations($pids);
   if (!isset($manifestations))
