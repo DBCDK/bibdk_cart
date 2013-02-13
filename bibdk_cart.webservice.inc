@@ -26,8 +26,8 @@ function _bibdk_cart_remove_content_webservice($content){
  * Get cart content from provider on webservice
  * @return array|bool
  */
-function _bibdk_cart_get_cart_on_webservice() {
-  if ($response = _bibdk_cart_call_webservice('get_cart')){
+function _bibdk_cart_get_cart_on_webservice($user = null) {
+  if ($response = _bibdk_cart_call_webservice('get_cart', null, $user)){
     $xpath = bibdk_cart_webservice_responce_xpath($response['response']);
     $result = bibdk_cart_parse_cart_content($xpath);
     return $result;
@@ -41,8 +41,13 @@ function _bibdk_cart_get_cart_on_webservice() {
  * @param null $content
  * @return bool
  */
-function _bibdk_cart_call_webservice($service, $content = null){
-  global $user;
+function _bibdk_cart_call_webservice($service, $content = null, $user = null){
+  if (!isset($user))
+    global $user;
+
+  if (!ding_user_is_provider_user($user))
+    return false;
+
   try {
     $creds = ding_user_get_creds($user);
   }

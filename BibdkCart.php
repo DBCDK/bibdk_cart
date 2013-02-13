@@ -14,9 +14,11 @@ class BibdkCart {
     if (!is_array($pids)) {
       $pids = array($pids);
     }
-    $key = implode(',', $pids);
-    _bibdk_cart_add_content_webservice($pids);
-    $_SESSION['bibdk_cart'][$key] = $key;
+   $key = implode(',', $pids);
+    if (!self::checkInCart($key)){
+      _bibdk_cart_add_content_webservice($pids);
+      $_SESSION['bibdk_cart'][$key] = $key;
+    }
   }
 
   /**
