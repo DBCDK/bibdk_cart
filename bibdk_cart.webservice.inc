@@ -5,8 +5,8 @@
  * @param $content string|array
  * @return array|bool
  */
-function _bibdk_cart_add_content_webservice($content){
-  if ($response = _bibdk_cart_call_webservice('add_cart_content', $content)){
+function _bibdk_cart_add_content_webservice($content, $user = null){
+  if ($response = _bibdk_cart_call_webservice('add_cart_content', $content, $user)){
     return $response;
   }
 }
@@ -16,8 +16,8 @@ function _bibdk_cart_add_content_webservice($content){
  * @param $content string|array
  * @return array|bool
  */
-function _bibdk_cart_remove_content_webservice($content){
-  if ($response = _bibdk_cart_call_webservice('remove_cart_content', $content)){
+function _bibdk_cart_remove_content_webservice($content, $user = null){
+  if ($response = _bibdk_cart_call_webservice('remove_cart_content', $content, $user)){
     return $response;
   }
 }
@@ -47,7 +47,6 @@ function _bibdk_cart_call_webservice($service, $content = null, $user = null){
 
   if (!ding_user_is_provider_user($user))
     return false;
-
   try {
     $creds = ding_user_get_creds($user);
   }

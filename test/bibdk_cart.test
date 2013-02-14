@@ -10,18 +10,126 @@ class BibdkCartTestCase extends DrupalWebTestCase {
   }
 
   public function setUp() {
-    parent::setUp('bibdk_cart', 'ting_openformat', 'devel');
+    $this->profile = 'minimal';
+    parent::setUp('bibdk_cart', 'bibdk_provider', 'ding_persistent_login', 'ting_openformat', 'bibdk_webservice');
     variable_set('ting_search_url', 'lakiseks.dbc.dk/openbibdk/0.5/');
-    variable_set('bibdk_provider_webservice_url', 'http://guesstimate.dbc.dk/~svi/openuserinfo/server.php');
-    variable_set('bibdk_provider_security_code', 'testhest');
+    //variable_set('bibdk_provider_webservice_url', $this->getAbsoluteUrl('/bibdk_cart_webservice'));
+    variable_set('bibdk_provider_webservice_url', $this->getAbsoluteUrl('bibdk_webservice'));
+    variable_set('bibdk_provider_security_code', 'securityCode');
+    // Fake provider user
+    $this->_createProviderUser();
+
   }
 
   public function testRunner(){
     $this->testAjaxReesponse();
-    $this->testBibdkCartObject();
+    $this->testBibdkCartObjectNoUser();
+    $this->testWebserviceMethods();
+    $this->testBibdkCartUserLogin();
   }
 
-  private function testBibdkCartObject(){
+  private function testBibdkCartUserLogin(){
+    //Reset cart count
+    bibdk_webservice_request(true);
+    // Create dummy provider user
+    $user = new stdClass();
+    $user->uid = 1;
+    $user->name = 'good_user';
+    ding_user_save_creds(array('creds' => array(
+      'name' => 'good_user',
+      'pass' => 'password',
+    )), $user);
+
+    // reset session
+    $_SESSION['bibdk_cart'] = null;
+    $edit = array();
+
+    // Session should be updated with content from webservice
+    bibdk_cart_user_login($edit, $user);
+    $expected_result = array (
+      '870970-basis:06343570' => '870970-basis:06343570',
+      '820010-katalog:5025393' => '820010-katalog:5025393',
+      '820010-katalog:3674811' => '820010-katalog:3674811',
+      '820010-katalog:2266809' => '820010-katalog:2266809',
+      '830370-katalog:AH9900827' => '830370-katalog:AH9900827',
+      '820030-katalog:804671' => '820030-katalog:804671',
+      '870970-basis:06042457' => '870970-basis:06042457',
+      '870970-basis:07121377' => '870970-basis:07121377',
+      '870970-basis:29317038,870970-basis:25194853,870970-basis:22441671,870970-basis:22629344,870970-basis:22252852,870970-basis:26178533' => '870970-basis:29317038,870970-basis:25194853,870970-basis:22441671,870970-basis:22629344,870970-basis:22252852,870970-basis:26178533',
+    );
+    $this->assertEqual($_SESSION['bibdk_cart'], $expected_result, 'Session is updated with cart content from webservice');
+
+    // Existing objects in session should be merged with webservice content
+    $_SESSION['bibdk_cart'] = array(
+      'test' => 'test:basis-pid',
+    );
+    $expected_result = $_SESSION['bibdk_cart'] + $expected_result;
+    bibdk_cart_user_login($edit, $user);
+    $this->assertEqual($_SESSION['bibdk_cart'], $expected_result, 'Session is updated with cart content from webservice');
+
+    // Nothing should happen with the Session if not provider user
+    $expected_result = $_SESSION['bibdk_cart'] = array(
+      'test' => 'test:basis-pid',
+    );
+    $user->uid = 5;
+    bibdk_cart_user_login($edit, $user);
+    $this->assertEqual($_SESSION['bibdk_cart'], $expected_result, 'Session is unchanged');
+  }
+
+  private function testWebserviceMethods(){
+    //Reset cart count
+    bibdk_webservice_request(true);
+    // Create dummy provider user
+      $user = new stdClass();
+      $user->uid = 1;
+      $user->name = 'good_user';
+      ding_user_save_creds(array('creds' => array(
+        'name' => 'good_user',
+        'pass' => 'password',
+      )), $user);
+
+    // Create dummy anonymous user
+    $anonymous = new stdClass();
+    $anonymous->uid = 0;
+
+    //Get cart from ding_provider user
+    $result = _bibdk_cart_get_cart_on_webservice($user);
+    $this->assertTrue(count($result) == 9, 'Correct number on elements in returned for webservice');
+    $this->assertTrue(reset($result) == '870970-basis:06343570', 'First element is a pid');
+
+    //Get cart from anonymous user (no results)
+    $result = _bibdk_cart_get_cart_on_webservice($anonymous);
+    $this->assertFalse($result, 'No results from webservice');
+
+    // add Content provider user
+    $result = _bibdk_cart_add_content_webservice('123456789', $user);
+    $this->assertEqual($result['status'], 'success', 'add content success');
+
+    // add Content anonymous user
+    $result = _bibdk_cart_add_content_webservice('123456789', $anonymous);
+    $this->assertNotEqual($result['status'], 'success', 'no add content success');
+
+    // remove Content provider user
+    $result = _bibdk_cart_remove_content_webservice('123456789', $user);
+    $this->assertEqual($result['status'], 'success', 'remove content success');
+
+    // remove Content anonymous user
+    $result = _bibdk_cart_remove_content_webservice('123456789', $anonymous);
+    $this->assertNotEqual($result['status'], 'success', 'no remove content success');
+
+  }
+
+  private function _createProviderUser(){
+    db_insert('authmap')
+      ->fields(array(
+      'uid' => 1,
+      'module' => 'ding_user',
+      'authname' => 'testusername',
+    ))->execute();
+
+  }
+
+  private function testBibdkCartObjectNoUser(){
     BibdkCart::emptyCart();
     // empty cart
     $result = BibdkCart::getAll();
