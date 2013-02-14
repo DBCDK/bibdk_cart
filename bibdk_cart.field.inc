@@ -57,6 +57,10 @@ function bibdk_cart_get_link($id) {
     $id = array($id);
   }
 
+  if(empty($id)){
+    return array();
+  }
+
   if (BibdkCart::checkInCart($id)) {
     $title = t('remove_item_from_cart');
   } else {

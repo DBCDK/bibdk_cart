@@ -9,7 +9,7 @@
         </div>
         <div class="secondary-actions">
             <ul>
-              <?php print drupal_render($fields['bibdk_cart_manifestation_link']); ?>
+              <?php print $cart_btn; ?>
             </ul>
         </div>
     </div>

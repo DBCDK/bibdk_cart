@@ -40,7 +40,7 @@ function bibdk_cart_theme() {
     ),
     'bibdk_cart_manifestation' => array(
       'template' => 'theme/bibdk-cart-manifestation',
-      'variables' => array('fields' => array(), 'view_mode' => 'cart', 'id' => 0, 'pid' => '', 'title' => '', 'author' => ''),
+      'variables' => array('fields' => array(), 'view_mode' => 'cart', 'id' => 0, 'pid' => '', 'title' => '', 'author' => '', 'cart_btn' => ''),
       'render_element' => 'elements'
     ),
   );
@@ -75,14 +75,8 @@ function bibdk_cart_view_form($form, &$form_state) {
     drupal_goto('user/' . $user->uid . '/edit/bibdk_cart_list');
   }
   $cart = bibdk_cart_form($form, $form_state);
-  /*$form['wrapper'] = array(
-    '#type' => 'container',
-    '#attributes' => array(
-      'class' => array('element-wrapper'),
-    ),
-  );*/
 
-  $form['Cart'] = $cart;
+  $form['cart'] = $cart;
   $form['#weight'] = -1;
   return $form;
 }
@@ -100,23 +94,29 @@ function bibdk_cart_form($form, &$form_state) {
     return array();
   }
 
-  foreach ($cart as $pid) {
-    /* A cart element might contain a comma seperated list of pid's.
+  /* A cart element might contain a comma seperated list of pid's.
     * We explode the list at take the first element.
-    * TODO: We need to handle the multible pid's in the manifestation view
     */
-    $p = explode(',', $pid);
-    $pids[] = reset($p);
+  foreach ($cart as $pid_string) {
+    $pid = explode(',', $pid_string);
+    $pids_arr[] = $pid;
+    $pids[] = reset($pid);
   }
+
   $manifestations = bibdk_cart_get_manifestations($pids);
   if (!isset($manifestations)) {
     return array();
   }
 
+  $i = 0;
   foreach ($manifestations as $delta => $manifestation) {
-    $type = is_array($manifestation->getType()) ? reset($manifestation->getType()) : $manifestation->getType();
-    $form['views'][$type][] = bibdk_cart_manifestation_view($manifestation);
+    $manitype = $manifestation->getType();
+    $type = is_array($manitype) ? reset($manitype) : $manitype;
+    $p = (isset($pids_arr[$i])) ? $pids_arr[$i] : array();
+    $form['views'][$type][] = bibdk_cart_manifestation_view($manifestation, $p);
+    $i++;
   }
+
   foreach ($form['views'] as $type => $view) {
     $form['views'][$type] += array(
       '#type' => 'fieldset',
@@ -153,15 +153,17 @@ function bibdk_cart_get_manifestations($pids) {
  * Render cart view of single manifestation
  *
  * @param manifestation $manifestation
+ * @param $pids
  * @return array
  */
-function bibdk_cart_manifestation_view(manifestation $manifestation) {
+function bibdk_cart_manifestation_view($manifestation, $pids) {
   $view = ting_openformat_manifestation_view($manifestation, 'cart');
   $view['#theme'] = 'bibdk_cart_manifestation';
   $view += array(
     '#title' => _ting_openformat_parse_element($manifestation->getTitle(), ','),
     '#author' => _ting_openformat_parse_element($manifestation->getCreator(), ','),
-    '#pid' => preg_replace('/[^a-zA-Z0-9-]+/', '-', $manifestation->id),
+    '#pid' => drupal_strtolower(preg_replace('/[^a-zA-Z0-9-]+/', '-', $manifestation->id)),
+    '#cart_btn' => (!empty($pids)) ? theme('bibdk_cart_button', array('add_to_cart' => bibdk_cart_get_link($pids))) : '',
   );
   return $view;
 }
