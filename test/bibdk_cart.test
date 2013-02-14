@@ -16,21 +16,13 @@ class BibdkCartTestCase extends DrupalWebTestCase {
     //variable_set('bibdk_provider_webservice_url', $this->getAbsoluteUrl('/bibdk_cart_webservice'));
     variable_set('bibdk_provider_webservice_url', $this->getAbsoluteUrl('bibdk_webservice'));
     variable_set('bibdk_provider_security_code', 'securityCode');
-    // Fake provider user
-    $this->_createProviderUser();
 
   }
 
-  public function testRunner(){
-    $this->testAjaxReesponse();
-    $this->testBibdkCartObjectNoUser();
-    $this->testWebserviceMethods();
-    $this->testBibdkCartUserLogin();
-  }
-
-  private function testBibdkCartUserLogin(){
+  public function testBibdkCartUserLogin(){
     //Reset cart count
     bibdk_webservice_request(true);
+    $this->_createProviderUser();
     // Create dummy provider user
     $user = new stdClass();
     $user->uid = 1;
@@ -76,7 +68,9 @@ class BibdkCartTestCase extends DrupalWebTestCase {
     $this->assertEqual($_SESSION['bibdk_cart'], $expected_result, 'Session is unchanged');
   }
 
-  private function testWebserviceMethods(){
+  public function testWebserviceMethods(){
+    // Fake provider user
+    $this->_createProviderUser();
     //Reset cart count
     bibdk_webservice_request(true);
     // Create dummy provider user
@@ -94,6 +88,7 @@ class BibdkCartTestCase extends DrupalWebTestCase {
 
     //Get cart from ding_provider user
     $result = _bibdk_cart_get_cart_on_webservice($user);
+    dpm($result);
     $this->assertTrue(count($result) == 9, 'Correct number on elements in returned for webservice');
     $this->assertTrue(reset($result) == '870970-basis:06343570', 'First element is a pid');
 
@@ -129,35 +124,36 @@ class BibdkCartTestCase extends DrupalWebTestCase {
 
   }
 
-  private function testBibdkCartObjectNoUser(){
+  public function testBibdkCartObjectNoUser(){
     BibdkCart::emptyCart();
     // empty cart
     $result = BibdkCart::getAll();
     $expected_result = array();
-    $this->assertEqual($result, $expected_result);
+    $this->assertEqual($result, $expected_result, 'No results');
 
     // test add
     BibdkCart::add('test1');
     BibdkCart::add(array('test2', 'test3'));
+    BibdkCart::add('test4');
     $result = BibdkCart::getAll();
     $expected_result = array(
       'test1' => 'test1',
-      'test2' => 'test2',
-      'test3' => 'test3',
+      'test2,test3' => 'test2,test3',
+      'test4' => 'test4',
     );
     $this->assertEqual($result, $expected_result, 'objects added');
 
     // test remove
     BibdkCart::remove('test1');
-    BibdkCart::remove(array('test2'));
+    BibdkCart::remove(array('test2,test3'));
     $result = BibdkCart::getAll();
     $expected_result = array(
-      'test3' => 'test3',
+      'test4' => 'test4',
     );
     $this->assertEqual($result, $expected_result, 'objects removed');
 
     // test checkInCart
-    $this->assertTrue(BibdkCart::checkInCart('test3'), 'testObject 3 exists in card');
+    $this->assertTrue(BibdkCart::checkInCart('test4'), 'testObject 3 exists in card');
     $this->assertFalse(BibdkCart::checkInCart('test1'), 'testObject 1 does not exists in card');
 
 
@@ -172,7 +168,7 @@ class BibdkCartTestCase extends DrupalWebTestCase {
   /**
    * Tests the output data of bibdk_adhl.ajax.inc
    */
-  private function testAjaxReesponse() {
+  public function testAjaxReesponse() {
     //add to cart
     $pid = '870970-basis:29225605';
     $url = $this->getAbsoluteUrl('cart/ajax');

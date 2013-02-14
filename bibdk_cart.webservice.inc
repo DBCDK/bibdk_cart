@@ -44,7 +44,6 @@ function _bibdk_cart_get_cart_on_webservice($user = null) {
 function _bibdk_cart_call_webservice($service, $content = null, $user = null){
   if (!isset($user))
     global $user;
-
   if (!ding_user_is_provider_user($user))
     return false;
   try {
