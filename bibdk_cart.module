@@ -95,41 +95,49 @@ function bibdk_cart_form($form, &$form_state) {
   }
 
   /* A cart element might contain a comma seperated list of pid's.
-    * We explode the list at take the first element.
-    */
+   * We explode the list at take the first element.
+   */
   foreach ($cart as $pid_string) {
     $pid = explode(',', $pid_string);
-    $pids_arr[] = $pid;
-    $pids[] = reset($pid);
+    $pids_arr[$pid_string] = $pid;
+    $manifestation_pids[] = reset($pid);
   }
 
-  $manifestations = bibdk_cart_get_manifestations($pids);
+  $manifestations = bibdk_cart_get_manifestations($manifestation_pids);
+
   if (!isset($manifestations)) {
     return array();
   }
 
-  $i = 0;
-  foreach ($manifestations as $delta => $manifestation) {
-    $manitype = $manifestation->getType();
-    $type = is_array($manitype) ? reset($manitype) : $manitype;
-    $p = (isset($pids_arr[$i])) ? $pids_arr[$i] : array();
-    $form['views'][$type][] = bibdk_cart_manifestation_view($manifestation, $p);
-    $i++;
+  foreach ($pids_arr as $pid_string => $pid) {
+    $form = _bibdk_cart_generate_form_view($manifestations, $pid, $form);
   }
 
   foreach ($form['views'] as $type => $view) {
-    $form['views'][$type] += array(
-      '#type' => 'fieldset',
-      '#title' => t($type),
-      '#collapsible' => TRUE,
-      '#collapsed' => FALSE,
-      '#attributes' => array(
-        'class' => array('element-wrapper'),
-      ),
-    );
+    $form['views'][$type] += _bibdk_cart_get_remaining_form_elements($type);
   }
 
   return $form;
+}
+
+function _bibdk_cart_generate_form_view($manifestations, $pid, $form) {
+  $manifestation = $manifestations[reset($pid)];
+  $manitype = $manifestation->getType();
+  $type = is_array($manitype) ? reset($manitype) : $manitype;
+  $form['views'][$type][] = bibdk_cart_manifestation_view($manifestation, $pid);
+  return $form;
+}
+
+function _bibdk_cart_get_remaining_form_elements($type) {
+  return array(
+    '#type' => 'fieldset',
+    '#title' => t($type),
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE,
+    '#attributes' => array(
+      'class' => array('element-wrapper'),
+    ),
+  );
 }
 
 /**
@@ -164,7 +172,7 @@ function bibdk_cart_manifestation_view($manifestation, $pids) {
     '#author' => _ting_openformat_parse_element($manifestation->getCreator(), ','),
     '#pid' => drupal_strtolower(preg_replace('/[^a-zA-Z0-9-]+/', '-', $manifestation->id)),
     '#cart_btn' => (!empty($pids)) ? theme('bibdk_cart_button', array('add_to_cart' => bibdk_cart_get_link($pids))) : '',
-    '#several_editions' => (!empty($pids) && count($pids) > 1) ? t('several_editions') : ''
+    '#several_editions' => (!empty($pids) && count($pids) > 1) ? t('all_editions') : ''
   );
   return $view;
 }
@@ -202,9 +210,9 @@ function bibdk_cart_ting_openformat_subwork_materialtype_actions($ordered_subwor
 function bibdk_cart_user_login(&$edit, $account) {
   if (ding_user_is_provider_user($account)) {
     $user_cart = _bibdk_cart_get_cart_on_webservice($account);
-    if ($_SESSION['bibdk_cart']){
-      foreach($_SESSION['bibdk_cart'] as $element){
-        if (!in_array($element, $user_cart)){
+    if ($_SESSION['bibdk_cart']) {
+      foreach ($_SESSION['bibdk_cart'] as $element) {
+        if (!in_array($element, $user_cart)) {
           $add[] = $element;
         }
       }
