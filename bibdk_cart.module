@@ -40,7 +40,7 @@ function bibdk_cart_theme() {
     ),
     'bibdk_cart_manifestation' => array(
       'template' => 'theme/bibdk-cart-manifestation',
-      'variables' => array('fields' => array(), 'view_mode' => 'cart', 'id' => 0, 'pid' => '', 'title' => '', 'author' => '', 'cart_btn' => '', 'several_editions' => ''),
+      'variables' => array('fields' => array(), 'view_mode' => 'cart', 'id' => 0, 'pid' => '', 'title' => '', 'author' => '', 'type' => '', 'cart_btn' => '', 'several_editions' => ''),
       'render_element' => 'elements'
     ),
   );
@@ -75,9 +75,7 @@ function bibdk_cart_view_form($form, &$form_state) {
     drupal_goto('user/' . $user->uid . '/edit/bibdk_cart_list');
   }
   $cart = bibdk_cart_form($form, $form_state);
-
   $form['cart'] = $cart;
-  $form['#weight'] = -1;
   return $form;
 }
 
@@ -111,10 +109,6 @@ function bibdk_cart_form($form, &$form_state) {
 
   foreach ($pids_arr as $pid_string => $pid) {
     $form = _bibdk_cart_generate_form_view($manifestations, $pid, $form);
-  }
-
-  foreach ($form['views'] as $type => $view) {
-    $form['views'][$type] += _bibdk_cart_get_remaining_form_elements($type);
   }
 
   return $form;
@@ -170,6 +164,7 @@ function bibdk_cart_manifestation_view($manifestation, $pids) {
   $view += array(
     '#title' => _ting_openformat_parse_element($manifestation->getTitle(), ','),
     '#author' => _ting_openformat_parse_element($manifestation->getCreator(), ','),
+    '#type' => _ting_openformat_parse_element($manifestation->getType(), ','),
     '#pid' => drupal_strtolower(preg_replace('/[^a-zA-Z0-9-]+/', '-', $manifestation->id)),
     '#cart_btn' => (!empty($pids)) ? theme('bibdk_cart_button', array('add_to_cart' => bibdk_cart_get_link($pids))) : '',
     '#several_editions' => (!empty($pids) && count($pids) > 1) ? t('all_editions') : ''
