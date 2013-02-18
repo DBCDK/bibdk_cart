@@ -11,12 +11,36 @@ class BibdkCartTestCase extends DrupalWebTestCase {
 
   public function setUp() {
     $this->profile = 'minimal';
-    parent::setUp('bibdk_cart', 'bibdk_provider', 'ding_persistent_login', 'ting_openformat', 'bibdk_webservice');
+    parent::setUp('ting_openformat', 'bibdk_cart', 'bibdk_linkme', 'bibdk_provider', 'bibdk_webservice');
     variable_set('ting_search_url', 'lakiseks.dbc.dk/openbibdk/0.5/');
     //variable_set('bibdk_provider_webservice_url', $this->getAbsoluteUrl('/bibdk_cart_webservice'));
     variable_set('bibdk_provider_webservice_url', $this->getAbsoluteUrl('bibdk_webservice'));
     variable_set('bibdk_provider_security_code', 'securityCode');
 
+  }
+
+  public function testView(){
+    // Test cart page for anonymous users
+    $this->drupalGet('user');
+    $this->assertText('Cart', 'Cart tab is present');
+    $this->clickLink('Cart');
+    $this->assertUrl('user/cart', array(), 'Cart page exists');
+
+    // Test link on manifestation
+    $this->drupalGet('work/870970-basis:21905208');
+    $this->assertText('add_item_to_cart');
+    $pid = '870970-basis:21905208';
+    $url = $this->getAbsoluteUrl('cart/ajax');
+    $options = array(
+      'query' => array(
+        'pid' => $pid,
+      ),
+    );
+    $result = $this->drupalGetAJAX($url, $options);
+
+    $this->drupalGet('user/cart');
+    $this->assertText('Tove Ditlevsen');
+    $this->assertText('remove_item_from_cart');
   }
 
   public function testBibdkCartUserLogin(){
@@ -168,7 +192,7 @@ class BibdkCartTestCase extends DrupalWebTestCase {
   /**
    * Tests the output data of bibdk_adhl.ajax.inc
    */
-  public function testAjaxReesponse() {
+ public function testAjaxReesponse() {
     //add to cart
     $pid = '870970-basis:29225605';
     $url = $this->getAbsoluteUrl('cart/ajax');
