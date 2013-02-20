@@ -41,7 +41,7 @@ function bibdk_cart_theme() {
     ),
     'bibdk_cart_manifestation' => array(
       'template' => 'theme/bibdk-cart-manifestation',
-      'variables' => array('fields' => array(), 'view_mode' => 'cart', 'id' => 0, 'pid' => '', 'title' => '', 'author' => '', 'type' => '', 'cart_btn' => '', 'several_editions' => '', 'checkbox' => ''),
+      'variables' => array('fields' => array(), 'view_mode' => 'cart', 'id' => 0, 'pid' => '', 'title' => '', 'author' => '', 'type' => '', 'cart_btn' => '', 'several_editions' => ''),
       'render_element' => 'elements'
     ),
   );
@@ -110,11 +110,13 @@ function bibdk_cart_form($form, &$form_state) {
 
   $items = array();
   foreach ($pids_arr as $pid_string => $pid) {
-    $items[]['manifestation'] = _bibdk_cart_generate_form_view($manifestations, $pid, $items);
+    $item = _bibdk_cart_generate_form_view($manifestations, $pid, $items);
+    $items[]['manifestation'] = drupal_render($item);
   }
 
   $header = array(
     'manifestation' => t('bibdk_cart_manifestation_header'),
+    #'orderbtn' => t('bibdk_cart_action'),
   );
 
   $form['cart-table'] = array(
@@ -137,7 +139,7 @@ function bibdk_cart_form($form, &$form_state) {
 
 function _bibdk_cart_generate_form_view($manifestations, $pid) {
   $manifestation = $manifestations[reset($pid)];
-  return drupal_render(bibdk_cart_manifestation_view($manifestation, $pid));
+  return bibdk_cart_manifestation_view($manifestation, $pid);
 }
 
 function _bibdk_cart_get_remaining_form_elements($type) {
@@ -185,6 +187,7 @@ function bibdk_cart_manifestation_view($manifestation, $pids) {
     '#type' => _ting_openformat_parse_element($manifestation->getType(), ','),
     '#pid' => drupal_strtolower(preg_replace('/[^a-zA-Z0-9-]+/', '-', $manifestation->id)),
     '#cart_btn' => (!empty($pids)) ? theme('bibdk_cart_button', array('add_to_cart' => bibdk_cart_get_link($pids))) : '',
+    //#cart_btn is currently unused in cart view. This line should be removed if it continues to be unused
     '#several_editions' => (!empty($pids) && count($pids) > 1) ? t('all_editions') : '',
   );
   return $view;
