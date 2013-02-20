@@ -1,6 +1,7 @@
 <?php
 
 // Load Field module hooks.
+module_load_include('php', 'bibdk_cart', 'BibdkCart');
 module_load_include('inc', 'bibdk_cart', 'bibdk_cart.field');
 module_load_include('inc', 'bibdk_cart', 'bibdk_cart.webservice');
 
