@@ -11,7 +11,7 @@
         if (data.cartcount) {
             Drupal.updateCartcount(data.cartcount);
         }
-    }
+    };
 
     Drupal.addRemoveItem = function (element) {
         var pid = $(element).attr('data-pid');
@@ -28,17 +28,16 @@
             dataType:'json',
             success:Drupal.cartResponse
         });
-    }
+    };
 
     Drupal.updateCartcount = function (cartcount) {
         $('.cartcount').text(cartcount);
-    }
+    };
 
     Drupal.updateCartview = function (id) {
         var cid = '.cart-item-id-' + id;
         $(cid).remove();
-    }
-
+    };
 
     Drupal.behaviors.cart = {
         attach:function (context) {
@@ -46,5 +45,5 @@
                 Drupal.addRemoveItem($(this));
             });
         }
-    }
+    };
 }(jQuery));

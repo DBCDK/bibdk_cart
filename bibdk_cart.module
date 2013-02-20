@@ -41,7 +41,7 @@ function bibdk_cart_theme() {
     ),
     'bibdk_cart_manifestation' => array(
       'template' => 'theme/bibdk-cart-manifestation',
-      'variables' => array('fields' => array(), 'view_mode' => 'cart', 'id' => 0, 'pid' => '', 'title' => '', 'author' => '', 'type' => '', 'cart_btn' => '', 'several_editions' => ''),
+      'variables' => array('fields' => array(), 'view_mode' => 'cart', 'id' => 0, 'pid' => '', 'title' => '', 'author' => '', 'type' => '', 'cart_btn' => '', 'several_editions' => '', 'checkbox' => ''),
       'render_element' => 'elements'
     ),
   );
@@ -108,19 +108,36 @@ function bibdk_cart_form($form, &$form_state) {
     return array();
   }
 
+  $items = array();
   foreach ($pids_arr as $pid_string => $pid) {
-    $form = _bibdk_cart_generate_form_view($manifestations, $pid, $form);
+    $items[]['manifestation'] = _bibdk_cart_generate_form_view($manifestations, $pid, $items);
   }
+
+  $header = array(
+    'manifestation' => t('bibdk_cart_manifestation_header'),
+  );
+
+  $form['cart-table'] = array(
+    '#type' => 'tableselect',
+    '#header' => $header,
+    '#options' => $items,
+    '#empty' => t('No items in cart yet'),
+    '#js_select' => FALSE,
+    '#sticky' => FALSE,
+    '#multiple' => TRUE,
+    '#attributes' => array(
+      'class' => array(
+        'table'
+      ),
+    ),
+  );
 
   return $form;
 }
 
-function _bibdk_cart_generate_form_view($manifestations, $pid, $form) {
+function _bibdk_cart_generate_form_view($manifestations, $pid) {
   $manifestation = $manifestations[reset($pid)];
-  $manitype = $manifestation->getType();
-  $type = is_array($manitype) ? reset($manitype) : $manitype;
-  $form['views'][$type][] = bibdk_cart_manifestation_view($manifestation, $pid);
-  return $form;
+  return drupal_render(bibdk_cart_manifestation_view($manifestation, $pid));
 }
 
 function _bibdk_cart_get_remaining_form_elements($type) {
@@ -168,7 +185,7 @@ function bibdk_cart_manifestation_view($manifestation, $pids) {
     '#type' => _ting_openformat_parse_element($manifestation->getType(), ','),
     '#pid' => drupal_strtolower(preg_replace('/[^a-zA-Z0-9-]+/', '-', $manifestation->id)),
     '#cart_btn' => (!empty($pids)) ? theme('bibdk_cart_button', array('add_to_cart' => bibdk_cart_get_link($pids))) : '',
-    '#several_editions' => (!empty($pids) && count($pids) > 1) ? t('all_editions') : ''
+    '#several_editions' => (!empty($pids) && count($pids) > 1) ? t('all_editions') : '',
   );
   return $view;
 }
