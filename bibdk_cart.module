@@ -101,13 +101,15 @@ function bibdk_cart_form($form, &$form_state) {
   bibdk_cart_set_manifestations($cart);
 
   $items = array();
-  foreach ($cart as $element) {
+  foreach ($cart as $delta => $element) {
     $item = bibdk_cart_manifestation_view($element->getManifestation(), $element->getElementArray());
-    $items[]['manifestation'] = drupal_render($item);
+    $items[$delta]['manifestation'] = drupal_render($item);
+    $items[$delta]['status'] = $element->getStatus();
   }
 
   $header = array(
     'manifestation' => t('bibdk_cart_manifestation_header'),
+    'status' => t('status'),
     #'orderbtn' => t('bibdk_cart_action'),
   );
 
