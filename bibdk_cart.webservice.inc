@@ -6,6 +6,7 @@
  * @return array|bool
  */
 function _bibdk_cart_add_content_webservice($content, $user = null){
+
   if ($response = _bibdk_cart_call_webservice('add_cart_content', $content, $user)){
     return $response;
   }
@@ -29,8 +30,7 @@ function _bibdk_cart_remove_content_webservice($content, $user = null){
 function _bibdk_cart_get_cart_on_webservice($user = null) {
   if ($response = _bibdk_cart_call_webservice('get_cart', null, $user)){
     $xpath = bibdk_cart_webservice_responce_xpath($response['response']);
-    $result = bibdk_cart_parse_cart_content($xpath);
-    return $result;
+    return bibdk_cart_parse_cart_content($xpath);
   }
   return array();
 }
@@ -84,7 +84,7 @@ function bibdk_cart_parse_cart_content($xpath) {
     return array();
   }
 // grap agencies
-  $query = '//oui:cartContentElement';
+  $query = '//oui:cartContent';
   $nodelist = $xpath->query($query);
 
 // check if empty
@@ -93,11 +93,20 @@ function bibdk_cart_parse_cart_content($xpath) {
   }
 
   $cart_content = array();
-  foreach ($nodelist as $node) {
+  foreach ($nodelist as $delta => $node) {
     if (!empty($node->childNodes)) {
+      $element = new BibdkCartElement();
       foreach ($node->childNodes as $child) {
-        $cart_content[$child->nodeValue] = $child->nodeValue;
+        switch($child->nodeName){
+          case 'oui:cartContentElement' :
+            $element->setElement($child->nodeValue);
+            break;
+          case 'oui:cartContentStatus' :
+            $element->setStatus($child->nodeValue);
+            break;
+        }
       }
+      $cart_content[$element->getElement()] = $element;
     }
   }
   return $cart_content;

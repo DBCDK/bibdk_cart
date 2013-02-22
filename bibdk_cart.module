@@ -2,6 +2,7 @@
 
 // Load Field module hooks.
 module_load_include('php', 'bibdk_cart', 'BibdkCart');
+module_load_include('php', 'bibdk_cart', 'BibdkCartElement');
 module_load_include('inc', 'bibdk_cart', 'bibdk_cart.field');
 module_load_include('inc', 'bibdk_cart', 'bibdk_cart.webservice');
 
@@ -96,7 +97,8 @@ function bibdk_cart_form($form, &$form_state) {
   /* A cart element might contain a comma seperated list of pid's.
    * We explode the list at take the first element.
    */
-  foreach ($cart as $pid_string) {
+  foreach ($cart as $cart_object) {
+    $pid_string = $cart_object->getElement();
     $pid = explode(',', $pid_string);
     $pids_arr[$pid_string] = $pid;
     $manifestation_pids[] = reset($pid);

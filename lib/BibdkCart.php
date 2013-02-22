@@ -9,15 +9,11 @@ class BibdkCart {
    *
    * @param $pids string|array
    */
-  public static function add($pids) {
-
-    if (!is_array($pids)) {
-      $pids = array($pids);
-    }
-   $key = implode(',', $pids);
+  public static function add($object) {
+    $key = $object->getElement();
     if (!self::checkInCart($key)){
-      _bibdk_cart_add_content_webservice($pids);
-      $_SESSION['bibdk_cart'][$key] = $key;
+      _bibdk_cart_add_content_webservice($object->toService());
+      $_SESSION['bibdk_cart'][$key] = $object;
     }
   }
 

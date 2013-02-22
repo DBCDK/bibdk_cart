@@ -11,7 +11,9 @@ function bibdk_cart_add_to_cart() {
     $saved = 0;
   }
   else {
-    BibdkCart::add($pids);
+    $object = new BibdkCartElement();
+    $object->setElement($pids);
+    BibdkCart::add($object);
     $saved = 1;
   }
 

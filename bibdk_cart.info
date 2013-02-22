@@ -6,7 +6,8 @@ package = Bibliotek.dk
 
 dependencies[] = ding_user
 
-files[] = BibdkCart.php
+files[] = lib/BibdkCart.php
+files[] = lib/BibdkCartElement.php
 files[] = bibdk_cart.ajax.inc
 files[] = bibdk_cart.field.inc
 files[] = bibdk_cart.webservice.inc
