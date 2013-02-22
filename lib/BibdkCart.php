@@ -53,6 +53,15 @@ class BibdkCart {
     return $_SESSION['bibdk_cart'];
   }
 
+  public static function getAllIds(){
+    $cart = self::getAll();
+    $ids = array();
+    foreach($cart as $element){
+      $ids[] = $element->getId();
+    }
+    return $ids;
+  }
+
   public static function emptyCart() {
     if (isset($_SESSION['bibdk_cart'])) {
       _bibdk_cart_remove_content_webservice($_SESSION['bibdk_cart']);

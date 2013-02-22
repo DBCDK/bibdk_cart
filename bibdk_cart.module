@@ -94,25 +94,11 @@ function bibdk_cart_form($form, &$form_state) {
     return array();
   }
 
-  /* A cart element might contain a comma seperated list of pid's.
-   * We explode the list at take the first element.
-   */
-  foreach ($cart as $cart_object) {
-    $pid_string = $cart_object->getElement();
-    $pid = explode(',', $pid_string);
-    $pids_arr[$pid_string] = $pid;
-    $manifestation_pids[] = reset($pid);
-  }
-
-  $manifestations = bibdk_cart_get_manifestations($manifestation_pids);
-
-  if (!isset($manifestations)) {
-    return array();
-  }
+  bibdk_cart_set_manifestations($cart);
 
   $items = array();
-  foreach ($pids_arr as $pid_string => $pid) {
-    $item = _bibdk_cart_generate_form_view($manifestations, $pid, $items);
+  foreach ($cart as $element) {
+    $item = bibdk_cart_manifestation_view($element->getManifestation(), $element->getElementArray());
     $items[]['manifestation'] = drupal_render($item);
   }
 
@@ -139,11 +125,6 @@ function bibdk_cart_form($form, &$form_state) {
   return $form;
 }
 
-function _bibdk_cart_generate_form_view($manifestations, $pid) {
-  $manifestation = $manifestations[reset($pid)];
-  return bibdk_cart_manifestation_view($manifestation, $pid);
-}
-
 function _bibdk_cart_get_remaining_form_elements($type) {
   return array(
     '#type' => 'fieldset',
@@ -154,6 +135,20 @@ function _bibdk_cart_get_remaining_form_elements($type) {
       'class' => array('element-wrapper'),
     ),
   );
+}
+
+/** Populate the cart with manifestations
+ * @param $cart
+ */
+function bibdk_cart_set_manifestations(&$cart){
+  foreach($cart as $element){
+    $ids[] = $element->getId();
+  }
+  $manifestations = bibdk_cart_get_manifestations($ids);
+  foreach($cart as $element){
+    $manifestation = $manifestations[$element->getId()];
+    $element->setManifestation($manifestation);
+  }
 }
 
 /**
