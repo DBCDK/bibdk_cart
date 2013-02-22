@@ -36,6 +36,10 @@ function bibdk_cart_theme() {
       'variables' => array('add_to_cart' => ''),
       'template' => 'theme/bibdk-cart-button',
     ),
+    'bibdk_cart_view_primary_actions' => array(
+      'variables' => array(),
+      'template' => 'theme/bibdk-cart-view-primary-actions'
+    ),
     'bibdk_cart_button_subwork' => array(
       'variables' => array('add_to_cart' => ''),
       'template' => 'theme/bibdk-cart-button-subwork',
@@ -107,6 +111,20 @@ function bibdk_cart_form($form, &$form_state) {
     #'orderbtn' => t('bibdk_cart_action'),
   );
 
+  $form['cart-table-priamry-actions'] = array(
+    '#markup' => theme('bibdk_cart_view_primary_actions', array()),
+    '#attached' => array(
+      'js' => array(
+        drupal_get_path('module', 'bibdk_cart') . '/js/bibdk_cart_view_primary_actions.js',
+      ),
+    ),
+    '#attributes' => array(
+      'class' => array(
+        'element-wrapper',
+      ),
+    ),
+  );
+
   $form['cart-table'] = array(
     '#type' => 'tableselect',
     '#header' => $header,
@@ -117,7 +135,9 @@ function bibdk_cart_form($form, &$form_state) {
     '#multiple' => TRUE,
     '#attributes' => array(
       'class' => array(
-        'table'
+        'table',
+        'element-wrapper',
+        'cart-item-checkbox',
       ),
     ),
   );

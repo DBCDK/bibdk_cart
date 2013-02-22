@@ -24,3 +24,7 @@ function bibdk_cart_add_to_cart() {
 
   drupal_json_output($data);
 }
+
+function bibdk_cart_empty_cart() {
+
+}
