@@ -2,33 +2,39 @@
 
 /**
  * Add cart content to provider on webservice
+ *
  * @param $content string|array
+ * @param null $user
  * @return array|bool
  */
-function _bibdk_cart_add_content_webservice($content, $user = null){
+function _bibdk_cart_add_content_webservice($content, $user = NULL) {
 
-  if ($response = _bibdk_cart_call_webservice('add_cart_content', $content, $user)){
+  if ($response = _bibdk_cart_call_webservice('add_cart_content', $content, $user)) {
     return $response;
   }
 }
 
 /**
  * Remove cart content from provider on webservice
+ *
  * @param $content string|array
+ * @param null $user
  * @return array|bool
  */
-function _bibdk_cart_remove_content_webservice($content, $user = null){
-  if ($response = _bibdk_cart_call_webservice('remove_cart_content', $content, $user)){
+function _bibdk_cart_remove_content_webservice($content, $user = NULL) {
+  if ($response = _bibdk_cart_call_webservice('remove_cart_content', $content, $user)) {
     return $response;
   }
 }
 
 /**
  * Get cart content from provider on webservice
+ *
+ * @param null $user
  * @return array|bool
  */
-function _bibdk_cart_get_cart_on_webservice($user = null) {
-  if ($response = _bibdk_cart_call_webservice('get_cart', null, $user)){
+function _bibdk_cart_get_cart_on_webservice($user = NULL) {
+  if ($response = _bibdk_cart_call_webservice('get_cart', NULL, $user)) {
     $xpath = bibdk_cart_webservice_responce_xpath($response['response']);
     return bibdk_cart_parse_cart_content($xpath);
   }
@@ -37,15 +43,19 @@ function _bibdk_cart_get_cart_on_webservice($user = null) {
 
 /**
  * Check if user is provider user. And call provider service
+ *
  * @param $service
  * @param null $content
+ * @param null $user
  * @return bool
  */
-function _bibdk_cart_call_webservice($service, $content = null, $user = null){
-  if (!isset($user))
+function _bibdk_cart_call_webservice($service, $content = NULL, $user = NULL) {
+  if (!isset($user)) {
     global $user;
-  if (!ding_user_is_provider_user($user))
-    return false;
+  }
+  if (!ding_user_is_provider_user($user)) {
+    return FALSE;
+  }
   try {
     $creds = ding_user_get_creds($user);
   }
@@ -53,11 +63,12 @@ function _bibdk_cart_call_webservice($service, $content = null, $user = null){
     return FALSE;
   }
   // Service implemented in bibdk_provider.user.inc
- return ding_provider_invoke('user', $service, $creds['name'], $content);
+  return ding_provider_invoke('user', $service, $creds['name'], $content);
 }
 
 /**
  * convert xml to xpath
+ *
  * @param $xml
  * @return array|DomXPATH
  */
@@ -76,6 +87,7 @@ function bibdk_cart_webservice_responce_xpath($xml) {
 
 /**
  * get elements from request from openuserinfo
+ *
  * @param $xpath xpath object
  * @return array
  */
@@ -97,7 +109,7 @@ function bibdk_cart_parse_cart_content($xpath) {
     if (!empty($node->childNodes)) {
       $element = new BibdkCartElement();
       foreach ($node->childNodes as $child) {
-        switch($child->nodeName){
+        switch ($child->nodeName) {
           case 'oui:cartContentElement' :
             $element->setElement($child->nodeValue);
             break;
