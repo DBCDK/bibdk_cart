@@ -1,8 +1,15 @@
 <?php
 
+/**
+ * Adds or removes the requsted pid to/from the cart. If no pid is given an error ís returned
+ * Called when user clicks a add_to_cart / remove_from_cart link
+ * Outputs json formatted $data array
+ */
 function bibdk_cart_add_to_cart() {
-  if (!isset($_REQUEST['pid'])) {
-    throw new Exception('pid has to be set');
+  if (!isset($_REQUEST['pid']) || empty($_REQUEST['pid'])) {
+    $data['error'] = TRUE;
+    drupal_json_output($data);
+    return;
   }
 
   $pids = $_REQUEST['pid'];
@@ -25,6 +32,23 @@ function bibdk_cart_add_to_cart() {
   drupal_json_output($data);
 }
 
-function bibdk_cart_empty_cart() {
+/**
+ * Deletes the requested pids from the cart
+ * Outputs json formatted $data array
+ */
+function bibdk_cart_delete_selected() {
+  //BibdkCart::emptyCart();
+  if (!isset($_REQUEST['pids']) || empty($_REQUEST['pids'])) {
+    $data['error'] = TRUE;
+    drupal_json_output($data);
+    return;
+  }
 
+  $pids = $_REQUEST['pids'];
+  foreach ($pids as $pid) {
+    BibdkCart::remove($pid);
+  }
+
+  $data['cartcount'] = (string)count(BibdkCart::getAll());
+  drupal_json_output($data);
 }

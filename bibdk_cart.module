@@ -16,6 +16,12 @@ function bibdk_cart_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'bibdk_cart.ajax.inc',
   );
+  $items['cart/ajax/deleteitems'] = array(
+    'page callback' => 'bibdk_cart_delete_selected',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'bibdk_cart.ajax.inc',
+  );
   $items['user/cart'] = array(
     'title' => t('Cart'),
     'page callback' => 'drupal_get_form',
@@ -109,8 +115,7 @@ function bibdk_cart_form($form, &$form_state) {
 
   $header = array(
     'manifestation' => t('bibdk_cart_manifestation_header'),
-    'status' => t('status'),
-    #'orderbtn' => t('bibdk_cart_action'),
+    'status' => t('bibdk_cart_manifestation_status'),
   );
 
   $form['cart-table-priamry-actions'] = array(
@@ -121,12 +126,16 @@ function bibdk_cart_form($form, &$form_state) {
       ),
     ),
     '#attributes' => array(
-      'class' => array(
-        'element-wrapper',
-      ),
+      'class' => array(),
     ),
   );
 
+  $form = _bibdk_cart_get_cart_table($header, $items, $form);
+
+  return $form;
+}
+
+function _bibdk_cart_get_cart_table($header, $items, $form) {
   $form['cart-table'] = array(
     '#type' => 'tableselect',
     '#header' => $header,
@@ -143,31 +152,19 @@ function bibdk_cart_form($form, &$form_state) {
       ),
     ),
   );
-
   return $form;
 }
 
-function _bibdk_cart_get_remaining_form_elements($type) {
-  return array(
-    '#type' => 'fieldset',
-    '#title' => t($type),
-    '#collapsible' => TRUE,
-    '#collapsed' => FALSE,
-    '#attributes' => array(
-      'class' => array('element-wrapper'),
-    ),
-  );
-}
-
 /** Populate the cart with manifestations
+ *
  * @param $cart
  */
-function bibdk_cart_set_manifestations(&$cart){
-  foreach($cart as $element){
+function bibdk_cart_set_manifestations(&$cart) {
+  foreach ($cart as $element) {
     $ids[] = $element->getId();
   }
   $manifestations = bibdk_cart_get_manifestations($ids);
-  foreach($cart as $element){
+  foreach ($cart as $element) {
     $manifestation = $manifestations[$element->getId()];
     $element->setManifestation($manifestation);
   }

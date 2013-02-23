@@ -1,8 +1,12 @@
 (function ($) {
 
     Drupal.cartResponse = function (data) {
-        if (data.saved) {
-            $('.link-add-basket[data-pid=' + data.pid + ']').text(Drupal.t('remove_item_from_cart', null, null));
+        if(data.error){
+            alert(Drupal.t('error_refresh_page_and_try_again', null, {context:'bibdk_cart'}));
+        }
+
+        if (data.saved === 1) {
+            $('.link-add-basket[data-pid=' + data.pid + ']').text(Drupal.t('remove_item_from_cart', null, {context:'bibdk_cart'}));
         } else {
             $('.link-add-basket[data-pid=' + data.pid + ']').text(Drupal.t('add_item_to_cart', null, null));
             Drupal.updateCartview(data.classid);
