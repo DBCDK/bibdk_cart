@@ -111,7 +111,7 @@ function bibdk_cart_form($form, &$form_state) {
     $item = bibdk_cart_manifestation_view($element->getManifestation(), $element->getElementArray());
     $items[$delta]['manifestation'] = drupal_render($item);
     $items[$delta]['status'] = $element->getStatus();
-    $items[$delta]['actions'] = isset($item['#fields']['bibdk_mani_reservation_button'][0]['#markup']) ? $item['#fields']['bibdk_mani_reservation_button'][0]['#markup'] : '' ;
+    $items[$delta]['actions'] = isset($item['#fields']['bibdk_mani_reservation_button'][0]['#markup']) ? $item['#fields']['bibdk_mani_reservation_button'][0]['#markup'] : '';
   }
 
   $form = bibdk_cart_get_priamry_actions($form);
@@ -128,7 +128,7 @@ function bibdk_cart_form($form, &$form_state) {
 }
 
 function bibdk_cart_get_priamry_actions($form) {
-  $form['cart-table-priamry-actions'] = array(
+  $form['cart_table_priamry_actions'] = array(
     '#markup' => theme('bibdk_cart_view_primary_actions', array()),
     '#attached' => array(
       'js' => array(
@@ -144,7 +144,7 @@ function bibdk_cart_get_priamry_actions($form) {
 }
 
 function _bibdk_cart_get_cart_table($header, $items, $form) {
-  $form['cart-table'] = array(
+  $form['cart_table'] = array(
     '#type' => 'tableselect',
     '#header' => $header,
     '#options' => $items,
