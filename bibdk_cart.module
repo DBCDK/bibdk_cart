@@ -110,7 +110,7 @@ function bibdk_cart_form($form, &$form_state) {
   foreach ($cart as $delta => $element) {
     $item = bibdk_cart_manifestation_view($element->getManifestation(), $element->getElementArray());
     $items[$delta]['manifestation'] = drupal_render($item);
-    $items[$delta]['status'] = $element->getStatus();
+    $items[$delta]['status'] = implode(', ', $element->getStatus());
     $items[$delta]['actions'] = isset($item['#fields']['bibdk_mani_reservation_button'][0]['#markup']) ? $item['#fields']['bibdk_mani_reservation_button'][0]['#markup'] : '';
   }
 
@@ -265,5 +265,16 @@ function bibdk_cart_user_login(&$edit, $account) {
       $_SESSION['bibdk_cart'] = $user_cart;
     }
 
+  }
+}
+
+/** Implements hook_bibdk_reservation_complete
+ * @param $pids
+ * @param $order_result
+ */
+function bibdk_cart_bibdk_reservation_complete($pids, $order_result){
+  if ($element = BibdkCart::checkInCart($pids)){
+    $element->setStatus('reservation_complete');
+    $element->save();
   }
 }

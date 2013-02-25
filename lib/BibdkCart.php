@@ -35,6 +35,14 @@ class BibdkCart {
     }
   }
 
+  public static function update($object){
+    $key = $object->getElement();
+    if (self::checkInCart($key)){
+      _bibdk_cart_update_content_webservice($object->toService());
+      $_SESSION['bibdk_cart'][$key] = $object;
+    }
+  }
+
   /**
    * Get all pids in cart
    *
@@ -53,6 +61,9 @@ class BibdkCart {
     return $_SESSION['bibdk_cart'];
   }
 
+  /** Get Id's of all elements in cart
+   * @return array
+   */
   public static function getAllIds(){
     $cart = self::getAll();
     $ids = array();
@@ -73,7 +84,7 @@ class BibdkCart {
    * Check if pid is in cart
    *
    * @param $pid
-   * @return bool
+   * @return bool|BibdkCartElement
    */
   public static function checkInCart($pid) {
     $bibdk_cart = self::getAll();
@@ -84,10 +95,7 @@ class BibdkCart {
       $pid = array($pid);
     }
     $pid = implode(',', $pid);
-    if (isset($bibdk_cart[$pid])) {
-      return TRUE;
-    }
-    return FALSE;
+    return isset($bibdk_cart[$pid]) ? $bibdk_cart[$pid] : FALSE;
   }
 
 }

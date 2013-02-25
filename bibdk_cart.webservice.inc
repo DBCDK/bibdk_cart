@@ -15,6 +15,19 @@ function _bibdk_cart_add_content_webservice($content, $user = NULL) {
 }
 
 /**
+ * Update cart content to provider on webservice
+ *
+ * @param $content string|array
+ * @param null $user
+ * @return array|bool
+ */
+function _bibdk_cart_update_content_webservice($content, $user = NULL){
+  if ($response = _bibdk_cart_call_webservice('update_cart_content', $content, $user)) {
+    return $response;
+  }
+}
+
+/**
  * Remove cart content from provider on webservice
  *
  * @param $content string|array
@@ -114,7 +127,8 @@ function bibdk_cart_parse_cart_content($xpath) {
             $element->setElement($child->nodeValue);
             break;
           case 'oui:cartContentStatus' :
-            $element->setStatus($child->nodeValue);
+            if (!empty($child->nodeValue))
+              $element->setStatus($child->nodeValue);
             break;
         }
       }

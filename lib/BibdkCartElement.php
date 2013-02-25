@@ -1,7 +1,7 @@
 <?php
 
 class BibdkCartElement {
-  public $status;
+  public $status = array();
   public  $element;
   public $manifestation;
 
@@ -25,11 +25,21 @@ class BibdkCartElement {
 
 
   public function setStatus($status) {
-    $this->status = $status;
+    $status = explode(',', $status);
+    foreach($status as $value){
+      $this->status[$value] = $value;
+    }
   }
 
-  public function getStatus() {
-    return $this->status;
+  /** Get status for element. I type is not set. All elements are returned
+   * @param null $type
+   * @return null|string
+   */
+  public function getStatus($type = null) {
+    if (!$type)
+      return $this->status;
+    else
+      return isset($this->status[$type]) ? $this->status[$type] : null;
   }
 
   public function setManifestation($manifestation) {
@@ -40,12 +50,10 @@ class BibdkCartElement {
     return $this->manifestation;
   }
 
-
-
   public function toService(){
     return array(
       'oui:cartContentElement' => $this->getElement(),
-      'oui:cartContentStatus' => $this->getStatus(),
+      'oui:cartContentStatus' => implode(',', $this->getStatus()),
     );
   }
 
@@ -53,7 +61,7 @@ class BibdkCartElement {
     return reset( $this->getElementArray() );
   }
 
-
-
-
+  public function save(){
+      BibdkCart::update($this);
+  }
 }
