@@ -37,7 +37,7 @@ function bibdk_cart_add_to_cart() {
  * Outputs json formatted $data array
  */
 function bibdk_cart_delete_selected() {
-  //BibdkCart::emptyCart();
+
   if (!isset($_REQUEST['pids']) || empty($_REQUEST['pids'])) {
     $data['error'] = TRUE;
     drupal_json_output($data);
@@ -45,6 +45,11 @@ function bibdk_cart_delete_selected() {
   }
 
   $pids = $_REQUEST['pids'];
+
+  if (!is_array($pids)) {
+    $pids = array($pids);
+  }
+
   foreach ($pids as $pid) {
     BibdkCart::remove($pid);
   }

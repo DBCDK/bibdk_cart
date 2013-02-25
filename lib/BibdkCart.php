@@ -7,9 +7,10 @@ class BibdkCart {
   /**
    * Add pid to bibdk_cart
    *
-   * @param $pids string|array
+   * @param BibdkCartElement $object
+   * @internal param array|string $pids
    */
-  public static function add($object) {
+  public static function add(BibdkCartElement $object) {
     $key = $object->getElement();
     if (!self::checkInCart($key)){
       _bibdk_cart_add_content_webservice($object->toService());
