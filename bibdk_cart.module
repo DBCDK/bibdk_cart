@@ -274,7 +274,6 @@ function bibdk_cart_user_login(&$edit, $account) {
  * @param $order_result
  */
 function bibdk_cart_bibdk_reservation_complete($pids, $order_result){
-  dpm($pids);
   if ($element = BibdkCart::checkInCart($pids)){
     $element->setStatus('reservation_complete');
     $element->save();
