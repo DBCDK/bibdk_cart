@@ -174,6 +174,7 @@ function bibdk_cart_set_manifestations(&$cart) {
   $manifestations = bibdk_cart_get_manifestations($ids);
   foreach ($cart as $element) {
     $manifestation = $manifestations[$element->getId()];
+    $manifestation->ding_entity_id = $manifestation->id = $element->getElement();
     $element->setManifestation($manifestation);
   }
 }
@@ -251,9 +252,9 @@ function bibdk_cart_user_login(&$edit, $account) {
   if (ding_user_is_provider_user($account)) {
     $user_cart = _bibdk_cart_get_cart_on_webservice($account);
     if ($_SESSION['bibdk_cart']) {
-      foreach ($_SESSION['bibdk_cart'] as $element) {
-        if (!in_array($element, $user_cart)) {
-          $add[] = $element;
+      foreach ($_SESSION['bibdk_cart'] as $key => $element) {
+        if (!in_array($key, $user_cart)) {
+          $add[] = $element->toService();
         }
       }
       if (isset($add)) {
@@ -273,8 +274,10 @@ function bibdk_cart_user_login(&$edit, $account) {
  * @param $order_result
  */
 function bibdk_cart_bibdk_reservation_complete($pids, $order_result){
+  dpm($pids);
   if ($element = BibdkCart::checkInCart($pids)){
     $element->setStatus('reservation_complete');
     $element->save();
+    drupal_add_js(drupal_get_path('module', 'bibdk_cart') . '/js/bibdk_cart_reload.js');
   }
 }

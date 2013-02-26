@@ -15,3 +15,4 @@ files[] = test/bibdk_cart.test
 files[] = theme/bibdk-cart-manifestation.tpl.php
 
 scripts[] = js/bibdk_cart_view_primary_actions.js
+scripts[] = js/bibdk_cart_reload.js
