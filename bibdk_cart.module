@@ -211,8 +211,6 @@ function bibdk_cart_manifestation_view($manifestation, $pids) {
     '#author' => _ting_openformat_parse_element($manifestation->getCreator(), ',', TRUE, FALSE),
     '#type' => _ting_openformat_parse_element($manifestation->getType(), ',', TRUE, TRUE),
     '#pid' => drupal_strtolower(preg_replace('/[^a-zA-Z0-9-]+/', '-', $manifestation->id)),
-    '#cart_btn' => (!empty($pids)) ? theme('bibdk_cart_button', array('add_to_cart' => bibdk_cart_get_link($pids))) : '',
-    //#cart_btn is currently unused in cart view. This line should be removed if it continues to be unused
     '#several_editions' => (!empty($pids) && count($pids) > 1) ? t('all_editions') : '',
   );
   return $view;
