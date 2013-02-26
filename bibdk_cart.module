@@ -270,11 +270,12 @@ function bibdk_cart_user_login(&$edit, $account) {
 }
 
 /** Implements hook_bibdk_reservation_complete
+ *
  * @param $pids
  * @param $order_result
  */
-function bibdk_cart_bibdk_reservation_complete($pids, $order_result){
-  if ($element = BibdkCart::checkInCart($pids)){
+function bibdk_cart_bibdk_reservation_complete($pids, $order_result) {
+  if ($element = BibdkCart::checkInCart($pids)) {
     $element->setStatus('reservation_complete');
     $element->save();
     drupal_add_js(drupal_get_path('module', 'bibdk_cart') . '/js/bibdk_cart_reload.js');
