@@ -14,5 +14,4 @@ files[] = bibdk_cart.webservice.inc
 files[] = test/bibdk_cart.test
 files[] = theme/bibdk-cart-manifestation.tpl.php
 
-scripts[] = js/bibdk_cart.js
 scripts[] = js/bibdk_cart_view_primary_actions.js
