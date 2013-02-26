@@ -1,30 +1,11 @@
 <?php
 
 /**
- * Implements hook_field_info().
+ * Field definition for bibdk_cart_manifestation_link is moved to
+ * bibdk_cart_field module in order to be able to disable modules that
+ * implements the field.
+ * see http://drupal.org/node/1285540
  */
-function bibdk_cart_field_info() {
-  return array(
-    'bibdk_cart_manifestation_link' => array(
-      'label' => t('Add to cart'),
-      'description' => t('Adds the manifestation to the cart'),
-      'default_widget' => 'hidden',
-      'default_formatter' => 'bibdk_cart_link_default',
-      'no_ui' => TRUE,
-    ),
-  );
-}
-
-/**
- * Implements hook_field_load().
- */
-function bibdk_cart_field_load($entity_type, $entities, $field, $instances, $langcode, &$items, $age) {
-  foreach ($entities as $id => $entity) {
-    $items[$id][] = array(
-      'id' => $id,
-    );
-  }
-}
 
 /**
  * Implements hook_field_formatter_info().

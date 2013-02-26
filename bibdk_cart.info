@@ -5,6 +5,7 @@ version = 7.x-0.1
 package = Bibliotek.dk
 
 dependencies[] = ding_user
+dependencies[] = bibdk_cart_field
 
 files[] = lib/BibdkCart.php
 files[] = lib/BibdkCartElement.php
