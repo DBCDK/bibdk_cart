@@ -1,0 +1,38 @@
+<?php
+
+/**
+ * Implements ding_entity_fields().
+ */
+
+function bibdk_cart_ding_entity_fields() {
+  $display_full = array(
+    'default' => array (
+      'label' => 'hidden',
+      'type' => 'default',
+    ),
+    'reservation' => array(
+      'type' => 'hidden',
+    ),
+    'full' => array(
+      'label' => 'hidden',
+      'type' => 'default',
+    ),
+  );
+  return array(
+    'bibdk_cart_manifestation_link' => array(
+      'field' => array(
+        'locked' => FALSE,
+        'storage' => array(
+          'type' => 'virtual_field',
+        ),
+      ),
+      'instance' => array(
+        'ding_entity_type' => 'bibdkManifestation',
+        'label' => t('add_to_cart'),
+        'bundle' => 'bibdkManifestation',
+        'entity_type' => 'bibdkManifestation',
+        'display' => $display_full,
+      ),
+    ),
+  );
+}
