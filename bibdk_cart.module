@@ -46,6 +46,10 @@ function bibdk_cart_theme() {
       'variables' => array(),
       'template' => 'theme/bibdk-cart-view-primary-actions'
     ),
+    'bibdk_cart_view_secondary_actions' => array(
+      'variables' => array('actions' => array()),
+      'template' => 'theme/bibdk-cart-view-secondary-actions'
+    ),
     'bibdk_cart_button_subwork' => array(
       'variables' => array('add_to_cart' => ''),
       'template' => 'theme/bibdk-cart-button-subwork',
@@ -67,7 +71,7 @@ function bibdk_cart_theme() {
 function bibdk_cart_user_profile2_tabs() {
   $ret = new stdClass();
   $ret->label = t('cart');
-  $ret->form = 'bibdk_cart_form';
+  $ret->form = 'bibdk_cart_get_form';
   $ret->type = 'bibdk_cart_list';
   return $ret;
 }
@@ -86,7 +90,7 @@ function bibdk_cart_view_form($form, &$form_state) {
   if ($user->uid) {
     drupal_goto('user/' . $user->uid . '/edit/bibdk_cart_list');
   }
-  $cart = bibdk_cart_form($form, $form_state);
+  $cart = bibdk_cart_get_form($form, $form_state);
   $form['cart'] = $cart;
   return $form;
 }
@@ -98,7 +102,7 @@ function bibdk_cart_view_form($form, &$form_state) {
  * @param $form_state
  * @return array
  */
-function bibdk_cart_form($form, &$form_state) {
+function bibdk_cart_get_form($form, &$form_state) {
   $cart = BibdkCart::getAll();
   if (empty($cart)) {
     return array();
@@ -116,6 +120,8 @@ function bibdk_cart_form($form, &$form_state) {
 
   $form = bibdk_cart_get_priamry_actions($form);
 
+  $form = bibdk_cart_get_secondary_actions($form);
+
   $header = array(
     'manifestation' => t('bibdk_cart_header', array(), array('context' => 'bibdk_cart')),
     'status' => t('bibdk_cart_status', array(), array('context' => 'bibdk_cart')),
@@ -127,6 +133,10 @@ function bibdk_cart_form($form, &$form_state) {
   return $form;
 }
 
+/**
+ * @param array $form
+ * @return array $form
+ */
 function bibdk_cart_get_priamry_actions($form) {
   $form['cart_table_priamry_actions'] = array(
     '#markup' => theme('bibdk_cart_view_primary_actions', array()),
@@ -143,6 +153,39 @@ function bibdk_cart_get_priamry_actions($form) {
   return $form;
 }
 
+/**
+ * Invokes hook_cart_actions() in order to retrieve actions that should be included in the cart view
+ *
+ * @param array $form
+ * @return array $form
+ */
+function bibdk_cart_get_secondary_actions($form) {
+  $actions = array();
+  $actions = module_invoke_all('cart_actions', $actions);
+
+  if (!empty($actions)) {
+    uasort($actions, 'element_sort');
+
+    $actions_wrapper = array(
+      '#type' => 'container',
+      '#attributes' => array(
+        'class' => array('cart-view-secondary-actions'),
+      ),
+    );
+
+    $actions_wrapper['actions'] = $actions;
+    $form['cart_table_secondary_actions'] = $actions_wrapper;
+  }
+
+  return $form;
+}
+
+/**
+ * @param array $header
+ * @param array $items
+ * @param array $form
+ * @return array $form
+ */
 function _bibdk_cart_get_cart_table($header, $items, $form) {
   $form['cart_table'] = array(
     '#type' => 'tableselect',
