@@ -15,17 +15,21 @@
  *
  * @return array $action
  */
-function hook_cart_actions(){
+function hook_cart_actions() {
   $action['action_name'] = array(
-    '#type' => 'submit',
-    '#value' => t('Value'),
-    '#submit' => array('module_name_submit_function'),
+    '#theme' => 'link',
+    '#text' => 'text_to_display',
+    '#path' => 'custom/path',
     '#weight' => 0,
-    '#attributes' => array(
-      'class' => array(
-        'cart-action-btn', 'disabled'
+    '#options' => array(
+      'query' => NULL,
+      'attributes' => array(
+        'class' => array(
+          'cart-action-btn', 'inactive'
+        ),
       ),
-    ),
+      'html' => FALSE,
+    )
   );
 
   return $action;
