@@ -34,10 +34,10 @@
 
         if (selected !== 0) {
             deleteAllBtn.removeClass('inactive');
-            $('.cart-action-btn').removeClass('disabled');
+            $('.cart-action-btn').removeClass('inactive');
         } else {
             deleteAllBtn.addClass('inactive');
-            $('.cart-action-btn').addClass('disabled');
+            $('.cart-action-btn').addClass('inactive');
         }
     };
 
