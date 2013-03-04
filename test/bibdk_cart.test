@@ -132,14 +132,14 @@ class BibdkCartTestCase extends DrupalWebTestCase {
     $result = _bibdk_cart_get_cart_on_webservice($user);
     $expected = 6;
     $this->assertTrue(count($result) == $expected, t('%returned number on elements in returned for webservice. %expected expected', array('%returned' => count($result), '%expected' => $expected)));
-    
+
     //Get cart from anonymous user (no results)
     $result = _bibdk_cart_get_cart_on_webservice($anonymous);
     $this->assertFalse($result, 'No results from webservice');
 
     // add Content provider user
     $result = _bibdk_cart_add_content_webservice('123456789', $user);
-    $this->assertEqual($result['status'], 'success', 'add content success');
+    $this->assertEqual($result, 59, t('content added with id %id', array('%id' => $result)));
 
     // add Content anonymous user
     $result = _bibdk_cart_add_content_webservice('123456789', $anonymous);
