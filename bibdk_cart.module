@@ -212,11 +212,11 @@ function _bibdk_cart_get_cart_table($header, $items, $form) {
  */
 function bibdk_cart_set_manifestations(&$cart) {
   foreach ($cart as $element) {
-    $ids[] = $element->getId();
+    $ids[] = $element->getElementId();
   }
   $manifestations = bibdk_cart_get_manifestations($ids);
   foreach ($cart as $element) {
-    $manifestation = $manifestations[$element->getId()];
+    $manifestation = $manifestations[$element->getElementId()];
     $manifestation->ding_entity_id = $manifestation->id = $element->getElement();
     $element->setManifestation($manifestation);
   }

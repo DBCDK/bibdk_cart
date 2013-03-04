@@ -123,7 +123,10 @@ function bibdk_cart_parse_cart_content($xpath) {
       $element = new BibdkCartElement();
       foreach ($node->childNodes as $child) {
         switch ($child->nodeName) {
-          case 'oui:cartContentElement' :
+          case 'oui:cartContentId' :
+            $element->setId($child->nodeValue);
+            break;
+         case 'oui:cartContentElement' :
             $element->setElement($child->nodeValue);
             break;
           case 'oui:cartContentStatus' :
