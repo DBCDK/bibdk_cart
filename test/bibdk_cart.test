@@ -29,6 +29,7 @@ class BibdkCartTestCase extends DrupalWebTestCase {
 
   }
 
+
   private function testView() {
     // Test cart page for anonymous users
     $this->drupalGet('user');
@@ -50,7 +51,7 @@ class BibdkCartTestCase extends DrupalWebTestCase {
 
     $this->drupalGet('user/cart');
     $this->assertText('Tove Ditlevsen');
-    $this->assertText('remove_item_from_cart');
+    $this->assertText('delete_selected');
   }
 
   private function testBibdkCartUserLogin() {
@@ -84,11 +85,11 @@ class BibdkCartTestCase extends DrupalWebTestCase {
       '870970-basis:29317038,870970-basis:25194853,870970-basis:22441671,870970-basis:22629344,870970-basis:22252852,870970-basis:26178533' => '870970-basis:29317038,870970-basis:25194853,870970-basis:22441671,870970-basis:22629344,870970-basis:22252852,870970-basis:26178533',
     );
 
-    $this->assertTrue(count($_SESSION['bibdk_cart']) == 9, 'Session is updated with cart content from webservice');
+    $this->assertTrue(count($_SESSION['bibdk_cart']) == 6, 'Session is updated with cart content from webservice');
     $first = current($_SESSION['bibdk_cart']);
     $last = end(array_values($_SESSION['bibdk_cart']));
-    $this->assertEqual($first->getElement(), '870970-basis:06343570', 'First object in cart is 870970-basis:06343570');
-    $this->assertEqual($last->getElement(), '870970-basis:29317038,870970-basis:25194853,870970-basis:22441671,870970-basis:22629344,870970-basis:22252852,870970-basis:26178533', 'Last object in cart is 870970-basis:29317038,870970-basis:25194853,870970-basis:22441671,870970-basis:22629344,870970-basis:22252852,870970-basis:26178533');
+    $this->assertEqual($first->getElement(), '150012-leksikon:274058', t('First object in cart is %element', array('%element' => $first->getElement())));
+    $this->assertEqual($last->getElement(), '820030-katalog:179554', t('First object in cart is %element', array('%element' => $first->getElement())));
 
     // Existing objects in session should be merged with webservice content
     $test_object = new BibdkCartElement();
@@ -97,7 +98,7 @@ class BibdkCartTestCase extends DrupalWebTestCase {
       'test' => $test_object,
     );
     bibdk_cart_user_login($edit, $user);
-    $this->assertTrue(count($_SESSION['bibdk_cart']) == 10, 'Session is updated with cart content from webservice');
+    $this->assertTrue(count($_SESSION['bibdk_cart']) == 7, 'Session is updated with cart content from webservice');
 
     // Nothing should happen with the Session if not provider user
     $expected_result = $_SESSION['bibdk_cart'] = array(
@@ -129,9 +130,9 @@ class BibdkCartTestCase extends DrupalWebTestCase {
 
     //Get cart from ding_provider user
     $result = _bibdk_cart_get_cart_on_webservice($user);
-    $this->assertTrue(count($result) == 9, 'Correct number on elements in returned for webservice');
-    $this->assertTrue(reset($result)->getElement() == '870970-basis:06343570', 'First element is a pid');
-
+    $expected = 6;
+    $this->assertTrue(count($result) == $expected, t('%returned number on elements in returned for webservice. %expected expected', array('%returned' => count($result), '%expected' => $expected)));
+    
     //Get cart from anonymous user (no results)
     $result = _bibdk_cart_get_cart_on_webservice($anonymous);
     $this->assertFalse($result, 'No results from webservice');
