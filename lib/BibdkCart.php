@@ -14,7 +14,8 @@ class BibdkCart {
     $key = $object->getElement();
     if (!self::checkInCart($key)){
       // TODO: Return ID and add to object
-      _bibdk_cart_add_content_webservice($object->toService());
+      $id = _bibdk_cart_add_content_webservice($object->toService());
+      $object->setId($id);
       $_SESSION['bibdk_cart'][$key] = $object;
     }
   }

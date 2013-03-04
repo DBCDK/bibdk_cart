@@ -301,18 +301,16 @@ function bibdk_cart_user_login(&$edit, $account) {
     if ($_SESSION['bibdk_cart']) {
       foreach ($_SESSION['bibdk_cart'] as $key => $element) {
         if (!in_array($key, $user_cart)) {
-          $add[] = $element->toService();
+          $id = _bibdk_cart_add_content_webservice($element->toService());
+          $element->setId($id);
+          $_SESSION['bibdk_cart'][$key] = $element;
         }
-      }
-      if (isset($add)) {
-        _bibdk_cart_add_content_webservice($add);
       }
       $_SESSION['bibdk_cart'] += $user_cart;
     }
     else {
       $_SESSION['bibdk_cart'] = $user_cart;
     }
-
   }
 }
 
