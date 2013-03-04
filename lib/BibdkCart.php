@@ -45,7 +45,6 @@ class BibdkCart {
    * @return array
    */
   public static function getAll() {
-    unset($_SESSION['bibdk_cart']);
     global $user;
     if (!isset($_SESSION['bibdk_cart'])){
       if ($user->uid && ding_user_is_provider_user($user)){
