@@ -33,6 +33,10 @@ function bibdk_cart_field_formatter_view($entity_type, $entity, $field, $instanc
   return $element;
 }
 
+/**
+ * @param $id
+ * @return array
+ */
 function bibdk_cart_get_link($id) {
   if(!is_array($id)){
     $id = array($id);
