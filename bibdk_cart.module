@@ -115,7 +115,10 @@ function bibdk_cart_get_form($form, &$form_state) {
     $item = bibdk_cart_manifestation_view($element->getManifestation(), $element->getElementArray());
     $items[$delta]['manifestation'] = drupal_render($item);
     $items[$delta]['status'] = implode(', ', $element->getStatus());
-    $items[$delta]['actions'] = isset($item['#fields']['bibdk_mani_reservation_button'][0]['#markup']) ? $item['#fields']['bibdk_mani_reservation_button'][0]['#markup'] : '';
+    if (isset($item['#fields']['bibdk_mani_reservation_button'][0]['#markup']))
+      $items[$delta]['actions'] = $item['#fields']['bibdk_mani_reservation_button'][0]['#markup'];
+    else if (isset($item['#fields']['bibdk_reservation_info'][0]['#markup']))
+      $items[$delta]['actions'] = $item['#fields']['bibdk_reservation_info'][0]['#markup'];
   }
 
   $form = bibdk_cart_get_priamry_actions($form);
