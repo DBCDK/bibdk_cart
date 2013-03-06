@@ -131,9 +131,15 @@ function bibdk_cart_get_form($form, &$form_state) {
     $items[$delta]['actions'] = isset($item['action']) ? $item['action'] : '';
   }
 
-  $form = bibdk_cart_get_priamry_actions($form);
+  $form['actions'] = array(
+    '#type' => 'item',
+    '#attributes' => array(
+      'class' => array('hest'),
+    ),
+  );
+  $form['actions'] += bibdk_cart_get_primary_actions(array());
 
-  $form = bibdk_cart_get_secondary_actions($form);
+  $form['actions'] += bibdk_cart_get_secondary_actions(array());
 
   $header = array(
     'manifestation' => t('bibdk_cart_header', array(), array('context' => 'bibdk_cart')),
@@ -150,7 +156,7 @@ function bibdk_cart_get_form($form, &$form_state) {
  * @param array $form
  * @return array $form
  */
-function bibdk_cart_get_priamry_actions($form) {
+function bibdk_cart_get_primary_actions($form) {
   $form['cart_table_priamry_actions'] = array(
     '#markup' => theme('bibdk_cart_view_primary_actions', array()),
     '#attached' => array(
@@ -182,12 +188,20 @@ function bibdk_cart_get_secondary_actions($form) {
     $actions_wrapper = array(
       '#type' => 'container',
       '#attributes' => array(
-        'class' => array('cart-view-secondary-actions'),
+        'class' => array('cart-view-secondary-actions', 'cart-actions'),
       ),
     );
-
-    $actions_wrapper['actions'] = $actions;
-    $form['cart_table_secondary_actions'] = $actions_wrapper;
+    foreach($actions as $action){
+      $items[] = drupal_render($action);
+    }
+    $form['cart_table_secondary_actions'] = array(
+      '#theme' => 'item_list',
+      '#items' => $items,
+      '#type' => 'ul',
+      '#attributes' => array(
+        'class' => array('cart-view-secondary-actions', 'cart-actions')
+      ),
+      );
   }
 
   return $form;
@@ -205,7 +219,7 @@ function _bibdk_cart_get_cart_table($header, $items, $form) {
     '#header' => $header,
     '#options' => $items,
     '#empty' => t('no_items_in_cart_yet', array(), array('context' => 'bibdk_cart')),
-    '#js_select' => FALSE,
+    '#js_select' => TRUE,
     '#sticky' => FALSE,
     '#multiple' => TRUE,
     '#attributes' => array(
