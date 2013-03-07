@@ -51,6 +51,16 @@ class BibdkCartElement {
       return isset($this->status[$type]) ? $this->status[$type] : null;
   }
 
+  public function getStatusView(){
+    $view = array();
+    if (isset($this->status)){
+      foreach($this->status as $status){
+        $view[] = t($status);
+      }
+    }
+    return $view;
+  }
+
   public function setManifestation($manifestation) {
     $this->manifestation = $manifestation;
   }

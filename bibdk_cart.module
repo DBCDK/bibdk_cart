@@ -116,7 +116,7 @@ function bibdk_cart_get_form($form, &$form_state) {
   foreach ($cart as $delta => $element) {
     $item = bibdk_cart_manifestation_view($element->getManifestation(), $element->getElementArray());
     $items[$delta]['manifestation'] = drupal_render($item);
-    $items[$delta]['status'] = implode(', ', $element->getStatus());
+    $items[$delta]['status'] = implode(', ', $element->getStatusView());
     $items[$delta]['actions'] = isset($item['action']) ? $item['action'] : "";
   }
 
@@ -280,6 +280,8 @@ function bibdk_cart_manifestation_view($manifestation, $pids) {
   } else if (isset($view['#fields']['bibdk_reservation_info'][0]['#markup'])) {
     $view['action'] = $view['#fields']['bibdk_reservation_info'][0]['#markup'];
     unset($view['#fields']['bibdk_reservation_info']);
+  } else {
+    $view['action'] = t('cannot_reservate');
   }
 
 
