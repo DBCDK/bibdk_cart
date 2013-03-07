@@ -364,6 +364,10 @@ function bibdk_cart_bibdk_reservation_complete($pids, $order_result) {
 }
 
 
+/**
+ * @param $status string
+ * @param $pids string
+ */
 function bibdk_cart_reservation_update_status($status, $pids) {
   $ids = explode(';', $pids);
   foreach ($ids as $id) {
