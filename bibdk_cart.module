@@ -227,14 +227,23 @@ function _bibdk_cart_get_cart_table($header, $items, $form) {
  * @param $cart
  */
 function bibdk_cart_set_manifestations(&$cart) {
+  $ids = array();
   foreach ($cart as $element) {
-    $ids[] = $element->getElementId();
+    $ids += array_merge($ids, $element->getElementArray());
   }
+  /**
+   * We get all manifestations, in order to check if one of the manifestations is reservable
+   * TODO: refactor to make this a cleaner solution
+   */
   $manifestations = bibdk_cart_get_manifestations($ids);
   foreach ($cart as $element) {
-    $manifestation = $manifestations[$element->getElementId()];
-    $manifestation->ding_entity_id = $manifestation->id = $element->getElement();
-    $element->setManifestation($manifestation);
+    foreach($element->getElementArray() as $manifestation_id){
+      $manifestation = $manifestations[$manifestation_id];
+      if($manifestation->isReservable() || $element->GetManifestation() == null){
+        $manifestation->ding_entity_id = $manifestation->id = $element->getElement();
+        $element->setManifestation($manifestation);
+      }
+    }
   }
 }
 
