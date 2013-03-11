@@ -174,13 +174,7 @@ function bibdk_cart_get_secondary_actions($form) {
   if (!empty($actions)) {
     uasort($actions, 'element_sort');
 
-    $actions_wrapper = array(
-      '#type' => 'container',
-      '#attributes' => array(
-        'class' => array('cart-view-secondary-actions', 'cart-actions'),
-      ),
-    );
-    foreach($actions as $action){
+    foreach ($actions as $action) {
       $items[] = drupal_render($action);
     }
     $form['cart_table_secondary_actions'] = array(
@@ -190,7 +184,7 @@ function bibdk_cart_get_secondary_actions($form) {
       '#attributes' => array(
         'class' => array('cart-view-secondary-actions', 'cart-actions')
       ),
-      );
+    );
   }
 
   return $form;
@@ -237,9 +231,9 @@ function bibdk_cart_set_manifestations(&$cart) {
    */
   $manifestations = bibdk_cart_get_manifestations($ids);
   foreach ($cart as $element) {
-    foreach($element->getElementArray() as $manifestation_id){
+    foreach ($element->getElementArray() as $manifestation_id) {
       $manifestation = $manifestations[$manifestation_id];
-      if($manifestation->isReservable() || $element->GetManifestation() == null){
+      if ($manifestation->isReservable() || $element->GetManifestation() == NULL) {
         $manifestation->ding_entity_id = $manifestation->id = $element->getElement();
         $element->setManifestation($manifestation);
       }
@@ -273,14 +267,16 @@ function bibdk_cart_get_manifestations($pids) {
  */
 function bibdk_cart_manifestation_view($manifestation, $pids) {
   $view = ting_openformat_manifestation_view($manifestation, 'cart');
-
+  #dpm($view);
   if (isset($view['#fields']['bibdk_mani_reservation_button'])) {
     $view['action'] = $view['#fields']['bibdk_mani_reservation_button'][0]['#markup'];
     unset($view['#fields']['bibdk_mani_reservation_button']);
-  } else if (isset($view['#fields']['bibdk_reservation_info'][0]['#markup'])) {
+  }
+  else if (isset($view['#fields']['bibdk_reservation_info'][0]['#markup'])) {
     $view['action'] = $view['#fields']['bibdk_reservation_info'][0]['#markup'];
     unset($view['#fields']['bibdk_reservation_info']);
-  } else {
+  }
+  else {
     $view['action'] = t('cannot_reservate');
   }
 
