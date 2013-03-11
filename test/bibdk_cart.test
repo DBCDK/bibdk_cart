@@ -21,12 +21,11 @@ class BibdkCartTestCase extends DrupalWebTestCase {
   public function testRunner(){
     $this->_createProviderUser();
     $this->testBibdkCartObjectNoUser();
-    $this->testWebserviceMethods();
     $this->testBibdkCartUserLogin();
+    $this->testWebserviceMethods();
     $this->testAjaxResponse();
     $this->testPrimaryActionsAjaxResponse();
     $this->testView();
-
   }
 
 
@@ -50,14 +49,13 @@ class BibdkCartTestCase extends DrupalWebTestCase {
     $result = $this->drupalGetAJAX($url, $options);
 
     $this->drupalGet('user/cart');
-    $this->assertText('Tove Ditlevsen');
     $this->assertText('delete_selected');
   }
 
   private function testBibdkCartUserLogin() {
     //Reset cart count
     bibdk_webservice_request(TRUE);
-    //$this->_createProviderUser();
+    #$this->_createProviderUser();
     // Create dummy provider user
     $user = new stdClass();
     $user->uid = 1;
@@ -112,7 +110,7 @@ class BibdkCartTestCase extends DrupalWebTestCase {
   private function testWebserviceMethods() {
     BibdkCart::emptyCart();
     // Fake provider user
-    //$this->_createProviderUser();
+    #$this->_createProviderUser();
     //Reset cart count
     bibdk_webservice_request(TRUE);
     // Create dummy provider user
