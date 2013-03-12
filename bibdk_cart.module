@@ -120,15 +120,12 @@ function bibdk_cart_get_form($form, &$form_state) {
     $items[$delta]['actions'] = isset($item['action']) ? $item['action'] : "";
   }
 
-  $form['actions'] = array(
+  $form['cartactions'] = array(
     '#type' => 'item',
-    '#attributes' => array(
-      'class' => array('hest'),
-    ),
   );
-  $form['actions'] += bibdk_cart_get_primary_actions(array());
+  $form['cartactions'] += bibdk_cart_get_primary_actions(array());
 
-  $form['actions'] += bibdk_cart_get_secondary_actions(array());
+  $form['cartactions'] += bibdk_cart_get_secondary_actions(array());
 
   $header = array(
     'manifestation' => t('bibdk_cart_header', array(), array('context' => 'bibdk_cart')),
