@@ -330,7 +330,7 @@ function bibdk_cart_user_login(&$edit, $account) {
   }
   if (ding_user_is_provider_user($account)) {
     $user_cart = _bibdk_cart_get_cart_on_webservice($account);
-    if ($_SESSION['bibdk_cart']) {
+    if (isset($_SESSION['bibdk_cart'])) {
       foreach ($_SESSION['bibdk_cart'] as $key => $element) {
         if (!in_array($key, $user_cart)) {
           $id = _bibdk_cart_add_content_webservice($element->toService());
