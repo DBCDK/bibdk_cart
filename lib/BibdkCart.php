@@ -13,7 +13,8 @@ class BibdkCart {
   public static function add(BibdkCartElement $object) {
     $key = $object->getElement();
     if (!self::checkInCart($key)){
-      _bibdk_cart_add_content_webservice($object->toService());
+      $id = _bibdk_cart_add_content_webservice($object->toService());
+      $object->setId($id);
       $_SESSION['bibdk_cart'][$key] = $object;
     }
   }
@@ -24,15 +25,9 @@ class BibdkCart {
    * @param $pids string|array
    */
   public static function remove($pids) {
-    if (!is_array($pids)) {
-      $pids = array($pids);
-    }
-
-    $key = implode(',', $pids);
-    _bibdk_cart_remove_content_webservice($key);
-
-    if (isset($_SESSION['bibdk_cart'][$key])) {
-      unset($_SESSION['bibdk_cart'][$key]);
+    if ($element = BibdkCart::checkInCart($pids)){
+      _bibdk_cart_remove_content_webservice($element->toService());
+      unset($_SESSION['bibdk_cart'][$element->getElement()]);
     }
   }
 
@@ -69,7 +64,7 @@ class BibdkCart {
     $cart = self::getAll();
     $ids = array();
     foreach($cart as $element){
-      $ids[] = $element->getId();
+      $ids[] = $element->getElementId();
     }
     return $ids;
   }

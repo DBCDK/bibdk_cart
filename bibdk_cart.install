@@ -36,3 +36,14 @@ function bibdk_cart_ding_entity_fields() {
     ),
   );
 }
+
+/**
+ * Implements hook_disable. 
+ */
+function bibdk_cart_disable(){
+  $fields = bibdk_cart_ding_entity_fields();
+  foreach ($fields as $field_name => $field) {
+    field_delete_instance($field_name);
+    field_delete_field($field_name);
+  }
+}

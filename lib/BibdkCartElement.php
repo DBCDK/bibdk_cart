@@ -4,8 +4,17 @@ class BibdkCartElement {
   public $status = array();
   public  $element;
   public $manifestation;
+  public $id;
 
   function __construct() {
+  }
+
+  public function setId($id) {
+    $this->id = $id;
+  }
+
+  public function getId() {
+    return $this->id;
   }
 
   public function setElement($pids) {
@@ -42,6 +51,16 @@ class BibdkCartElement {
       return isset($this->status[$type]) ? $this->status[$type] : null;
   }
 
+  public function getStatusView(){
+    $view = array();
+    if (isset($this->status)){
+      foreach($this->status as $status){
+        $view[] = t($status);
+      }
+    }
+    return $view;
+  }
+
   public function setManifestation($manifestation) {
     $this->manifestation = $manifestation;
   }
@@ -52,12 +71,13 @@ class BibdkCartElement {
 
   public function toService(){
     return array(
+      'oui:cartContentId' => $this->getId(),
       'oui:cartContentElement' => $this->getElement(),
       'oui:cartContentStatus' => implode(',', $this->getStatus()),
     );
   }
 
-  public function getId(){
+  public function getElementId(){
     return reset( $this->getElementArray() );
   }
 

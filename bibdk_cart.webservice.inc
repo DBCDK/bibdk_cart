@@ -10,7 +10,8 @@
 function _bibdk_cart_add_content_webservice($content, $user = NULL) {
 
   if ($response = _bibdk_cart_call_webservice('add_cart_content', $content, $user)) {
-    return $response;
+    $xpath = bibdk_cart_webservice_responce_xpath($response['response']);
+    return reset(bibdk_cart_parse_cart_content_id($xpath));
   }
 }
 
@@ -99,6 +100,26 @@ function bibdk_cart_webservice_responce_xpath($xml) {
 }
 
 /**
+ * get element id from request from openuserinfo
+ *
+ * @param $xpath xpath object
+ * @return array
+ */
+function bibdk_cart_parse_cart_content_id($xpath) {
+  if (!isset($xpath)) {
+    return array();
+  }
+// grap agencies
+  $query = '//oui:cartContentId';
+  $nodelist = $xpath->query($query);
+  foreach($nodelist as $delta => $node){
+    $return[] = $node->nodeValue;
+  }
+
+  return $return;
+}
+
+/**
  * get elements from request from openuserinfo
  *
  * @param $xpath xpath object
@@ -123,7 +144,10 @@ function bibdk_cart_parse_cart_content($xpath) {
       $element = new BibdkCartElement();
       foreach ($node->childNodes as $child) {
         switch ($child->nodeName) {
-          case 'oui:cartContentElement' :
+          case 'oui:cartContentId' :
+            $element->setId($child->nodeValue);
+            break;
+         case 'oui:cartContentElement' :
             $element->setElement($child->nodeValue);
             break;
           case 'oui:cartContentStatus' :

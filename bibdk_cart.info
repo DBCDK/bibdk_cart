@@ -1,10 +1,11 @@
 name = Bibliotek.dk - Cart
 description = Provides the cart functionality for bibliotek.dk
-core = 7.x
+core = 7.2
 version = 7.x-0.1
 package = Bibliotek.dk
 
 dependencies[] = ding_user
+dependencies[] = bibdk_cart_field
 
 files[] = lib/BibdkCart.php
 files[] = lib/BibdkCartElement.php
@@ -13,7 +14,6 @@ files[] = bibdk_cart.field.inc
 files[] = bibdk_cart.webservice.inc
 files[] = test/bibdk_cart.test
 files[] = theme/bibdk-cart-manifestation.tpl.php
-
-scripts[] = js/bibdk_cart.js
-scripts[] = js/bibdk_cart_view_primary_actions.js
-
+files[] = theme/bibdk-cart-button.tpl.php
+files[] = theme/bibdk-cart-button-subwork.tpl.php
+files[] = theme/bibdk-cart-view-primary-actions.tpl.php

@@ -10,7 +10,16 @@
             }
         });
 
-        if (selected === items) {
+        Drupal.markCheckboxes(!(selected === items), element);
+        Drupal.deActivateDeleteAllBtn();
+    };
+
+    Drupal.markCheckboxes = function(asSelected, element){
+        if(!element){
+            element = $('.table input[type=checkbox]');
+        }
+
+        if(!asSelected){
             element.each(function () {
                 this.checked = false;
             });
@@ -19,7 +28,6 @@
                 this.checked = true;
             });
         }
-        Drupal.deActivateDeleteAllBtn();
     };
 
     Drupal.deActivateDeleteAllBtn = function () {
@@ -34,8 +42,10 @@
 
         if (selected !== 0) {
             deleteAllBtn.removeClass('inactive');
+            $('.cart-action-btn').removeClass('inactive');
         } else {
             deleteAllBtn.addClass('inactive');
+            $('.cart-action-btn').addClass('inactive');
         }
     };
 
