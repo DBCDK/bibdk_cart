@@ -6,6 +6,7 @@ package = Bibliotek.dk
 
 dependencies[] = ding_user
 dependencies[] = bibdk_cart_field
+dependencies[] = ting_openformat
 
 files[] = lib/BibdkCart.php
 files[] = lib/BibdkCartElement.php
