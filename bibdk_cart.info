@@ -1,6 +1,6 @@
 name = Bibliotek.dk - Cart
 description = Provides the cart functionality for bibliotek.dk
-core = 7.1
+core = 7.x
 version = 7.x-0.3
 package = Bibliotek.dk
 
