@@ -1,11 +1,12 @@
 name = Bibliotek.dk - Cart
 description = Provides the cart functionality for bibliotek.dk
-core = 7.1
-version = 7.x-0.3
+core = 7.x
+version = 7.x-0.4
 package = Bibliotek.dk
 
 dependencies[] = ding_user
 dependencies[] = bibdk_cart_field
+dependencies[] = ting_openformat
 
 files[] = lib/BibdkCart.php
 files[] = lib/BibdkCartElement.php

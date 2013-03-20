@@ -2,11 +2,11 @@
 
     Drupal.cartResponse = function (data) {
         if(data.error){
-            alert(Drupal.t('error_refresh_page_and_try_again', null, {context:'bibdk_cart'}));
+            alert(Drupal.t('error_refresh_page_and_try_again', null, null));
         }
 
         if (data.saved === 1) {
-            $('.link-add-basket[data-pid=' + data.pid + ']').text(Drupal.t('remove_item_from_cart', null, {context:'bibdk_cart'}));
+            $('.link-add-basket[data-pid=' + data.pid + ']').text(Drupal.t('remove_item_from_cart', null, null));
         } else {
             $('.link-add-basket[data-pid=' + data.pid + ']').text(Drupal.t('add_item_to_cart', null, null));
             Drupal.updateCartview(data.classid);
