@@ -227,6 +227,7 @@ function bibdk_cart_set_manifestations(&$cart) {
    * TODO: refactor to make this a cleaner solution
    */
   $manifestations = bibdk_cart_get_manifestations($ids);
+  //XXX if no manifestaions is returned we should halt here
   foreach ($cart as $element) {
     foreach ($element->getElementArray() as $manifestation_id) {
       $manifestation = $manifestations[$manifestation_id];
