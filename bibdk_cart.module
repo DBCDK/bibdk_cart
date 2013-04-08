@@ -1,10 +1,10 @@
 <?php
 
 // Load Field module hooks.
-module_load_include('php', 'bibdk_cart', 'BibdkCart');
-module_load_include('php', 'bibdk_cart', 'BibdkCartElement');
-module_load_include('inc', 'bibdk_cart', 'bibdk_cart.field');
-module_load_include('inc', 'bibdk_cart', 'bibdk_cart.webservice');
+module_load_include('php', 'bibdk_cart', 'includes/BibdkCart');
+module_load_include('php', 'bibdk_cart', 'includes/BibdkCartElement');
+module_load_include('inc', 'bibdk_cart', 'includes/bibdk_cart.field');
+module_load_include('inc', 'bibdk_cart', 'includes/bibdk_cart.webservice');
 
 /**
  * Implements hook_menu().
@@ -14,13 +14,13 @@ function bibdk_cart_menu() {
     'page callback' => 'bibdk_cart_add_to_cart',
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,
-    'file' => 'bibdk_cart.ajax.inc',
+    'file' => 'includes/bibdk_cart.ajax.inc',
   );
   $items['cart/ajax/deleteitems'] = array(
     'page callback' => 'bibdk_cart_delete_selected',
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,
-    'file' => 'bibdk_cart.ajax.inc',
+    'file' => 'includes/bibdk_cart.ajax.inc',
   );
   $items['user/cart'] = array(
     'title' => t('Cart'),
@@ -28,7 +28,7 @@ function bibdk_cart_menu() {
     'page arguments' => array('bibdk_cart_view_form'),
     'access arguments' => array('access content'),
     'type' => MENU_LOCAL_TASK,
-    //'file' => 'bibdk_cart.ajax.inc',
+    //'file' => 'includes/bibdk_cart.ajax.inc',
   );
   return $items;
 }
@@ -111,7 +111,7 @@ function bibdk_cart_get_form($form, &$form_state) {
   }
 
   bibdk_cart_set_manifestations($cart);
-
+  
   $items = array();
   foreach ($cart as $delta => $element) {
     $item = bibdk_cart_manifestation_view($element->getManifestation(), $element->getElementArray());
@@ -227,7 +227,11 @@ function bibdk_cart_set_manifestations(&$cart) {
    * TODO: refactor to make this a cleaner solution
    */
   $manifestations = bibdk_cart_get_manifestations($ids);
-  //XXX if no manifestaions is returned we should halt here
+
+  if(!$manifestations){
+    $cart = array();
+  }
+
   foreach ($cart as $element) {
     foreach ($element->getElementArray() as $manifestation_id) {
       $manifestation = $manifestations[$manifestation_id];
