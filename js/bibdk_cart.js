@@ -6,9 +6,9 @@
         }
 
         if (data.saved === 1) {
-            $('.link-add-basket[data-pid=' + data.pid + ']').text(Drupal.t('remove_item_from_cart', null, null));
+            $('.link-add-basket[data-pid=' + data.pid + ']').text(Drupal.t('remove_item_from_cart', {}, {context:'bibdk_cart'}));
         } else {
-            $('.link-add-basket[data-pid=' + data.pid + ']').text(Drupal.t('add_item_to_cart', null, null));
+            $('.link-add-basket[data-pid=' + data.pid + ']').text(Drupal.t('add_item_to_cart', {}, {context:'bibdk_cart'}));
             Drupal.updateCartview(data.classid);
         }
 
