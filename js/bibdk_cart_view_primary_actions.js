@@ -73,10 +73,10 @@
             dataType:'json',
             success:function (data) {
                 if(data.error){
-                    alert(Drupal.t('error_please_refresh_page_and_try_again', null, {context:'bibdk_cart'}));
+                    alert(Drupal.t('error_please_refresh_page_and_try_again', {}, {context:'bibdk_cart'}));
                 } else {
                     $('.cart-view-delete-selected').removeClass('ajax-progress');
-                    $('.cart-view-delete-selected').text(Drupal.t('delete_selected', null, {context:'bibdk_cart'}));
+                    $('.cart-view-delete-selected').find('.throbber').remove();
                     elements.forEach(function(element) {
                         $(element).closest('tr').remove();
                     });
@@ -105,7 +105,8 @@
                 } else {
                     Drupal.deleteSelected();
                     $(this).addClass('ajax-progress');
-                    $(this).html('<span class="throbber">&nbsp;</span>');
+                    $(this).addClass('inactive');
+                    $(this).append('<span class="throbber">&nbsp;</span>');
                     return false;
                 }
             });
