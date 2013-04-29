@@ -5,6 +5,7 @@ module_load_include('php', 'bibdk_cart', 'includes/BibdkCart');
 module_load_include('php', 'bibdk_cart', 'includes/BibdkCartElement');
 module_load_include('inc', 'bibdk_cart', 'includes/bibdk_cart.field');
 module_load_include('inc', 'bibdk_cart', 'includes/bibdk_cart.webservice');
+module_load_include('inc', 'bibdk_cart', 'includes/bibdk_cart.mypage');
 
 /**
  * Implements hook_menu().
