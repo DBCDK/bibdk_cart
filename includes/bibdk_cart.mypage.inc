@@ -24,7 +24,7 @@ function bibdk_cart_bibdk_mypage_tabs($max_rows = 3) {
     '#tree' => TRUE,
   );
 
-  $cart = array();
+  $cart = BibdkCart::getAll();
 
   if (sizeof($cart) > 0) {
     $cart = array_slice($cart, 0, $max_rows);
@@ -32,11 +32,11 @@ function bibdk_cart_bibdk_mypage_tabs($max_rows = 3) {
       $form['bibdk_cart']['rows'][$id] = array(
         'label_row' => array(
           '#type' => 'markup',
-          '#markup' => $cart->itemName,
+          '#markup' => isset($item->manifestation) ? $item->manifestation->getTitle() : '',
         ),
         'value_row' => array(
           '#type' => 'markup',
-          '#markup' => $cart->itemValue,
+          '#markup' => '',
         ),
       );
     }

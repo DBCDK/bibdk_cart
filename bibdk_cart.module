@@ -112,7 +112,7 @@ function bibdk_cart_get_form($form, &$form_state) {
   }
 
   bibdk_cart_set_manifestations($cart);
-  
+
   $items = array();
   foreach ($cart as $delta => $element) {
     $item = bibdk_cart_manifestation_view($element->getManifestation(), $element->getElementArray());
@@ -223,11 +223,17 @@ function bibdk_cart_set_manifestations(&$cart) {
   foreach ($cart as $element) {
     $ids += array_merge($ids, $element->getElementArray());
   }
+  $manifestations = array();
   /**
    * We get all manifestations, in order to check if one of the manifestations is reservable
    * TODO: refactor to make this a cleaner solution
    */
-  $manifestations = bibdk_cart_get_manifestations($ids);
+  foreach($ids as $id){
+    $manifestation = bibdk_cart_get_manifestations(array($id));
+    if (is_array($manifestation) && count($manifestation))
+      foreach($manifestation as $key => $val)
+        $manifestations[$key] = $val;
+    }
 
   if(!$manifestations){
     $cart = array();
@@ -235,10 +241,12 @@ function bibdk_cart_set_manifestations(&$cart) {
 
   foreach ($cart as $element) {
     foreach ($element->getElementArray() as $manifestation_id) {
-      $manifestation = $manifestations[$manifestation_id];
-      if ($manifestation->isReservable() || $element->GetManifestation() == NULL) {
-        $manifestation->ding_entity_id = $manifestation->id = $element->getElement();
-        $element->setManifestation($manifestation);
+      if (isset($manifestations[$manifestation_id])){
+        $manifestation = $manifestations[$manifestation_id];
+        if ($manifestation->isReservable() || $element->GetManifestation() == NULL) {
+          $manifestation->ding_entity_id = $manifestation->id = $element->getElement();
+          $element->setManifestation($manifestation);
+        }
       }
     }
   }
@@ -269,6 +277,9 @@ function bibdk_cart_get_manifestations($pids) {
  * @return array
  */
 function bibdk_cart_manifestation_view($manifestation, $pids) {
+  if (!isset($manifestation)){
+    return _bibdk_cart_no_manifestation_view($pids);
+  }
   $view = ting_openformat_manifestation_view($manifestation, 'cart');
 
   if (isset($view['#fields']['bibdk_mani_reservation_button'])) {
@@ -294,6 +305,26 @@ function bibdk_cart_manifestation_view($manifestation, $pids) {
     '#type_translated' => isset($view['#fields']['bibdk_mani_type'][0]['#markup']) ? _bibdk_cart_translate_type($view['#fields']['bibdk_mani_type'][0]['#markup']) : '',
   );
   return $view;
+}
+
+function _bibdk_cart_no_manifestation_view($pids){
+
+  return array(
+    '#theme' => 'bibdk_cart_manifestation',
+    '#pid' => drupal_strtolower(preg_replace('/[^a-zA-Z0-9-]+/', '-', reset($pids))),
+    '#several_editions' => '',
+    '#title' => 'hestl',
+    '#fields' => array(
+      'bibdk_mani_title' => array(
+        0 => array(
+          '#markup' => t('manifestation_is_not_on_service'),
+        )
+
+      ),
+    ),
+    '#type_translated' => '',
+  );
+
 }
 
 /**
