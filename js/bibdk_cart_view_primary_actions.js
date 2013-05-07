@@ -81,7 +81,8 @@
                         $(element).closest('tr').remove();
                     });
 
-                    $('.cartcount').text(data.cartcount);
+                    var text = Drupal.formatPlural(data.cartcount, '1 item in cart', '@count items in cart');
+                    $('.cartcount').text(text);
                 }
             }
         });

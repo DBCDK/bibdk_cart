@@ -35,7 +35,8 @@
     };
 
     Drupal.updateCartcount = function (cartcount) {
-        $('.cartcount').text(cartcount);
+        var text = Drupal.formatPlural(cartcount, '1 item in cart', '@count items in cart');
+        $('.cartcount').text(text);
     };
 
     Drupal.updateCartview = function (id) {
