@@ -11,7 +11,7 @@ class BibdkCartTestCase extends DrupalWebTestCase {
 
   public function setUp() {
     $this->profile = 'minimal';
-    parent::setUp('ting_openformat', 'bibdk_cart', 'bibdk_provider', 'bibdk_webservice');
+    parent::setUp('ting_openformat', 'bibdk_cart', 'bibdk_provider', 'bibdk_webservice', 'devel');
     variable_set('ting_search_url', 'lakiseks.dbc.dk/openbibdk/0.5/');
     variable_set('bibdk_provider_webservice_url', $this->getAbsoluteUrl('bibdk_webservice'));
     variable_set('bibdk_provider_security_code', 'securityCode');
@@ -19,23 +19,21 @@ class BibdkCartTestCase extends DrupalWebTestCase {
   }
 
   public function testRunner(){
-    $this->_createProviderUser();
     $this->testBibdkCartObjectNoUser();
     $this->testBibdkCartUserLogin();
     $this->testWebserviceMethods();
     $this->testAjaxResponse();
     $this->testPrimaryActionsAjaxResponse();
-    $this->testView();
   }
 
 
-  private function testView() {
+  public function testView() {
     // Test cart page for anonymous users
     $this->drupalGet('user');
     $this->assertText('Cart', 'Cart tab is present');
     $this->clickLink('Cart');
     $this->assertUrl('user/cart', array(), 'Cart page exists');
-
+    $this->assertText('no_items_in_cart_yet', t('empty cart text present'));
     // Test link on manifestation
     $this->drupalGet('work/870970-basis:21905208');
     $this->assertText('add_item_to_cart');
@@ -55,16 +53,7 @@ class BibdkCartTestCase extends DrupalWebTestCase {
   private function testBibdkCartUserLogin() {
     //Reset cart count
     bibdk_webservice_request(TRUE);
-    #$this->_createProviderUser();
-    // Create dummy provider user
-    $user = new stdClass();
-    $user->uid = 1;
-    $user->name = 'good_user';
-    ding_user_save_creds(array('creds' => array(
-      'name' => 'good_user',
-      'pass' => 'password',
-    )), $user);
-
+    $user = $this->_createProviderUser();
     // reset session
     $_SESSION['bibdk_cart'] = NULL;
     $edit = array();
@@ -83,11 +72,13 @@ class BibdkCartTestCase extends DrupalWebTestCase {
       '870970-basis:29317038,870970-basis:25194853,870970-basis:22441671,870970-basis:22629344,870970-basis:22252852,870970-basis:26178533' => '870970-basis:29317038,870970-basis:25194853,870970-basis:22441671,870970-basis:22629344,870970-basis:22252852,870970-basis:26178533',
     );
 
-    $this->assertTrue(count($_SESSION['bibdk_cart']) == 6, 'Session is updated with cart content from webservice');
-    $first = current($_SESSION['bibdk_cart']);
-    $last = end(array_values($_SESSION['bibdk_cart']));
-    $this->assertEqual($first->getElement(), '150012-leksikon:274058', t('First object in cart is %element', array('%element' => $first->getElement())));
-    $this->assertEqual($last->getElement(), '820030-katalog:179554', t('First object in cart is %element', array('%element' => $first->getElement())));
+    $true = $this->assertTrue(count($_SESSION['bibdk_cart']) == 6, 'Session is updated with cart content from webservice');
+    if ($true){
+      $first = current($_SESSION['bibdk_cart']);
+      $last = end(array_values($_SESSION['bibdk_cart']));
+      $this->assertEqual($first->getElement(), '150012-leksikon:274058', t('First object in cart is %element', array('%element' => $first->getElement())));
+      $this->assertEqual($last->getElement(), '820030-katalog:179554', t('First object in cart is %element', array('%element' => $first->getElement())));
+    }
 
     // Existing objects in session should be merged with webservice content
     $test_object = new BibdkCartElement();
@@ -105,6 +96,7 @@ class BibdkCartTestCase extends DrupalWebTestCase {
     $user->uid = 5;
     bibdk_cart_user_login($edit, $user);
     $this->assertEqual($_SESSION['bibdk_cart'], $expected_result, 'Session is unchanged');
+    $this->_removeProviderUser();
   }
 
   private function testWebserviceMethods() {
@@ -114,14 +106,7 @@ class BibdkCartTestCase extends DrupalWebTestCase {
     //Reset cart count
     bibdk_webservice_request(TRUE);
     // Create dummy provider user
-    $user = new stdClass();
-    $user->uid = 1;
-    $user->name = 'good_user';
-    ding_user_save_creds(array('creds' => array(
-      'name' => 'good_user',
-      'pass' => 'password',
-    )), $user);
-
+    $user = $this->_createProviderUser();
     // Create dummy anonymous user
     $anonymous = new stdClass();
     $anonymous->uid = 0;
@@ -151,15 +136,7 @@ class BibdkCartTestCase extends DrupalWebTestCase {
     $result = _bibdk_cart_remove_content_webservice('123456789', $anonymous);
     $this->assertNotEqual($result['status'], 'success', 'no remove content success');
 
-  }
-
-  private function _createProviderUser() {
-    db_insert('authmap')
-      ->fields(array(
-      'uid' => 1,
-      'module' => 'ding_user',
-      'authname' => 'testusername',
-    ))->execute();
+    $this->_removeProviderUser();
   }
 
   private function testBibdkCartObjectNoUser() {
@@ -293,5 +270,32 @@ class BibdkCartTestCase extends DrupalWebTestCase {
 
     $result = $this->drupalGetAJAX($url, $options);
     $this->assertEqual($result['cartcount'], 1, t('Correct amount in cart found %result, should be %ideal', array('%result' => $result['cartcount'], '%ideal' => '0')));
+  }
+
+  private function _createProviderUser() {
+    $name = 'good_user';
+    $pass = 'pass';
+    db_insert('authmap')
+      ->fields(array(
+        'uid' => 2,
+        'module' => 'ding_user',
+        'authname' => $name
+      ))->execute();
+
+    $user = new stdClass();
+    $user->uid = 2;
+    $user->name = $name;
+    ding_user_save_creds(array('creds' => array(
+      'name' => $name,
+      'pass' => $pass,
+    )), $user);
+    return $user;
+  }
+
+  private function _removeProviderUser() {
+    $name = 'good_user';
+    db_delete('authmap')
+      ->condition('authname', $name)
+      ->execute();
   }
 }
