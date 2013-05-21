@@ -355,7 +355,7 @@ function bibdk_cart_entity_info_alter(&$entity_info) {
 function bibdk_cart_ting_openformat_subwork_materialtype_actions($ordered_subworks, $type_id, $subtype_id) {
   $lookup_pids = array_keys($ordered_subworks[$type_id][$subtype_id]['manifest']['manifestations']);
   $link = bibdk_cart_get_link($lookup_pids);
-
+  $link['#title'] = t('add_to_basket_any_edition',array(),array('context'=>'bibdk_cart'));
   $render['cart'] = array(
     '#theme' => 'bibdk_cart_button_subwork',
     '#add_to_cart' => $link,
