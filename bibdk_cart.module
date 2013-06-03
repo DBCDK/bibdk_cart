@@ -107,20 +107,18 @@ function bibdk_cart_view_form($form, &$form_state) {
  */
 function bibdk_cart_get_form($form, &$form_state) {
   $cart = BibdkCart::getAll();
-  if (empty($cart)) {
-    return array();
-  }
-
-  bibdk_cart_set_manifestations($cart);
-
   $items = array();
-  foreach ($cart as $delta => $element) {
-    $item = bibdk_cart_manifestation_view($element->getManifestation(), $element->getElementArray());
-    $items[$delta]['manifestation'] = drupal_render($item);
-    $items[$delta]['status'] = implode(', ', $element->getStatusView());
-    $items[$delta]['actions'] = isset($item['action']) ? $item['action'] : "";
-  }
 
+  if (!empty($cart)) {
+    bibdk_cart_set_manifestations($cart);
+
+    foreach ($cart as $delta => $element) {
+      $item = bibdk_cart_manifestation_view($element->getManifestation(), $element->getElementArray());
+      $items[$delta]['manifestation'] = drupal_render($item);
+      $items[$delta]['status'] = implode(', ', $element->getStatusView());
+      $items[$delta]['actions'] = isset($item['action']) ? $item['action'] : "";
+    }
+  }
   $form['cartactions'] = array(
     '#type' => 'item',
   );
