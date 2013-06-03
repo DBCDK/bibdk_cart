@@ -25,6 +25,7 @@ function bibdk_cart_bibdk_mypage_tabs($max_rows = 3) {
   );
 
   $cart = BibdkCart::getAll();
+  bibdk_cart_set_manifestations($cart);
 
   if (sizeof($cart) > 0) {
     $cart = array_slice($cart, 0, $max_rows);
