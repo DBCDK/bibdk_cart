@@ -272,7 +272,7 @@ function bibdk_cart_get_manifestations($pids) {
 /**
  * Render cart view of single manifestation
  *
- * @param manifestation $manifestation
+ * @param Manifestation $manifestation
  * @param $pids
  * @return array
  */
