@@ -302,9 +302,8 @@ function bibdk_cart_manifestation_view($manifestation, $pids) {
     return _bibdk_cart_no_manifestation_view($pids);
   }
   $view = ting_openformat_manifestation_view($manifestation, 'cart');
-
-  if (isset($view['#fields']['bibdk_mani_reservation_button'])) {
-    $view['action'] = $view['#fields']['bibdk_mani_reservation_button'][0]['#markup'];
+  if (isset($view['#actions']['reservation'])) {
+    $view['action'] = $view['#actions']['reservation']['#markup'];
     unset($view['#fields']['bibdk_mani_reservation_button']);
   }
   else if (isset($view['#fields']['bibdk_reservation_info'][0]['#markup'])) {
@@ -334,7 +333,7 @@ function _bibdk_cart_no_manifestation_view($pids){
     '#theme' => 'bibdk_cart_manifestation',
     '#pid' => drupal_strtolower(preg_replace('/[^a-zA-Z0-9-]+/', '-', reset($pids))),
     '#several_editions' => '',
-    '#title' => 'hestl',
+    '#title' => t('no manifestations'),
     '#fields' => array(
       'bibdk_mani_title' => array(
         0 => array(

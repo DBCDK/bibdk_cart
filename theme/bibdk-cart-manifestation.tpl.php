@@ -1,19 +1,15 @@
-<article class="cart-item-id-<?php print $pid; ?>">
-    <div class="actions">
+<article class="clearfix cart-item-id-<?php print $pid; ?>">
+  <div class="manifestation-data text">
 
-        <div class="primary-actions">
-            <div class="btn-wrapper">
-              <?php print drupal_render($fields['bibdk_mani_reservation_button']); ?>
-            </div>
-        </div>
-        <div class="secondary-actions">
-            <ul>
-              <?php print $cart_btn; ?>
-            </ul>
-        </div>
-    </div>
-    <div class="manifestation-data text">
-        <h4><?php print $title; ?></h4>
-        <h6><?php print $author; ?></h6>
-    </div>
+    <?php if (!empty($fields['bibdk_mani_title'])) : ?>
+      <h6>
+        <?php print $fields['bibdk_mani_title'][0]['#markup']; ?>
+        <span class="italic normal"> - <?php print $type_translated; ?> <?php print $several_editions; ?></span>
+      </h6>
+
+      <?php hide($fields['bibdk_mani_title']); ?>
+      <?php hide($fields['bibdk_mani_type']); ?>
+    <?php endif; ?>
+    <?php print drupal_render($fields); ?>
+  </div>
 </article>
