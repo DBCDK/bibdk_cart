@@ -1,49 +1,10 @@
 <?php
 
-/**
- * Implements ding_entity_fields().
- */
-
-function bibdk_cart_ding_entity_fields() {
-  $display_full = array(
-    'default' => array (
-      'label' => 'hidden',
-      'type' => 'default',
-    ),
-    'reservation' => array(
-      'type' => 'hidden',
-    ),
-    'full' => array(
-      'label' => 'hidden',
-      'type' => 'default',
-    ),
-  );
-  return array(
-    'bibdk_cart_manifestation_link' => array(
-      'field' => array(
-        'locked' => FALSE,
-        'storage' => array(
-          'type' => 'virtual_field',
-        ),
-      ),
-      'instance' => array(
-        'ding_entity_type' => 'bibdkManifestation',
-        'label' => t('add_to_cart'),
-        'bundle' => 'bibdkManifestation',
-        'entity_type' => 'bibdkManifestation',
-        'display' => $display_full,
-      ),
-    ),
-  );
-}
 
 /**
- * Implements hook_disable. 
+ * implements hook_update_
+ * remove linkme field.
  */
-function bibdk_cart_disable(){
-  $fields = bibdk_cart_ding_entity_fields();
-  foreach ($fields as $field_name => $field) {
-    field_delete_instance($field_name);
-    field_delete_field($field_name);
-  }
+function bibdk_cart_update_7001() {
+  field_delete_field('bibdk_cart_manifestation_link');
 }
