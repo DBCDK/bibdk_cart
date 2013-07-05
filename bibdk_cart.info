@@ -1,7 +1,7 @@
 name = Bibliotek.dk - Cart
 description = Provides the cart functionality for bibliotek.dk
 core = 7.x
-version = 7.x-1.0
+version = 7.x-1.1
 package = Bibliotek.dk
 
 dependencies[] = ding_user
