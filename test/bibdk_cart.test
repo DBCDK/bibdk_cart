@@ -24,10 +24,12 @@ class BibdkCartTestCase extends DrupalWebTestCase {
     $this->testWebserviceMethods();
     $this->testAjaxResponse();
     $this->testPrimaryActionsAjaxResponse();
+    $this->_testActionHook();
   }
 
 
   public function testView() {
+    module_enable(array('bibdk_reservation'));
     // Test cart page for anonymous users
     $this->drupalGet('user');
     $this->assertText('Cart', 'Cart tab is present');
@@ -35,19 +37,39 @@ class BibdkCartTestCase extends DrupalWebTestCase {
     $this->assertUrl('user/cart', array(), 'Cart page exists');
     $this->assertText('no_items_in_cart_yet', t('empty cart text present'));
     // Test link on manifestation
-    $this->drupalGet('work/870970-basis:21905208');
+    $this->drupalGet('work/870970-basis:25294424');
     $this->assertText('add_item_to_cart');
-    $pid = '870970-basis:21905208';
+    $pid = '870970-basis:25294424';
     $url = $this->getAbsoluteUrl('cart/ajax');
     $options = array(
       'query' => array(
         'pid' => $pid,
       ),
     );
-    $result = $this->drupalGetAJAX($url, $options);
+
+    $this->drupalGetAJAX($url, $options);
 
     $this->drupalGet('user/cart');
     $this->assertText('delete_selected');
+
+    $this->assertText(t('Order this Cd (musik)'));
+  }
+
+  /**
+   * Test that hook_ting_openformat_actions is correctly implemented
+   */
+  private function _testActionHook(){
+    // confim reservation button is not present
+    $this->drupalGet('work/870970-basis:25294424');
+    $this->assertText(t('add_item_to_cart'));
+
+    // activate reservation module
+    module_disable(array('bibdk_cart'));
+    menu_rebuild();
+
+    // confim reservation link is present
+    $this->drupalGet('work/870970-basis:25294424');
+    $this->assertNoText(t('add_item_to_cart'));
   }
 
   private function testBibdkCartUserLogin() {
