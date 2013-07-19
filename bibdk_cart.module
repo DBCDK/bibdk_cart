@@ -90,6 +90,10 @@ function bibdk_cart_user_profile2_tabs() {
 
 function bibdk_cart_view_form($form, &$form_state) {
   global $user;
+  
+  //set titel
+  drupal_set_title(t('Cart'));
+  
   if ($user->uid) {
     drupal_goto('user/' . $user->uid . '/edit/bibdk_cart_list');
   }
