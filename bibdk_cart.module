@@ -392,7 +392,7 @@ function bibdk_cart_ting_openformat_subwork_materialtype_actions($ordered_subwor
  * @param $account
  */
 function bibdk_cart_user_login(&$edit, $account) {
-  if (isset($_GET['pass-reset-token']) || (isset($_POST['form_id']) && $_POST['form_id'] == 'user_pass_reset')) {
+  if ($account->uid == 0 || isset($_GET['pass-reset-token']) || (isset($_POST['form_id']) && $_POST['form_id'] == 'user_pass_reset')) {
     return;
   }
   if (ding_user_is_provider_user($account)) {
