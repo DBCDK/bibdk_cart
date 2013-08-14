@@ -430,7 +430,6 @@ function bibdk_cart_bibdk_reservation_complete($pids, $order_result) {
   }
 }
 
-
 /**
  * @param $status string
  * @param $pids string
@@ -474,8 +473,8 @@ function bibdk_cart_order_any_btn_lists($lists, $collection){
   $items = array();
   foreach ($collection as $type => $ids) {
     $link = bibdk_cart_get_link($ids);
-//    TODO mmj check if material already is in the cart
-    $items[] = '<a><input class="cart-checkbox" type="checkbox" name="' . $link['#href'] . '" value="' . $link['#data-pid'] . '" data-pid="' . $link['#data-pid'] . '"></a>';
+    $checked = BibdkCart::checkInCart($ids) ? 'checked' : '';
+    $items[] = '<a><input class="cart-checkbox" type="checkbox" name="' . $link['#href'] . '" value="' . $link['#data-pid'] . '" data-pid="' . $link['#data-pid'] . '" ' . $checked . '></a>';
   }
 
   $lists[] = array(
