@@ -480,7 +480,7 @@ function bibdk_cart_order_any_btn_lists($lists, $collection){
   $lists[] = array(
     '#type' => 'ol',
     '#theme' => 'item_list',
-    '#title' => t('to_cart', array(), array('context' => 'bibdk_cart')),
+    '#title' => t('to_cart ↓', array(), array('context' => 'bibdk_cart')),
     '#items' => $items,
     '#prefix' => '<div class="col2">',
     '#suffix' => '</div>',
