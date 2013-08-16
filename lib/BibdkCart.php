@@ -31,6 +31,9 @@ class BibdkCart {
     }
   }
 
+  /**
+   * @param BibdkCartElement $object
+   */
   public static function update($object){
     $key = $object->getElement();
     if (self::checkInCart($key)){
