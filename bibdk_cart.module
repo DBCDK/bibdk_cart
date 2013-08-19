@@ -472,9 +472,12 @@ function _bibdk_cart_manifestation_view_strip_links(&$view) {
 function bibdk_cart_order_any_btn_lists($lists, $collection){
   $items = array();
   foreach ($collection as $type => $ids) {
+    //construct an id for the checkbox
+    $check_id = 'check_box_'.drupal_html_class($type).'_'.$ids[0];
     $link = bibdk_cart_get_link($ids);
     $checked = BibdkCart::checkInCart($ids) ? 'checked' : '';
-    $items[] = '<a><input class="cart-checkbox" type="checkbox" name="' . $link['#href'] . '" value="' . $link['#data-pid'] . '" data-pid="' . $link['#data-pid'] . '" ' . $checked . '></a>';
+    // @TODO .. hardcoded html -- this should probably be done in some theme thing
+    $items[] = '<a><input id="'.$check_id.'" class="cart-checkbox" type="checkbox" name="' . $link['#href'] . '" value="' . $link['#data-pid'] . '" data-pid="' . $link['#data-pid'] . '" ' . $checked . '></a>';
   }
 
   $lists[] = array(
