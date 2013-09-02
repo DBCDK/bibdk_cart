@@ -498,7 +498,7 @@ function bibdk_cart_order_any_btn_lists($lists, $collection){
   $list['attributes'] = array(
     'class' => 'to-cart-list',
   );
-dpm($list);
+
   $lists[] = array(
     '#theme' => 'bibdk_cart_item_list_any_btn',
     '#column' => '2',
@@ -510,6 +510,5 @@ dpm($list);
     ),
   );
 
-  dpm($lists);
   return $lists;
 }
