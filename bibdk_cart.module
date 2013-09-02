@@ -62,6 +62,15 @@ function bibdk_cart_theme() {
       'variables' => array('fields' => array(), 'pid' => '', 'several_editions' => '', 'type_translated' => ''),
       'render_element' => 'elements'
     ),
+    'bibdk_cart_item_list_any_btn' => array(
+      'variables' => array('column' => '', 'attributes' => '', 'items' => array()),
+      'template' => 'theme/bibdk-cart-item-list-any-btn',
+    ),
+    'bibdk_cart_item_list_any_btn_item' => array(
+      'variables' => array('check_id' => '', 'name' => '', 'pid' => '', 'checked' => ''),
+      'template' => 'theme/bibdk-cart-item-list-any-btn-item',
+    ),
+
   );
 }
 
@@ -90,10 +99,10 @@ function bibdk_cart_user_profile2_tabs() {
 
 function bibdk_cart_view_form($form, &$form_state) {
   global $user;
-  
+
   //set titel
   drupal_set_title(t('Cart'));
-  
+
   if ($user->uid) {
     drupal_goto('user/' . $user->uid . '/edit/bibdk_cart_list');
   }
@@ -463,30 +472,36 @@ function _bibdk_cart_manifestation_view_strip_links(&$view) {
 
 /**
  * Implements hook_order_any_btn_lists().
- * Hook defined in bibdk_reservation_button.inc in bibdk_reservation module
+ * Hook defined in bibdk_reservation.api.php in bibdk_reservation module
  *
  * @param $lists
  * @param $collection
  * @return string
  */
 function bibdk_cart_order_any_btn_lists($lists, $collection){
-  $items = array();
+  $list['items']['data'] = array();
+
   foreach ($collection as $type => $ids) {
     //construct an id for the checkbox
-    $check_id = 'check_box_'.drupal_html_class($type).'_'.$ids[0];
     $link = bibdk_cart_get_link($ids);
-    $checked = BibdkCart::checkInCart($ids) ? 'checked' : '';
-    // @TODO .. hardcoded html -- this should probably be done in some theme thing
-    $items[] = '<a><input id="'.$check_id.'" class="cart-checkbox" type="checkbox" name="' . $link['#href'] . '" value="' . $link['#data-pid'] . '" data-pid="' . $link['#data-pid'] . '" ' . $checked . '></a>';
+    $item['#theme'] = 'bibdk_cart_item_list_any_btn_item';
+    $item['#check_id'] = 'check_box_'.drupal_html_class($type).'_'.$ids[0];
+    $item['#name'] = $link['#href'];
+    $item['#pid'] = $link['#data-pid'];
+    $item['#checked'] = BibdkCart::checkInCart($ids) ? 'checked=checked' : '';
+    $list['items']['data'][] = drupal_render($item);
   }
 
+  $list['title'] = t('to_cart_order_any', array(), array('context' => 'bibdk_cart'));
+  $list['type'] = 'ol';
+  $list['attributes'] = array(
+    'class' => 'to-cart-list',
+  );
+
   $lists[] = array(
-    '#type' => 'ol',
-    '#theme' => 'item_list',
-    '#title' => t('to_cart ↓', array(), array('context' => 'bibdk_cart')),
-    '#items' => $items,
-    '#prefix' => '<div class="col2">',
-    '#suffix' => '</div>',
+    '#theme' => 'bibdk_cart_item_list_any_btn',
+    '#column' => '2',
+    '#items' => $list,
     '#attributes' => array(
       'class' => array(
         'to-cart-list',
