@@ -490,6 +490,7 @@ function bibdk_cart_order_any_btn_lists($lists, $collection){
     $item['#pid'] = $link['#data-pid'];
     $item['#checked'] = BibdkCart::checkInCart($ids) ? 'checked=checked' : '';
     $list['items']['data'][] = drupal_render($item);
+    unset($item);
   }
 
   $list['title'] = t('to_cart_order_any', array(), array('context' => 'bibdk_cart'));
