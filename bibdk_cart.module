@@ -479,7 +479,7 @@ function _bibdk_cart_manifestation_view_strip_links(&$view) {
  * @return string
  */
 function bibdk_cart_order_any_btn_lists($lists, $collection){
-  $list['items']['data'] = array();
+  $list['items'] = array();
 
   foreach ($collection as $type => $ids) {
     //construct an id for the checkbox
@@ -489,7 +489,7 @@ function bibdk_cart_order_any_btn_lists($lists, $collection){
     $item['#name'] = $link['#href'];
     $item['#pid'] = $link['#data-pid'];
     $item['#checked'] = BibdkCart::checkInCart($ids) ? 'checked=checked' : '';
-    $list['items']['data'][] = drupal_render($item);
+    $list['items'][] = drupal_render($item);
     unset($item);
   }
 
@@ -498,7 +498,7 @@ function bibdk_cart_order_any_btn_lists($lists, $collection){
   $list['attributes'] = array(
     'class' => 'to-cart-list',
   );
-
+dpm($list);
   $lists[] = array(
     '#theme' => 'bibdk_cart_item_list_any_btn',
     '#column' => '2',
@@ -510,5 +510,6 @@ function bibdk_cart_order_any_btn_lists($lists, $collection){
     ),
   );
 
+  dpm($lists);
   return $lists;
 }
