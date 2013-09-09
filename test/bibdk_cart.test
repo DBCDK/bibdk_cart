@@ -10,9 +10,8 @@ class BibdkCartTestCase extends DrupalWebTestCase {
   }
 
   public function setUp() {
-    $this->profile = 'minimal';
-    parent::setUp('ting_openformat', 'bibdk_cart', 'bibdk_provider', 'bibdk_webservice', 'devel');
-    variable_set('ting_search_url', 'lakiseks.dbc.dk/openbibdk/0.5/');
+    parent::setUp('ting_openformat', 'bibdk_cart', 'bibdk_provider', 'bibdk_webservice');
+    variable_set('ting_search_url', 'http://lakiseks.dbc.dk/openbibdk/next/');
     variable_set('bibdk_provider_webservice_url', $this->getAbsoluteUrl('bibdk_webservice'));
     variable_set('bibdk_provider_security_code', 'securityCode');
 
@@ -162,6 +161,8 @@ class BibdkCartTestCase extends DrupalWebTestCase {
   }
 
   private function testBibdkCartObjectNoUser() {
+    module_load_include('php', 'bibdk_cart', 'lib/BibdkCartElement');
+    module_load_include('php', 'bibdk_cart', 'lib/BibdkCart');
     // create objects
     $object_1 = new BibdkCartElement();
     $object_1->setElement('test1');
