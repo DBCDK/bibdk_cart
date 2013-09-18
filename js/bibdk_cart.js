@@ -13,6 +13,7 @@
       $('.link-add-basket[data-pid=' + data.pid + ']').text(Drupal.t('add_item_to_cart', {}, {context: 'bibdk_cart'}));
       Drupal.updateCartview(data.classid);
     }
+    $('.link-add-basket[data-pid=' + data.pid + ']').removeClass('ajax-progress');
 
     if(data.cartcount) {
       Drupal.updateCartcount(data.cartcount);
