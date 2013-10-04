@@ -365,8 +365,8 @@ function _bibdk_cart_no_manifestation_view($pids){
  * @return array
  */
 function _bibdk_cart_translate_type($type){
-  $translation = _ting_openformat_type_translation($type, NULL);
-  return $translation['type'];
+  #$translation = _ting_openformat_type_translation($type, NULL);
+  return array('type' => t($type));
 }
 
 /**
