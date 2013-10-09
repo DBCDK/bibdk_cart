@@ -1,4 +1,3 @@
-<?php dpm($variables); ?>
 <a href="<?php print $add_to_cart['#href']; ?>"
    class="text-small text-darkgrey">
     <span class="icon icon-left icon-darkgrey-addbasket">&nbsp;</span><span
