@@ -13,7 +13,7 @@ class BibdkCartTestCase extends DrupalWebTestCase {
     module_enable(array('bibdk_webservice'));
     menu_rebuild();
     parent::setUp('ting_openformat', 'bibdk_cart', 'bibdk_provider', 'bibdk_webservice');
-    variable_set('ting_search_url', 'http://openbibdk.addi.dk/next/');
+    variable_set('ting_search_url', 'http://bibliotek.dk/openbibdk/0.8/');
     variable_set('bibdk_provider_webservice_url', $this->getAbsoluteUrl('bibdk_webservice'));
     variable_set('bibdk_provider_security_code', 'securityCode');
 
