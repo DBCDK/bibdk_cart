@@ -12,9 +12,6 @@ class BibdkCart {
    */
   public static function add(BibdkCartElement $object) {
     $key = $object->getElement();
-    if (!isset($_SESSION)){
-      drupal_session_initialize();
-    }
     if (!self::checkInCart($key)){
       $id = _bibdk_cart_add_content_webservice($object->toService());
       $object->setId($id);
@@ -52,9 +49,6 @@ class BibdkCart {
    */
   public static function getAll() {
     global $user;
-    if (!isset($_SESSION)){
-      drupal_session_initialize();
-    }
     if (!isset($_SESSION['bibdk_cart'])){
       if ($user->uid && ding_user_is_provider_user($user)){
         $_SESSION['bibdk_cart'] = _bibdk_cart_get_cart_on_webservice();
