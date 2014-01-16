@@ -29,6 +29,7 @@ function bibdk_cart_menu() {
     'page arguments' => array('bibdk_cart_view_form'),
     'access arguments' => array('access content'),
     'type' => MENU_LOCAL_TASK,
+    'weight' => 5,
     //'file' => 'includes/bibdk_cart.ajax.inc',
   );
   return $items;
