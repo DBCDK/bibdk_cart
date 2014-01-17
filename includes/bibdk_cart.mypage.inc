@@ -13,7 +13,8 @@ function bibdk_cart_bibdk_mypage_tabs($max_rows = 3) {
     'title' => t('Go to cart', array(), array('context' => 'bibdk_cart')),
     'href' => 'user/' . $user->uid . '/edit/bibdk_cart_list',
   );
-
+  $ret['bibdk_cart']['weight'] = 25;
+  
   return $ret;
 }
 
