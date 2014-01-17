@@ -82,21 +82,6 @@ function bibdk_cart_theme() {
   );
 }
 
-
-/**
- * Implememts hook_user_profile_tabs (
- *
- * @see ding_user.module)
- * */
-function bibdk_cart_user_profile2_tabs() {
-  $ret = new stdClass();
-  $ret->label = t('cart');
-  $ret->form = 'bibdk_cart_get_form';
-  $ret->type = 'bibdk_cart_list';
-  return $ret;
-}
-
-
 /**
  * List view of cart
  *
