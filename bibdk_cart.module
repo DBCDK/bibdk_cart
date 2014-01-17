@@ -30,7 +30,15 @@ function bibdk_cart_menu() {
     'access arguments' => array('access content'),
     'type' => MENU_LOCAL_TASK,
     'weight' => 5,
-    //'file' => 'includes/bibdk_cart.ajax.inc',
+  );
+  $items['user/%user/cart'] = array(
+    'title' => t('Cart'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('bibdk_cart_view_form'),
+    'access callback' => 'user_edit_access',
+    'access arguments'=> array(1),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 25,
   );
   return $items;
 }
@@ -103,9 +111,6 @@ function bibdk_cart_view_form($form, &$form_state) {
   //set titel
   drupal_set_title(t('Cart'));
 
-  if ($user->uid) {
-    drupal_goto('user/' . $user->uid . '/edit/bibdk_cart_list');
-  }
   $cart = bibdk_cart_get_form($form, $form_state);
   $form['cart'] = $cart;
   return $form;
