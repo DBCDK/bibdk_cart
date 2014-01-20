@@ -34,9 +34,11 @@ class BibdkCartTestCase extends DrupalWebTestCase {
     $this->testAjaxResponse();
     $this->testPrimaryActionsAjaxResponse();
     $this->_testActionHook();
+    //$this->testView();
   }
 
   public function testView() {
+    $this->_removeProviderUser();
     // No cart page present
     module_disable(array('bibdk_cart'));
     menu_rebuild();
@@ -85,8 +87,8 @@ class BibdkCartTestCase extends DrupalWebTestCase {
 
     $this->_createProviderUser();
 
-    $edit['name'] = 'dummy@dbc.dk';
-    $edit['pass'] = 'secretPassword';
+    $edit['name'] = 'good_user';
+    $edit['pass'] = 'pass';
     $this->drupalPost('user', $edit, 'Log in', array(), array(), 'user-login', NULL);
 
     $this->assertText('Cart', 'Cart tab is present');
@@ -340,8 +342,8 @@ class BibdkCartTestCase extends DrupalWebTestCase {
   }
 
   private function _createProviderUser() {
-    $name = 'dummy@dbc.dk';
-    $pass = 'secretPassword';
+    $name = 'good_user';
+    $pass = 'pass';
     bibdk_provider_user_create_account($name, $pass);
     db_insert('authmap')->fields(array(
       'uid' => 2,
@@ -364,7 +366,7 @@ class BibdkCartTestCase extends DrupalWebTestCase {
   }
 
   private function _removeProviderUser() {
-    $name = 'dummy@dbc.dk';
+    $name = 'good_user';
     db_delete('authmap')->condition('authname', $name)->execute();
     bibdk_provider_user_delete_account($name);
   }
