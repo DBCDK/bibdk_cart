@@ -27,7 +27,7 @@ class BibdkCartTestCase extends DrupalWebTestCase {
     $this->_removeProviderUser();
   }
 
-  public function testRunner(){
+  public function testRunner() {
     $this->testBibdkCartObjectNoUser();
     $this->testBibdkCartUserLogin();
     $this->testWebserviceMethods();
@@ -99,7 +99,7 @@ class BibdkCartTestCase extends DrupalWebTestCase {
   /**
    * Test that hook_ting_openformat_actions is correctly implemented
    */
-  private function _testActionHook(){
+  private function _testActionHook() {
     // confim reservation button is not present
     $this->drupalGet('work/870970-basis:25294424');
     $this->assertText(t('add_item_to_cart'));
@@ -140,7 +140,7 @@ class BibdkCartTestCase extends DrupalWebTestCase {
     );
 
     $true = $this->assertTrue(count($_SESSION['bibdk_cart']) == 6, 'Session is updated with cart content from webservice');
-    if ($true){
+    if ($true) {
       $first = current($_SESSION['bibdk_cart']);
       $last = end(array_values($_SESSION['bibdk_cart']));
       $this->assertEqual($first->getElement(), '150012-leksikon:274058', t('First object in cart is %element', array('%element' => $first->getElement())));

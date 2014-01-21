@@ -18,7 +18,7 @@ function bibdk_cart_bibdk_mypage_tabs($max_rows = 3) {
   return $ret;
 }
 
-function bibdk_cart_my_page_get_rows($max_rows){
+function bibdk_cart_my_page_get_rows($max_rows) {
   $cart = BibdkCart::getAll();
   bibdk_cart_set_manifestations($cart);
 
@@ -32,7 +32,7 @@ function bibdk_cart_my_page_get_rows($max_rows){
     }
   }
   else {
-     $ret[] = array(
+    $ret[] = array(
       'item_row' => t('No items in cart'),
     );
   }
