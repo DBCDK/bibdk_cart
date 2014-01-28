@@ -24,7 +24,7 @@ function bibdk_cart_menu() {
     'file' => 'includes/bibdk_cart.ajax.inc',
   );
   $items['user/cart'] = array(
-    'title' => t('Cart'),
+    'title' => 'Cart',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('bibdk_cart_view_form'),
     'access arguments' => array('access content'),
@@ -32,7 +32,7 @@ function bibdk_cart_menu() {
     'weight' => 5,
   );
   $items['user/%user/cart'] = array(
-    'title' => t('Cart'),
+    'title' => 'Cart',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('bibdk_cart_view_form'),
     'access callback' => 'user_edit_access',
