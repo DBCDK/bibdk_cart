@@ -34,7 +34,6 @@ class BibdkCartTestCase extends DrupalWebTestCase {
     $this->testAjaxResponse();
     $this->testPrimaryActionsAjaxResponse();
     $this->_testActionHook();
-    //$this->testView();
   }
 
   public function testView() {
