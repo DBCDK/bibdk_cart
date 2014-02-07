@@ -14,12 +14,12 @@
         Drupal.deActivateDeleteAllBtn();
     };
 
-    Drupal.markCheckboxes = function(asSelected, element){
-        if(!element){
+    Drupal.markCheckboxes = function (asSelected, element) {
+        if (!element) {
             element = $('.table input[type=checkbox]');
         }
 
-        if(!asSelected){
+        if (!asSelected) {
             element.each(function () {
                 this.checked = false;
             });
@@ -65,19 +65,19 @@
         $('.cart-view-delete-selected').addClass('inactive');
 
         $.ajax({
-            url:Drupal.settings.basePath + 'cart/ajax/deleteitems',
-            type:'POST',
-            data:{
-                pids:items
+            url: Drupal.settings.basePath + 'cart/ajax/deleteitems',
+            type: 'POST',
+            data: {
+                pids: items
             },
-            dataType:'json',
-            success:function (data) {
-                if(data.error){
-                    alert(Drupal.t('error_please_refresh_page_and_try_again', {}, {context:'bibdk_cart'}));
+            dataType: 'json',
+            success: function (data) {
+                if (data.error) {
+                    alert(Drupal.t('error_please_refresh_page_and_try_again', {}, {context: 'bibdk_cart'}));
                 } else {
                     $('.cart-view-delete-selected').removeClass('ajax-progress');
                     $('.cart-view-delete-selected').find('.throbber').remove();
-                    elements.forEach(function(element) {
+                    elements.forEach(function (element) {
                         $(element).closest('tr').remove();
                     });
 
@@ -89,7 +89,7 @@
     };
 
     Drupal.behaviors.cart = {
-        attach:function (context) {
+        attach: function (context) {
             $('.cart-view-mark-all', context).click(function (e) {
                 e.preventDefault();
                 Drupal.deSelectAll();

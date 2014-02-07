@@ -1,8 +1,9 @@
 <?php
 
 class BibdkCartElement {
+
   public $status = array();
-  public  $element;
+  public $element;
   public $manifestation;
   public $id;
 
@@ -35,26 +36,29 @@ class BibdkCartElement {
 
   public function setStatus($status) {
     $status = explode(',', $status);
-    foreach($status as $value){
+    foreach ($status as $value) {
       $this->status[$value] = $value;
     }
   }
 
   /** Get status for element. I type is not set. All elements are returned
+   *
    * @param null $type
    * @return null|string
    */
   public function getStatus($type = null) {
-    if (!$type)
+    if (!$type) {
       return $this->status;
-    else
+    }
+    else {
       return isset($this->status[$type]) ? $this->status[$type] : null;
+    }
   }
 
-  public function getStatusView(){
+  public function getStatusView() {
     $view = array();
-    if (isset($this->status)){
-      foreach($this->status as $status){
+    if (isset($this->status)) {
+      foreach ($this->status as $status) {
         $view[] = t($status);
       }
     }
@@ -69,7 +73,7 @@ class BibdkCartElement {
     return $this->manifestation;
   }
 
-  public function toService(){
+  public function toService() {
     return array(
       'oui:cartContentId' => $this->getId(),
       'oui:cartContentElement' => $this->getElement(),
@@ -77,11 +81,11 @@ class BibdkCartElement {
     );
   }
 
-  public function getElementId(){
-    return reset( $this->getElementArray() );
+  public function getElementId() {
+    return reset($this->getElementArray());
   }
 
-  public function save(){
-      BibdkCart::update($this);
+  public function save() {
+    BibdkCart::update($this);
   }
 }
