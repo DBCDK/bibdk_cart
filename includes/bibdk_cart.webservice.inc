@@ -22,7 +22,7 @@ function _bibdk_cart_add_content_webservice($content, $user = NULL) {
  * @param null $user
  * @return array|bool
  */
-function _bibdk_cart_update_content_webservice($content, $user = NULL){
+function _bibdk_cart_update_content_webservice($content, $user = NULL) {
   if ($response = _bibdk_cart_call_webservice('update_cart_content', $content, $user)) {
     return $response;
   }
@@ -112,7 +112,7 @@ function bibdk_cart_parse_cart_content_id($xpath) {
 // grap agencies
   $query = '//oui:cartContentId';
   $nodelist = $xpath->query($query);
-  foreach($nodelist as $delta => $node){
+  foreach ($nodelist as $delta => $node) {
     $return[] = $node->nodeValue;
   }
 
@@ -147,12 +147,13 @@ function bibdk_cart_parse_cart_content($xpath) {
           case 'oui:cartContentId' :
             $element->setId($child->nodeValue);
             break;
-         case 'oui:cartContentElement' :
+          case 'oui:cartContentElement' :
             $element->setElement($child->nodeValue);
             break;
           case 'oui:cartContentStatus' :
-            if (!empty($child->nodeValue))
+            if (!empty($child->nodeValue)) {
               $element->setStatus($child->nodeValue);
+            }
             break;
         }
       }

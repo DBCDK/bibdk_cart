@@ -24,12 +24,21 @@ function bibdk_cart_menu() {
     'file' => 'includes/bibdk_cart.ajax.inc',
   );
   $items['user/cart'] = array(
-    'title' => t('Cart'),
+    'title' => 'Cart',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('bibdk_cart_view_form'),
     'access arguments' => array('access content'),
     'type' => MENU_LOCAL_TASK,
-    //'file' => 'includes/bibdk_cart.ajax.inc',
+    'weight' => 5,
+  );
+  $items['user/%user/cart'] = array(
+    'title' => 'Cart',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('bibdk_cart_view_form'),
+    'access callback' => 'user_edit_access',
+    'access arguments' => array(1),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 25,
   );
   return $items;
 }
@@ -73,21 +82,6 @@ function bibdk_cart_theme() {
   );
 }
 
-
-/**
- * Implememts hook_user_profile_tabs (
- *
- * @see ding_user.module)
- * */
-function bibdk_cart_user_profile2_tabs() {
-  $ret = new stdClass();
-  $ret->label = t('cart');
-  $ret->form = 'bibdk_cart_get_form';
-  $ret->type = 'bibdk_cart_list';
-  return $ret;
-}
-
-
 /**
  * List view of cart
  *
@@ -102,9 +96,6 @@ function bibdk_cart_view_form($form, &$form_state) {
   //set titel
   drupal_set_title(t('Cart'));
 
-  if ($user->uid) {
-    drupal_goto('user/' . $user->uid . '/edit/bibdk_cart_list');
-  }
   $cart = bibdk_cart_get_form($form, $form_state);
   $form['cart'] = $cart;
   return $form;
@@ -200,15 +191,16 @@ function bibdk_cart_get_secondary_actions($form) {
 
 /** Implements hook_ting_openformat_actions
  * Add actions to work, subwork and manifestations
+ *
  * @param $type
  * @param $entity
  * @param $view_mode
  * @param $langcode
  * @return array
  */
-function bibdk_cart_ting_openformat_actions($type, $entity, $view_mode, $langcode){
+function bibdk_cart_ting_openformat_actions($type, $entity, $view_mode, $langcode) {
   $element = array();
-  if ($type == 'bibdkManifestation'){
+  if ($type == 'bibdkManifestation') {
 
     $link = bibdk_cart_get_link($entity->id);
     $link['#id'] = 'selid-cart-single-' . drupal_html_id($link['#data-pid']);
@@ -262,20 +254,22 @@ function bibdk_cart_set_manifestations(&$cart) {
    * We get all manifestations, in order to check if one of the manifestations is reservable
    * TODO: refactor to make this a cleaner solution
    */
-  foreach($ids as $id){
+  foreach ($ids as $id) {
     $manifestation = bibdk_cart_get_manifestations(array($id));
-    if (is_array($manifestation) && count($manifestation))
-      foreach($manifestation as $key => $val)
+    if (is_array($manifestation) && count($manifestation)) {
+      foreach ($manifestation as $key => $val) {
         $manifestations[$key] = $val;
+      }
     }
+  }
 
-  if(!$manifestations){
+  if (!$manifestations) {
     $cart = array();
   }
 
   foreach ($cart as $element) {
     foreach ($element->getElementArray() as $manifestation_id) {
-      if (isset($manifestations[$manifestation_id])){
+      if (isset($manifestations[$manifestation_id])) {
         $manifestation = $manifestations[$manifestation_id];
         if ($manifestation->isReservable() || $element->GetManifestation() == NULL) {
           $manifestation->ding_entity_id = $manifestation->id = $element->getElement();
@@ -311,7 +305,7 @@ function bibdk_cart_get_manifestations($pids) {
  * @return array
  */
 function bibdk_cart_manifestation_view($manifestation, $pids) {
-  if (!isset($manifestation)){
+  if (!isset($manifestation)) {
     return _bibdk_cart_no_manifestation_view($pids);
   }
   $view = ting_openformat_manifestation_view($manifestation, 'cart');
@@ -340,7 +334,7 @@ function bibdk_cart_manifestation_view($manifestation, $pids) {
   return $view;
 }
 
-function _bibdk_cart_no_manifestation_view($pids){
+function _bibdk_cart_no_manifestation_view($pids) {
 
   return array(
     '#theme' => 'bibdk_cart_manifestation',
@@ -364,7 +358,7 @@ function _bibdk_cart_no_manifestation_view($pids){
  * @param $type
  * @return array
  */
-function _bibdk_cart_translate_type($type){
+function _bibdk_cart_translate_type($type) {
   return array('type' => t($type));
 }
 
@@ -386,11 +380,11 @@ function bibdk_cart_entity_info_alter(&$entity_info) {
  */
 function bibdk_cart_ting_openformat_subwork_materialtype_actions($ordered_subworks, $type_id, $subtype_id) {
   $lookup_pids = array();
-  if ( is_array($ordered_subworks[$type_id][$subtype_id]['manifest']['manifestations']) ) {
+  if (is_array($ordered_subworks[$type_id][$subtype_id]['manifest']['manifestations'])) {
     $lookup_pids = array_keys($ordered_subworks[$type_id][$subtype_id]['manifest']['manifestations']);
   }
   $link = bibdk_cart_get_link($lookup_pids);
-  $link['#title'] = t('add_to_basket_any_edition',array(),array('context'=>'bibdk_cart'));
+  $link['#title'] = t('add_to_basket_any_edition', array(), array('context' => 'bibdk_cart'));
   $link['#id'] = 'selid-cart-anyed-' . drupal_html_id(reset($lookup_pids));
   $render['cart'] = array(
     '#theme' => 'bibdk_cart_button',
@@ -481,14 +475,14 @@ function _bibdk_cart_manifestation_view_strip_links(&$view) {
  * @param $collection
  * @return string
  */
-function bibdk_cart_order_any_btn_lists($lists, $collection){
+function bibdk_cart_order_any_btn_lists($lists, $collection) {
   $list['items'] = array();
 
   foreach ($collection as $type => $ids) {
     //construct an id for the checkbox
     $link = bibdk_cart_get_link($ids);
     $item['#theme'] = 'bibdk_cart_item_list_any_btn_item';
-    $item['#check_id'] = 'check_box_'.drupal_html_class($type).'_'.$ids[0];
+    $item['#check_id'] = 'check_box_' . drupal_html_class($type) . '_' . $ids[0];
     $item['#name'] = $link['#href'];
     $item['#pid'] = $link['#data-pid'];
     $item['#checked'] = BibdkCart::checkInCart($ids) ? 'checked=checked' : '';
