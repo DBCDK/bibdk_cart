@@ -93,6 +93,11 @@ function bibdk_cart_theme() {
 function bibdk_cart_view_form($form, &$form_state) {
   global $user;
 
+  // If user is logged in goto user subpages
+  if ($user->uid && arg(1) == 'cart') {
+    drupal_goto('user/' . $user->uid . '/cart');
+  }
+
   //set titel
   drupal_set_title(t('Cart'));
 
