@@ -67,17 +67,11 @@ function _bibdk_cart_call_webservice($service, $content = NULL, $user = NULL) {
   if (!isset($user)) {
     global $user;
   }
-  if (!ding_user_is_provider_user($user)) {
-    return FALSE;
-  }
-  try {
-    $creds = ding_user_get_creds($user);
-  }
-  catch (Exception $e) {
+  if (!ding_user_is_provider_user($user) || empty($user->mail)) {
     return FALSE;
   }
   // Service implemented in bibdk_provider.user.inc
-  return ding_provider_invoke('user', $service, $creds['name'], $content);
+  return ding_provider_invoke('user', $service, $user->mail, $content);
 }
 
 /**
