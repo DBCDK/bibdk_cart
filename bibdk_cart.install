@@ -20,7 +20,7 @@ function bibdk_cart_update_7001() {
  * implements hook_update_
  * alter weight
  */
-function bibdk_cart_update_7002() {
+function bibdk_cart_update_7003() {
   bibdk_cart_set_weight();
 }
 
