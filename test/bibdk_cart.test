@@ -343,6 +343,7 @@ class BibdkCartTestCase extends DrupalWebTestCase {
   private function _createProviderUser() {
     $name = 'good_user';
     $pass = 'pass';
+    $email = 'good_user';
     bibdk_provider_user_create_account($name, $pass);
     db_insert('authmap')->fields(array(
       'uid' => 2,
@@ -353,6 +354,7 @@ class BibdkCartTestCase extends DrupalWebTestCase {
     $user = new stdClass();
     $user->uid = 2;
     $user->name = $name;
+    $user->mail = $email;
     $user->roles = array();
     ding_user_save_creds(array(
       'creds' => array(
