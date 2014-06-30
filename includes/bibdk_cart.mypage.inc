@@ -14,6 +14,7 @@ function bibdk_cart_bibdk_mypage_tabs($max_rows = 3) {
     'href' => 'user/' . $user->uid . '/cart',
   );
   $ret['bibdk_cart']['weight'] = 25;
+  $ret['bibdk_cart']['help_text_key'] = 'cart_mypage_help_key';
 
   return $ret;
 }
