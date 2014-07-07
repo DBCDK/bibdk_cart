@@ -25,6 +25,7 @@ function bibdk_cart_get_link($id) {
     '#href' => '#' . $id,
     '#title' => $title,
     '#data-pid' => $id,
+    '#weight' => 4,
   );
   drupal_add_js(drupal_get_path('module', 'bibdk_cart') . '/js/bibdk_cart.js');
   return $link;
