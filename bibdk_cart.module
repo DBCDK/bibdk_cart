@@ -511,3 +511,11 @@ function bibdk_cart_order_any_btn_lists($lists, $collection) {
 
   return $lists;
 }
+
+/**
+ * Implements hook to user_help_list
+ * */
+function bibdk_cart_user_help_list() {
+  return array('cart_mypage_help_key'=>'cart_mypage_help_label');
+}
+
