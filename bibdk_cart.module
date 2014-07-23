@@ -71,10 +71,6 @@ function bibdk_cart_theme() {
       'variables' => array('fields' => array(), 'pid' => '', 'several_editions' => '', 'type_translated' => ''),
       'render_element' => 'elements'
     ),
-    'bibdk_cart_item_list_any_btn' => array(
-      'variables' => array('column' => '', 'attributes' => '', 'items' => array()),
-      'template' => 'theme/bibdk-cart-item-list-any-btn',
-    ),
     'bibdk_cart_item_list_any_btn_item' => array(
       'variables' => array('check_id' => '', 'name' => '', 'pid' => '', 'checked' => ''),
       'template' => 'theme/bibdk-cart-item-list-any-btn-item',
@@ -473,43 +469,21 @@ function _bibdk_cart_manifestation_view_strip_links(&$view) {
  * Implements hook_order_any_btn_lists().
  * Hook defined in bibdk_reservation.api.php in bibdk_reservation module
  *
- * @param $lists
- * @param $collection
- * @return string
+ * @param $type string
+ * @param $ids array
+ * @return array
  */
-function bibdk_cart_order_any_btn_lists($lists, $collection) {
-  $list['items'] = array();
+function bibdk_cart_order_any_btn_lists($type, $ids) {
+  $link = bibdk_cart_get_link($ids);
+  $item = array('cart' => array(
+    '#theme' => 'bibdk_cart_item_list_any_btn_item',
+    '#check_id' => 'check_box_' . drupal_html_class($type) . '_' . $ids[0],
+    '#name' => $link['#href'],
+    '#pid' => $link['#data-pid'],
+    '#checked' => BibdkCart::checkInCart($ids) ? 'checked=checked' : '',
+  ));
 
-  foreach ($collection as $type => $ids) {
-    //construct an id for the checkbox
-    $link = bibdk_cart_get_link($ids);
-    $item['#theme'] = 'bibdk_cart_item_list_any_btn_item';
-    $item['#check_id'] = 'check_box_' . drupal_html_class($type) . '_' . $ids[0];
-    $item['#name'] = $link['#href'];
-    $item['#pid'] = $link['#data-pid'];
-    $item['#checked'] = BibdkCart::checkInCart($ids) ? 'checked=checked' : '';
-    $list['items'][] = drupal_render($item);
-    unset($item);
-  }
-
-  $list['title'] = t('to_cart_order_any', array(), array('context' => 'bibdk_cart'));
-  $list['type'] = 'ol';
-  $list['attributes'] = array(
-    'class' => 'to-cart-list',
-  );
-
-  $lists[] = array(
-    '#theme' => 'bibdk_cart_item_list_any_btn',
-    '#column' => '2',
-    '#items' => $list,
-    '#attributes' => array(
-      'class' => array(
-        'to-cart-list',
-      ),
-    ),
-  );
-
-  return $lists;
+  return $item;
 }
 
 /**
