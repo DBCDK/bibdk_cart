@@ -83,6 +83,11 @@
             $('.cart-checkbox', context).click(function () {
                 Drupal.addRemoveItemCheckbox($(this));
             });
+
+            $('.add-item-to-cart', context).click(function (e) {
+              e.preventDefault();
+              Drupal.addRemoveItem($(this));
+          });
         }
     };
 }(jQuery));
