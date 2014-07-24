@@ -483,13 +483,9 @@ function _bibdk_cart_manifestation_view_strip_links(&$view) {
  */
 function bibdk_cart_order_any_btn_lists($type, $ids) {
   $link = bibdk_cart_get_link($ids);
+  $in_cart_class = BibdkCart::checkInCart($ids) ? 'btn-grey' : 'btn-blue';
   $item = array(
     'cart' => array(
-      /*'#theme' => 'bibdk_cart_item_list_any_btn_item',
-      '#check_id' => 'check_box_' . drupal_html_class($type) . '_' . $ids[0],
-      '#name' => $link['#href'],
-      '#pid' => $link['#data-pid'],
-      '#checked' => BibdkCart::checkInCart($ids) ? 'checked=checked' : '',*/
       '#theme' =>'link',
       '#text' => t('cart', array(), array('context' => 'bibdk_reservation')),
       '#path' => $link['#href'],
@@ -498,13 +494,16 @@ function bibdk_cart_order_any_btn_lists($type, $ids) {
           'class' => array(
             'add-item-to-cart',
             'btn',
-            'btn-blue',
+            $in_cart_class,
+          ),
+          'id' => array(
+            'cart_btn_' . drupal_html_id($type) . '_' . $ids[0]
           ),
           'data-pid' => array(
             $link['#data-pid'],
           ),
         ),
-        'html' => TRUE,
+        'html' => FALSE,
       ),
     )
   );
