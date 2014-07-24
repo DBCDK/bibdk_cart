@@ -76,15 +76,6 @@ function bibdk_cart_theme() {
       ),
       'render_element' => 'elements'
     ),
-    'bibdk_cart_item_list_any_btn_item' => array(
-      'variables' => array(
-        'check_id' => '',
-        'name' => '',
-        'pid' => '',
-        'checked' => ''
-      ),
-      'template' => 'theme/bibdk-cart-item-list-any-btn-item',
-    ),
   );
 }
 
