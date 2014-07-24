@@ -496,7 +496,7 @@ function bibdk_cart_order_any_btn_lists($type, $ids) {
           'data-pid' => array(
             $link['#data-pid'],
           ),
-          'aria-label' => $text . ' ' . $type,
+          'aria-label' => $text . ' ' . $mat_type,
         ),
         'html' => FALSE,
       ),
