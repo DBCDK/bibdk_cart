@@ -211,7 +211,7 @@ function bibdk_cart_ting_openformat_actions($type, $entity, $view_mode, $langcod
     $link['#id'] = 'selid-cart-single-' . drupal_html_id($link['#data-pid']);
     $element['cart'] = array(
       '#markup' => theme('bibdk_cart_button', array('add_to_cart' => $link)),
-      '#weight' => 1
+      '#weight' => 0.2
     );
 
   }
