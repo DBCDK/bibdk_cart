@@ -68,16 +68,13 @@ function bibdk_cart_theme() {
     ),
     'bibdk_cart_manifestation' => array(
       'template' => 'theme/bibdk-cart-manifestation',
-      'variables' => array('fields' => array(), 'pid' => '', 'several_editions' => '', 'type_translated' => ''),
+      'variables' => array(
+        'fields' => array(),
+        'pid' => '',
+        'several_editions' => '',
+        'type_translated' => ''
+      ),
       'render_element' => 'elements'
-    ),
-    'bibdk_cart_item_list_any_btn' => array(
-      'variables' => array('column' => '', 'attributes' => '', 'items' => array()),
-      'template' => 'theme/bibdk-cart-item-list-any-btn',
-    ),
-    'bibdk_cart_item_list_any_btn_item' => array(
-      'variables' => array('check_id' => '', 'name' => '', 'pid' => '', 'checked' => ''),
-      'template' => 'theme/bibdk-cart-item-list-any-btn-item',
     ),
   );
 }
@@ -218,7 +215,6 @@ function bibdk_cart_ting_openformat_actions($type, $entity, $view_mode, $langcod
   return $element;
 }
 
-
 /**
  * @param array $header
  * @param array $items
@@ -325,7 +321,6 @@ function bibdk_cart_manifestation_view($manifestation, $pids) {
   else {
     $view['action'] = t('cannot_reservate');
   }
-
 
   _bibdk_cart_manifestation_view_strip_links($view);
 
@@ -473,49 +468,48 @@ function _bibdk_cart_manifestation_view_strip_links(&$view) {
  * Implements hook_order_any_btn_lists().
  * Hook defined in bibdk_reservation.api.php in bibdk_reservation module
  *
- * @param $lists
- * @param $collection
- * @return string
+ * @param $type string
+ * @param $ids array
+ * @return array
  */
-function bibdk_cart_order_any_btn_lists($lists, $collection) {
-  $list['items'] = array();
+function bibdk_cart_order_any_btn_lists($type, $ids) {
+  $link = bibdk_cart_get_link($ids);
+  $in_cart_class = BibdkCart::checkInCart($ids) ? 'btn-grey' : 'btn-blue';
+  $mat_type = t($type, array(), array('context' => 'material_type'));
+  $text = t('cart', array(), array('context' => 'bibdk_reservation'));
 
-  foreach ($collection as $type => $ids) {
-    //construct an id for the checkbox
-    $link = bibdk_cart_get_link($ids);
-    $item['#theme'] = 'bibdk_cart_item_list_any_btn_item';
-    $item['#check_id'] = 'check_box_' . drupal_html_class($type) . '_' . $ids[0];
-    $item['#name'] = $link['#href'];
-    $item['#pid'] = $link['#data-pid'];
-    $item['#checked'] = BibdkCart::checkInCart($ids) ? 'checked=checked' : '';
-    $list['items'][] = drupal_render($item);
-    unset($item);
-  }
-
-  $list['title'] = t('to_cart_order_any', array(), array('context' => 'bibdk_cart'));
-  $list['type'] = 'ol';
-  $list['attributes'] = array(
-    'class' => 'to-cart-list',
-  );
-
-  $lists[] = array(
-    '#theme' => 'bibdk_cart_item_list_any_btn',
-    '#column' => '2',
-    '#items' => $list,
-    '#attributes' => array(
-      'class' => array(
-        'to-cart-list',
+  $item = array(
+    'cart' => array(
+      '#theme' =>'link',
+      '#text' => t('cart', array(), array('context' => 'bibdk_reservation')),
+      '#path' => $link['#href'],
+      '#options' => array(
+        'attributes' => array(
+          'class' => array(
+            'add-item-to-cart',
+            'btn',
+            $in_cart_class,
+          ),
+          'id' => array(
+            'cart_btn_' . drupal_html_id($type) . '_' . $ids[0]
+          ),
+          'data-pid' => array(
+            $link['#data-pid'],
+          ),
+          'aria-label' => $text . ' ' . $mat_type,
+        ),
+        'html' => FALSE,
       ),
-    ),
+    )
   );
 
-  return $lists;
+  return $item;
 }
 
 /**
  * Implements hook to user_help_list
  * */
 function bibdk_cart_user_help_list() {
-  return array('cart_mypage_help_key'=>'cart_mypage_help_label');
+  return array('cart_mypage_help_key' => 'cart_mypage_help_label');
 }
 

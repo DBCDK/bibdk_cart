@@ -1,6 +1,6 @@
 (function ($) {
 
-    var checkbox;
+    var button;
 
     Drupal.cartResponse = function (data) {
         if (data.error) {
@@ -23,14 +23,17 @@
     };
 
     Drupal.setCheckboxState = function (data) {
-        if (checkbox !== null) {
+        if (button !== null) {
             if (data.saved === 1) {
-                $(checkbox).attr('checked', true);
+              $(button).toggleClass('btn-grey', true);
+              $(button).toggleClass('btn-blue', false);
+              $(button).toggleClass('disabled', false);
             } else {
-                $(checkbox).attr('checked', false);
+              $(button).toggleClass('btn-grey', false);
+              $(button).toggleClass('btn-blue', true);
+              $(button).toggleClass('disabled', false);
             }
-            $(checkbox).removeAttr('disabled');
-            checkbox = null;
+            button = null;
         }
     };
 
@@ -43,11 +46,11 @@
         Drupal.doUpdateCart(pid);
     };
 
-    Drupal.addRemoveItemCheckbox = function (element) {
-        //var elem = $(element);
-        checkbox = element;
-        $(element).attr('disabled', 'disabled');
-        var pid = $(element).attr('data-pid');
+    Drupal.addRemoveItemButton = function (element) {
+        button = element;
+        $(button).toggleClass('btn-grey', false);
+        $(button).toggleClass('disabled', true);
+        var pid = $(button).attr('data-pid');
 
         Drupal.doUpdateCart(pid);
     };
@@ -80,9 +83,10 @@
                 Drupal.addRemoveItem($(this));
             });
 
-            $('.cart-checkbox', context).click(function () {
-                Drupal.addRemoveItemCheckbox($(this));
-            });
+            $('.add-item-to-cart', context).click(function (e) {
+              e.preventDefault();
+              Drupal.addRemoveItemButton($(this));
+          });
         }
     };
 }(jQuery));
