@@ -60,6 +60,25 @@ class BibdkCart {
     return $_SESSION['bibdk_cart'];
   }
 
+  /**
+   * Get count of pids in the cart
+   *
+   * @return string cartcount
+   */
+  public static function getCartCount() {
+    global $user;
+    if ($user->uid && ding_user_is_provider_user($user)) {
+      $cartCount = _bibdk_cart_get_cart_count_webservice();
+      return $cartCount['cartCount'];
+    }
+    else if (!empty($_SESSION['bibdk_cart'])) {
+      return count($_SESSION['bibdk_cart']);
+    }
+    else {
+      return 0;
+    }
+  }
+
   /** Get Id's of all elements in cart
    *
    * @return array
