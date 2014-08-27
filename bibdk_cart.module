@@ -241,7 +241,8 @@ function _bibdk_cart_get_cart_table($header, $items, $form) {
   return $form;
 }
 
-/** Populate the cart with manifestations
+/**
+ * Populate the cart with manifestations
  *
  * @param $cart
  */
