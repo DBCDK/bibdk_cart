@@ -56,6 +56,41 @@ function _bibdk_cart_get_cart_on_webservice($user = NULL) {
 }
 
 /**
+ * Get cart count from provider on webservice
+ *
+ * @param null $user
+ * @return array|bool
+ */
+function _bibdk_cart_get_cart_count_webservice($user = NULL){
+  if ($response = _bibdk_cart_call_webservice('get_cart_count', NULL, $user)) {
+    $xpath = bibdk_cart_webservice_responce_xpath($response['response']);
+    return bibdk_cart_parse_cart_count_response($xpath);
+  }
+  return array();
+}
+
+/**
+ * Get the cart count from the request
+ *
+ * @param $xpath DOMXPath
+ * @return array
+ */
+function bibdk_cart_parse_cart_count_response($xpath){
+  $query = '//oui:cartCount';
+  $entries = $xpath->query($query);
+
+  if(!$entries){
+    return array();
+  }
+
+  $return = array(
+    'cartCount' => $entries->item(0)->nodeValue,
+  );
+
+  return $return;
+}
+
+/**
  * Check if user is provider user. And call provider service
  *
  * @param $service
