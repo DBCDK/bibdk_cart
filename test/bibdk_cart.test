@@ -28,17 +28,7 @@ class BibdkCartTestCase extends DrupalWebTestCase {
     $this->_removeProviderUser();
   }
 
-  public function testRunner() {
-    $this->test_view();
-    $this->testBibdkCartObjectNoUser();
-    $this->testBibdkCartUserLogin();
-    $this->testWebserviceMethods();
-    $this->testAjaxResponse();
-    $this->testPrimaryActionsAjaxResponse();
-    $this->_testActionHook();
-  }
-
-  private function test_view() {
+  public function test_view() {
     $this->_removeProviderUser();
     // No cart page present
     module_disable(array('bibdk_cart'));
@@ -97,7 +87,7 @@ class BibdkCartTestCase extends DrupalWebTestCase {
   /**
    * Test that hook_ting_openformat_actions is correctly implemented
    */
-  private function _testActionHook() {
+  public function _testActionHook() {
     // confim reservation button is not present
     $this->drupalGet('work/870970-basis:25294424');
     $this->assertText(t('add_item_to_cart'));
@@ -111,7 +101,7 @@ class BibdkCartTestCase extends DrupalWebTestCase {
     $this->assertNoText(t('add_item_to_cart'));
   }
 
-  private function testBibdkCartUserLogin() {
+  public function testBibdkCartUserLogin() {
     //Reset cart count
     bibdk_webservice_request(TRUE);
     $user = $this->_createProviderUser();
@@ -164,7 +154,7 @@ class BibdkCartTestCase extends DrupalWebTestCase {
     $this->_removeProviderUser();
   }
 
-  private function testWebserviceMethods() {
+  public function testWebserviceMethods() {
     BibdkCart::emptyCart();
     // Fake provider user
     #$this->_createProviderUser();
@@ -204,7 +194,7 @@ class BibdkCartTestCase extends DrupalWebTestCase {
     $this->_removeProviderUser();
   }
 
-  private function testBibdkCartObjectNoUser() {
+  public function testBibdkCartObjectNoUser() {
     module_load_include('php', 'bibdk_cart', 'lib/BibdkCartElement');
     module_load_include('php', 'bibdk_cart', 'lib/BibdkCart');
     // create objects
@@ -256,7 +246,7 @@ class BibdkCartTestCase extends DrupalWebTestCase {
   /**
    * Tests the output data of bibdk_adhl.ajax.inc
    */
-  private function testAjaxResponse() {
+  public function testAjaxResponse() {
     BibdkCart::emptyCart();
     //add to cart
     $pid = '870970-basis:29225605';
@@ -291,7 +281,7 @@ class BibdkCartTestCase extends DrupalWebTestCase {
   /**
    * Tests the functionality for deleteing several items in the cart view
    */
-  private function testPrimaryActionsAjaxResponse() {
+  public function testPrimaryActionsAjaxResponse() {
     //adding items to cart prior to actual test
     $_SESSION['bibdk_cart'] = NULL;
 
