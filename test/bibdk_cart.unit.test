@@ -1,0 +1,30 @@
+<?php
+ 
+class BibdkCartUnitTestCase extends DrupalUnitTestCase {
+  public static function getInfo() {
+    return array(
+      'name' => t('Bibdk Cart Unittestcase'),
+      'description' => t('Unit testing bibdk_cart'),
+      'group' => t('Bibliotek.dk - Cart'),
+    );
+  }
+  
+  public function setUp() {
+    parent::setUp();
+  }
+
+//  Testing methods in bibdk_cart.webservice.inc
+
+  /**
+   * Testing method bibdk_cart_webservice_responce_xpath()
+   */
+  public function test_bibdk_cart_parse_cart_count_response(){
+    module_load_include('inc', 'bibdk_cart', 'includes/bibdk_cart.webservice');
+    $response = drupal_json_decode(file_get_contents(drupal_get_path('module', 'bibdk_cart') . '/test/responses/get_cart_count_response.json'));
+    $xpath = bibdk_cart_webservice_responce_xpath($response['response']);
+    $result = bibdk_cart_parse_cart_count_response($xpath);
+
+    $this->assertTrue(is_array($result), 'Got array');
+    $this->assertTrue(array_key_exists('cartCount', $result), 'Array contains a key named cartCount');
+  }
+}
