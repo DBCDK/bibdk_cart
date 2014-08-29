@@ -62,10 +62,6 @@ function bibdk_cart_theme() {
       'variables' => array('actions' => array()),
       'template' => 'theme/bibdk-cart-view-secondary-actions'
     ),
-    'bibdk_cart_button_subwork' => array(
-      'variables' => array('add_to_cart' => ''),
-      'template' => 'theme/bibdk-cart-button-subwork',
-    ),
     'bibdk_cart_manifestation' => array(
       'template' => 'theme/bibdk-cart-manifestation',
       'variables' => array(
