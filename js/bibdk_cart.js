@@ -15,7 +15,7 @@
         }
         $('.link-add-basket[data-pid=' + data.pid + ']').removeClass('ajax-progress');
 
-        if (data.cartcount) {
+        if (data.cartcount != 'undefined') {
             Drupal.updateCartcount(data.cartcount);
         }
 
