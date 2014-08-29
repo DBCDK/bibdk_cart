@@ -49,13 +49,11 @@ class BibdkCart {
    */
   public static function getAll() {
     global $user;
-    if (!isset($_SESSION['bibdk_cart'])) {
-      if ($user->uid && ding_user_is_provider_user($user)) {
-        $_SESSION['bibdk_cart'] = _bibdk_cart_get_cart_on_webservice();
-      }
-      else {
-        $_SESSION['bibdk_cart'] = array();
-      }
+    if ($user->uid && ding_user_is_provider_user($user)) {
+      $_SESSION['bibdk_cart'] = _bibdk_cart_get_cart_on_webservice($user);
+    }
+    else if (empty($_SESSION['bibdk_cart'])) {
+      $_SESSION['bibdk_cart'] = array();
     }
     return $_SESSION['bibdk_cart'];
   }
