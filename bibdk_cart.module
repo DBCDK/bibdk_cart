@@ -404,19 +404,12 @@ function bibdk_cart_ting_openformat_subwork_materialtype_actions($ordered_subwor
  */
 function bibdk_cart_user_login(&$edit, $account) {
   if (ding_user_is_provider_user($account)) {
-    $user_cart = _bibdk_cart_get_cart_on_webservice($account);
     if (isset($_SESSION['bibdk_cart'])) {
       foreach ($_SESSION['bibdk_cart'] as $key => $element) {
-        if (!in_array($key, $user_cart)) {
-          $id = _bibdk_cart_add_content_webservice($element->toService());
-          $element->setId($id);
-          $_SESSION['bibdk_cart'][$key] = $element;
-        }
+        /* @var $element BibdkCartElement */
+        _bibdk_cart_add_content_webservice($element->toService());
       }
-      $_SESSION['bibdk_cart'] += $user_cart;
-    }
-    else {
-      $_SESSION['bibdk_cart'] = $user_cart;
+      unset($_SESSION['bibdk_cart']);
     }
   }
 }
@@ -481,7 +474,7 @@ function bibdk_cart_order_any_btn_lists($type, $ids) {
 
   $item = array(
     'cart' => array(
-      '#theme' =>'link',
+      '#theme' => 'link',
       '#text' => t('cart', array(), array('context' => 'bibdk_reservation')),
       '#path' => $link['#href'],
       '#options' => array(
