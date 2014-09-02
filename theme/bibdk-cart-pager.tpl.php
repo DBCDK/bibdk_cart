@@ -1,5 +1,11 @@
+<div id="bibdk_cart_pager">
+  <?php print $variables['links']['first']; ?>
+  <?php print $variables['links']['prev']; ?>
 
+  <?php foreach ($variables['links']['pages'] as $link): ?>
+    <?php print $link; ?>
+  <?php endforeach; ?>
 
-<a href="/user/cart?page=1"><<</a>
-
-<a href="/user/cart?page=1">>>/a>
+  <?php print $variables['links']['next']; ?>
+  <?php print $variables['links']['last']; ?>
+</div>

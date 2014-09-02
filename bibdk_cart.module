@@ -74,7 +74,12 @@ function bibdk_cart_theme() {
     ),
     'bibdk_cart_pager' => array(
       'template' => 'theme/bibdk-cart-pager',
-      'variables' => array(),
+      'variables' => array(
+        'first_page' => '',
+        'last_page' => '',
+        'current_page' => '',
+        'links' => array(),
+      ),
     ),
   );
 }
@@ -92,7 +97,11 @@ function bibdk_cart_view_form($form, &$form_state) {
 
   // If user is logged in goto user subpages
   if ($user->uid && arg(1) == 'cart') {
-    drupal_goto('user/' . $user->uid . '/cart');
+    $options = array();
+    if(!empty($_GET['page'])){
+      $options['query'] = array('page' => $_GET['page']);
+    }
+    drupal_goto('user/' . $user->uid . '/cart', $options);
   }
 
   //set titel
@@ -111,7 +120,6 @@ function bibdk_cart_view_form($form, &$form_state) {
  * @return array
  */
 function bibdk_cart_get_form($form, &$form_state) {
-  dpm($form_state);
 
   $form['cartactions'] = array(
     '#type' => 'item',
@@ -125,40 +133,112 @@ function bibdk_cart_get_form($form, &$form_state) {
     'actions' => t('bibdk_cart_actions', array(), array('context' => 'bibdk_cart')),
   );
 
-  $items = bibdk_cart_get_items();
+  $cart = BibdkCart::getAll();
+  $cartcount = count($cart);
+
+  $items_per_page = 10;
+  $requested_page = (!empty($_GET['page']) && is_numeric($_GET['page'])) ? $_GET['page'] : 1;
+  $total_num_pages = ceil($cartcount / $items_per_page);
+  $current_page = ($requested_page > $total_num_pages) ? $total_num_pages : $requested_page;
+
+  $items = bibdk_cart_get_items($cart, $items_per_page, $current_page);
 
   $form = _bibdk_cart_get_cart_table($header, $items, $form);
 
-  $items_per_page = 10;
-  $cartcount = BibdkCart::getCartCount();
   if($cartcount > $items_per_page){
-     $form['pager'] = _bibdk_cart_get_pager($cartcount);
+     $form['pager'] = _bibdk_cart_get_pager($total_num_pages, $current_page);
   }
 
   return $form;
 }
 
 /**
- * @param $cartcount
+ * @param $total_num_pages
+ * @param $current_page
+ * @internal param int $cartcount
  * @return array
  */
-function _bibdk_cart_get_pager($cartcount) {
-  $pager = array();
+function _bibdk_cart_get_pager($total_num_pages, $current_page) {
+
+  $middle = ceil(10 / 2);
+
+  $first_page = $current_page - $middle;
+  if($first_page <= 0){
+    $first_page = 1;
+  }
+
+  $last_page = $current_page + $middle;
+  if($last_page > $total_num_pages){
+    $last_page = $total_num_pages;
+  }
+
+  $diff = $last_page - $first_page;
+  if($diff < 10 && $total_num_pages > 10){
+    if($diff > $first_page){
+      $first_page = 1;
+    } else {
+      $first_page -= $diff;
+    }
+  }
+
+  $diff = $last_page - $first_page;
+  if($diff < 10 && $total_num_pages > 10){
+    if($diff + $last_page >= $total_num_pages){
+      $last_page = $total_num_pages;
+    } else {
+      $last_page += 10 - $diff;
+    }
+  }
+
+  $pager = array(
+    '#theme' => 'bibdk_cart_pager',
+    '#first_page' => $first_page,
+    '#last_page' => $last_page,
+    '#current_page' => $current_page,
+    '#links' => _bibdk_cart_pager_get_links($first_page, $last_page, $current_page, $total_num_pages),
+  );
 
   return $pager;
 }
 
+function _bibdk_cart_pager_get_links($first_page, $last_page, $current_page, $total_num_pages){
+  $links = array(
+    'first' => '',
+    'prev' => '',
+    'pages' => array(),
+    'next' => '',
+    'last' => ''
+  );
+
+  if($current_page > 1){
+    $links['first'] = l('<<', 'user/cart', array('query' => array('page' => 1)));
+    $links['prev'] = l('<', 'user/cart', array('query' => array('page' => $current_page - 1)));
+  }
+
+  $links['pages'] = array();
+  for($i = $first_page; $i <= $last_page; $i++){
+    $links['pages'][] = l($i, 'user/cart', array('query' => array('page' => $i)));
+  }
+
+  if($last_page < $total_num_pages){
+    $links['pages'][] = '...';
+  }
+
+  if($current_page < $total_num_pages){
+    $links['next'] = l('>', 'user/cart', array('query' => array('page' => $current_page + 1)));
+    $links['last'] = l('>>', 'user/cart', array('query' => array('page' => $total_num_pages)));
+  }
+
+  return $links;
+}
+
 /**
+ * @param $cart array
+ * @param $items_per_page
+ * @param $page
  * @return array
  */
-function bibdk_cart_get_items(){
-  $cart = BibdkCart::getAll();
-
-  $items_per_page = 10;
-  $requested_page = (!empty($_GET['page']) && is_int($_GET['page'])) ? $_GET['page'] : 1;
-
-  $page = ($requested_page > ceil(count($cart) / $items_per_page)) ? ceil(count($cart) / $items_per_page) : $requested_page;
-
+function bibdk_cart_get_items($cart, $items_per_page, $page){
   $items = array();
   if (!empty($cart)) {
     if(count($cart) > $items_per_page){
