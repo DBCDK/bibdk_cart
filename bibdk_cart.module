@@ -203,16 +203,8 @@ function _bibdk_cart_get_pager($total_num_pages, $current_page) {
 
 function _bibdk_cart_pager_get_links($first_page, $last_page, $current_page, $total_num_pages){
   $links = array(
-    'first' => '',
-    'prev' => '',
     'pages' => array(),
-    'next' => '',
-    'last' => ''
   );
-
-  if($current_page >= 2){
-    $links['prev'] = l('<', 'user/cart', array('query' => array('page' => ($current_page - 1))));
-  }
 
   $links['pages'] = array();
   for($i = $first_page; $i <= $last_page; $i++){
@@ -235,10 +227,6 @@ function _bibdk_cart_pager_get_links($first_page, $last_page, $current_page, $to
     array_pop($links['pages']);
     $links['pages'][] = '...';
     $links['pages'][] = l($total_num_pages, 'user/cart', array('query' => array('page' => $total_num_pages)));
-  }
-
-  if($current_page < $total_num_pages){
-    $links['next'] = l('>', 'user/cart', array('query' => array('page' => $current_page + 1)));
   }
 
   return $links;
