@@ -174,7 +174,7 @@ function _bibdk_cart_get_pager($total_num_pages, $current_page) {
 
   $diff = $last_page - $first_page;
   if($diff < 10 && $total_num_pages > 10){
-    if($diff > $first_page){
+    if($diff >= $first_page){
       $first_page = 1;
     } else {
       $first_page -= $diff;
@@ -210,23 +210,35 @@ function _bibdk_cart_pager_get_links($first_page, $last_page, $current_page, $to
     'last' => ''
   );
 
-  if($current_page > 1){
-    $links['first'] = l('<<', 'user/cart', array('query' => array('page' => 1)));
-    $links['prev'] = l('<', 'user/cart', array('query' => array('page' => $current_page - 1)));
+  if($current_page >= 2){
+    $links['prev'] = l('<', 'user/cart', array('query' => array('page' => ($current_page - 1))));
   }
 
   $links['pages'] = array();
   for($i = $first_page; $i <= $last_page; $i++){
-    $links['pages'][] = l($i, 'user/cart', array('query' => array('page' => $i)));
+    $attributes = array();
+    if($i == $current_page){
+      $attributes['class'] = array(
+        'bold'
+      );
+    }
+    $links['pages'][] = l($i, 'user/cart', array('query' => array('page' => $i), 'attributes' => $attributes));
+  }
+
+  if($first_page > 1){
+    array_shift($links['pages']);
+    array_unshift($links['pages'], '...');
+    array_unshift($links['pages'], l(1, 'user/cart', array('query' => array('page' => 1))));
   }
 
   if($last_page < $total_num_pages){
+    array_pop($links['pages']);
     $links['pages'][] = '...';
+    $links['pages'][] = l($total_num_pages, 'user/cart', array('query' => array('page' => $total_num_pages)));
   }
 
   if($current_page < $total_num_pages){
     $links['next'] = l('>', 'user/cart', array('query' => array('page' => $current_page + 1)));
-    $links['last'] = l('>>', 'user/cart', array('query' => array('page' => $total_num_pages)));
   }
 
   return $links;
