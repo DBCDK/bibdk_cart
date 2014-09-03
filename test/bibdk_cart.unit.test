@@ -138,7 +138,6 @@ class BibdkCartUnitTestCase extends DrupalUnitTestCase {
 
     //Total count of pages is lover than current page
     $result = _bibdk_cart_get_pager(1, 20);
-    debug($result);
     $expected = array (
       '#theme' => 'bibdk_cart_pager',
       '#first_page' => 15,
