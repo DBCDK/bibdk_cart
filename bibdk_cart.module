@@ -185,7 +185,7 @@ function _bibdk_cart_get_pager($total_num_pages, $current_page) {
   //Ensuring that no matter which page we're on the number of pages defined in
   //$num_direct_page_links is shown if possible.
   $diff = $last_page - $first_page;
-  if($diff < $num_direct_page_links && $total_num_pages > $num_direct_page_links){
+  if($diff < $num_direct_page_links){
     $first_page = $first_page - $diff;
     if($first_page <= 0){
       $first_page = 1;
