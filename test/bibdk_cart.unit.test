@@ -13,7 +13,7 @@ class BibdkCartUnitTestCase extends DrupalUnitTestCase {
     parent::setUp();
   }
 
-//  Testing methods in bibdk_cart.webservice.inc
+  // Testing methods in bibdk_cart.webservice.inc
 
   /**
    * Testing method bibdk_cart_webservice_responce_xpath()
@@ -28,6 +28,8 @@ class BibdkCartUnitTestCase extends DrupalUnitTestCase {
     $this->assertTrue(array_key_exists('cartCount', $result), 'Array contains a key named cartCount');
     $this->assertTrue(is_array($result), 'Got array');
   }
+
+  //  Testing methods in bibdk_cart.module
 
   public function test_bibdk_cart_get_pager(){
     module_load_include('module', 'bibdk_cart');
