@@ -1,5 +1,5 @@
 <?php
- 
+
 class BibdkCartUnitTestCase extends DrupalUnitTestCase {
   public static function getInfo() {
     return array(
@@ -8,7 +8,7 @@ class BibdkCartUnitTestCase extends DrupalUnitTestCase {
       'group' => t('Bibliotek.dk - Cart'),
     );
   }
-  
+
   public function setUp() {
     parent::setUp();
   }
@@ -26,5 +26,130 @@ class BibdkCartUnitTestCase extends DrupalUnitTestCase {
 
     $this->assertTrue(is_array($result), 'Got array');
     $this->assertTrue(array_key_exists('cartCount', $result), 'Array contains a key named cartCount');
+    $this->assertTrue(is_array($result), 'Got array');
+  }
+
+  public function test_bibdk_cart_get_pager(){
+    module_load_include('module', 'bibdk_cart');
+
+    //one page in total - current page is first page
+    $result = _bibdk_cart_get_pager(1, 1);
+    $expected = array (
+      '#theme' => 'bibdk_cart_pager',
+      '#first_page' => 1,
+      '#last_page' => 1,
+      '#current_page' => 1,
+      '#links' =>
+        array (
+          'first_page' => 1,
+          'last_page' => 1,
+          'current_page' => 1,
+          'total_num_pages' => 1,
+        ),
+    );
+    $this->assertEqual($result, $expected, 'Arrays are itentical');
+
+    //20 pages in total - current page is first page
+    $result = _bibdk_cart_get_pager(20, 1);
+    $expected = array (
+      '#theme' => 'bibdk_cart_pager',
+      '#first_page' => 1,
+      '#last_page' => 11,
+      '#current_page' => 1,
+      '#links' =>
+        array (
+          'first_page' => 1,
+          'last_page' => 11,
+          'current_page' => 1,
+          'total_num_pages' => 20,
+        ),
+    );
+    $this->assertEqual($result, $expected, 'Arrays are itentical');
+
+    //20 pages in total - current page is 5th page
+    $result = _bibdk_cart_get_pager(20, 5);
+    $expected = array (
+      '#theme' => 'bibdk_cart_pager',
+      '#first_page' => 1,
+      '#last_page' => 11,
+      '#current_page' => 5,
+      '#links' =>
+        array (
+          'first_page' => 1,
+          'last_page' => 11,
+          'current_page' => 5,
+          'total_num_pages' => 20,
+        ),
+    );
+    $this->assertEqual($result, $expected, 'Arrays are itentical');
+
+    //20 pages in total - current page is 10th page
+    $result = _bibdk_cart_get_pager(20, 10);
+    $expected = array (
+      '#theme' => 'bibdk_cart_pager',
+      '#first_page' => 5,
+      '#last_page' => 15,
+      '#current_page' => 10,
+      '#links' =>
+        array (
+          'first_page' => 5,
+          'last_page' => 15,
+          'current_page' => 10,
+          'total_num_pages' => 20,
+        ),
+    );
+    $this->assertEqual($result, $expected, 'Arrays are itentical');
+
+    //20 pages in total - current page is 15th page
+    $result = _bibdk_cart_get_pager(20, 15);
+    $expected = array (
+      '#theme' => 'bibdk_cart_pager',
+      '#first_page' => 10,
+      '#last_page' => 20,
+      '#current_page' => 15,
+      '#links' =>
+        array (
+          'first_page' => 10,
+          'last_page' => 20,
+          'current_page' => 15,
+          'total_num_pages' => 20,
+        ),
+    );
+    $this->assertEqual($result, $expected, 'Arrays are itentical');
+
+    //20 pages in total - current page is 20th page
+    $result = _bibdk_cart_get_pager(20, 20);
+    $expected = array (
+      '#theme' => 'bibdk_cart_pager',
+      '#first_page' => 10,
+      '#last_page' => 20,
+      '#current_page' => 20,
+      '#links' =>
+        array (
+          'first_page' => 10,
+          'last_page' => 20,
+          'current_page' => 20,
+          'total_num_pages' => 20,
+        ),
+    );
+    $this->assertEqual($result, $expected, 'Arrays are itentical');
+
+    //Total count of pages is lover than current page
+    $result = _bibdk_cart_get_pager(1, 20);
+    debug($result);
+    $expected = array (
+      '#theme' => 'bibdk_cart_pager',
+      '#first_page' => 15,
+      '#last_page' => 1,
+      '#current_page' => 20,
+      '#links' =>
+        array (
+          'first_page' => 15,
+          'last_page' => 1,
+          'current_page' => 20,
+          'total_num_pages' => 1,
+        ),
+    );
+    $this->assertEqual($result, $expected, 'Arrays are itentical');
   }
 }
