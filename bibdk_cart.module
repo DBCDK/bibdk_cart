@@ -136,7 +136,7 @@ function bibdk_cart_get_form($form, &$form_state) {
   $cart = BibdkCart::getAll();
   $cartcount = count($cart);
 
-  $items_per_page = 10;
+  $items_per_page = variable_get('bibdk_cart_posts_per_page', 20);
   $requested_page = (!empty($_GET['page']) && is_numeric($_GET['page'])) ? $_GET['page'] : 1;
   $total_num_pages = ceil($cartcount / $items_per_page);
   $current_page = ($requested_page > $total_num_pages) ? $total_num_pages : $requested_page;
@@ -153,6 +153,10 @@ function bibdk_cart_get_form($form, &$form_state) {
 }
 
 /**
+ * Calculates what pages that should be linked to on both sides of the current
+ * page. Ensures we always have 10 direct links shown.
+ * If less than 10 pages all direct links will be shown.
+ *
  * @param $total_num_pages
  * @param $current_page
  * @internal param int $cartcount
@@ -160,33 +164,38 @@ function bibdk_cart_get_form($form, &$form_state) {
  */
 function _bibdk_cart_get_pager($total_num_pages, $current_page) {
 
-  $middle = ceil(10 / 2);
+  //number of direct links that should be shown in the pager
+  $num_direct_page_links = 10;
+  //Calculating the middle page
+  $middle = ceil($num_direct_page_links / 2);
 
+  //Calculation what page that should be the first
   $first_page = $current_page - $middle;
   if($first_page <= 0){
     $first_page = 1;
   }
 
+  //Calculation what page that should be the last
   $last_page = $current_page + $middle;
   if($last_page > $total_num_pages){
     $last_page = $total_num_pages;
   }
 
+  //Ensuring that no matter which page we're on the number of pages defined in
+  //$num_direct_page_links is shown if possible.
   $diff = $last_page - $first_page;
-  if($diff < 10 && $total_num_pages > 10){
-    if($diff >= $first_page){
+  if($diff < $num_direct_page_links && $total_num_pages > $num_direct_page_links){
+    $first_page = $first_page - $diff;
+    if($first_page <= 0){
       $first_page = 1;
-    } else {
-      $first_page -= $diff;
     }
   }
 
-  $diff = $last_page - $first_page;
-  if($diff < 10 && $total_num_pages > 10){
-    if($diff + $last_page >= $total_num_pages){
+  $diff = abs($last_page - $first_page - $num_direct_page_links);
+  if($diff < $num_direct_page_links && $total_num_pages > $num_direct_page_links){
+    $last_page = $last_page + $diff;
+    if($last_page > $total_num_pages) {
       $last_page = $total_num_pages;
-    } else {
-      $last_page += 10 - $diff;
     }
   }
 
@@ -220,13 +229,15 @@ function _bibdk_cart_pager_get_links($first_page, $last_page, $current_page, $to
   if($first_page > 1){
     array_shift($links['pages']);
     array_unshift($links['pages'], '...');
-    array_unshift($links['pages'], l(1, 'user/cart', array('query' => array('page' => 1))));
+    array_unshift($links['pages'], l('1', 'user/cart', array('query' => array('page' => 1))));
+    array_unshift($links['pages'], l(t('< previous', array(), array('context' => 'bibdk_cart')), 'user/cart', array('query' => array('page' => $current_page - 1))));
   }
 
   if($last_page < $total_num_pages){
     array_pop($links['pages']);
     $links['pages'][] = '...';
     $links['pages'][] = l($total_num_pages, 'user/cart', array('query' => array('page' => $total_num_pages)));
+    $links['pages'][] = l(t('next >', array(), array('context' => 'bibdk_cart')), 'user/cart', array('query' => array('page' => $current_page + 1)));
   }
 
   return $links;
@@ -242,7 +253,7 @@ function bibdk_cart_get_items($cart, $items_per_page, $page){
   $items = array();
   if (!empty($cart)) {
     if(count($cart) > $items_per_page){
-      $cart = array_chunk($cart, $items_per_page, 10);
+      $cart = array_chunk($cart, $items_per_page, TRUE);
     }
 
     $current_cart_view = $cart[$page - 1];
