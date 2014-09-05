@@ -265,10 +265,11 @@ function bibdk_cart_get_items($cart, $items_per_page, $page){
   $items = array();
   if (!empty($cart)) {
     if(count($cart) > $items_per_page){
-      $cart = array_chunk($cart, $items_per_page, TRUE);
+      $cart = array_chunk($cart, $items_per_page);
+      $current_cart_view = $cart[$page - 1];
+    } else {
+      $current_cart_view = $cart;
     }
-
-    $current_cart_view = $cart[$page - 1];
 
     bibdk_cart_set_manifestations($current_cart_view);
     foreach ($current_cart_view as $delta => $element) {
