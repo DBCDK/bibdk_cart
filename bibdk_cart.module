@@ -97,7 +97,7 @@ function bibdk_cart_view_form($form, &$form_state) {
   // If user is logged in goto user subpages
   if ($user->uid && arg(1) == 'cart') {
     $options = array();
-    if(!empty($_GET['page'])){
+    if (!empty($_GET['page'])) {
       $options['query'] = array('page' => $_GET['page']);
     }
     drupal_goto('user/' . $user->uid . '/cart', $options);
@@ -126,10 +126,10 @@ function bibdk_cart_get_form($form, &$form_state) {
   $form['cartactions'] += bibdk_cart_get_primary_actions(array());
   $form['cartactions'] += bibdk_cart_get_secondary_actions(array());
 
-  $header = array(
-    'manifestation' => t('bibdk_cart_header', array(), array('context' => 'bibdk_cart')),
-    'status' => t('bibdk_cart_status', array(), array('context' => 'bibdk_cart')),
-    'actions' => t('bibdk_cart_actions', array(), array('context' => 'bibdk_cart')),
+  $form['hest'] = array(
+    '#markup' => t('bibdk_cart_helptext', array(), array('context' => 'bibdk_cart')),
+    '#prefix' => '<div class="bibdk-cart-helptext">',
+    '#suffix' => '</div>',
   );
 
   $cart = BibdkCart::getAll();
@@ -142,9 +142,15 @@ function bibdk_cart_get_form($form, &$form_state) {
 
   $items = bibdk_cart_get_items($cart, $items_per_page, $current_page);
 
+  $header = array(
+    'manifestation' => t('bibdk_cart_header', array(), array('context' => 'bibdk_cart')),
+    'status' => t('bibdk_cart_status', array(), array('context' => 'bibdk_cart')),
+    'actions' => t('bibdk_cart_actions', array(), array('context' => 'bibdk_cart')),
+  );
+
   $form = _bibdk_cart_get_cart_table($header, $items, $form);
 
-  if($cartcount > $items_per_page){
+  if ($cartcount > $items_per_page) {
     $pager = _bibdk_cart_get_pager($total_num_pages, $current_page);
     $pager['#links'] = _bibdk_cart_pager_get_links($pager['#links']);
     $form['pager'] = $pager;
@@ -172,30 +178,30 @@ function _bibdk_cart_get_pager($total_num_pages, $current_page) {
 
   //Calculation what page that should be the first
   $first_page = $current_page - $middle;
-  if($first_page <= 0){
+  if ($first_page <= 0) {
     $first_page = 1;
   }
 
   //Calculation what page that should be the last
   $last_page = $current_page + $middle;
-  if($last_page > $total_num_pages){
+  if ($last_page > $total_num_pages) {
     $last_page = $total_num_pages;
   }
 
   //Ensuring that no matter which page we're on the number of pages defined in
   //$num_direct_page_links is shown if possible.
   $diff = $last_page - $first_page;
-  if($diff < $num_direct_page_links){
+  if ($diff < $num_direct_page_links) {
     $first_page = $first_page - $diff;
-    if($first_page <= 0){
+    if ($first_page <= 0) {
       $first_page = 1;
     }
   }
 
   $diff = abs($last_page - $first_page - $num_direct_page_links);
-  if($diff < $num_direct_page_links && $total_num_pages > $num_direct_page_links){
+  if ($diff < $num_direct_page_links && $total_num_pages > $num_direct_page_links) {
     $last_page = $last_page + $diff;
-    if($last_page > $total_num_pages) {
+    if ($last_page > $total_num_pages) {
       $last_page = $total_num_pages;
     }
   }
@@ -217,7 +223,7 @@ function _bibdk_cart_get_pager($total_num_pages, $current_page) {
   return $pager;
 }
 
-function _bibdk_cart_pager_get_links($info){
+function _bibdk_cart_pager_get_links($info) {
   $first_page = $info['first_page'];
   $last_page = $info['last_page'];
   $current_page = $info['current_page'];
@@ -228,24 +234,27 @@ function _bibdk_cart_pager_get_links($info){
   );
 
   $links['pages'] = array();
-  for($i = $first_page; $i <= $last_page; $i++){
+  for ($i = $first_page; $i <= $last_page; $i++) {
     $attributes = array();
-    if($i == $current_page){
+    if ($i == $current_page) {
       $attributes['class'] = array(
         'bold'
       );
     }
-    $links['pages'][] = l($i, 'user/cart', array('query' => array('page' => $i), 'attributes' => $attributes));
+    $links['pages'][] = l($i, 'user/cart', array(
+      'query' => array('page' => $i),
+      'attributes' => $attributes
+    ));
   }
 
-  if($first_page > 1){
+  if ($first_page > 1) {
     array_shift($links['pages']);
     array_unshift($links['pages'], '...');
     array_unshift($links['pages'], l('1', 'user/cart', array('query' => array('page' => 1))));
     array_unshift($links['pages'], l(t('< previous', array(), array('context' => 'bibdk_cart')), 'user/cart', array('query' => array('page' => $current_page - 1))));
   }
 
-  if($last_page < $total_num_pages){
+  if ($last_page < $total_num_pages) {
     array_pop($links['pages']);
     $links['pages'][] = '...';
     $links['pages'][] = l($total_num_pages, 'user/cart', array('query' => array('page' => $total_num_pages)));
@@ -261,13 +270,14 @@ function _bibdk_cart_pager_get_links($info){
  * @param $page
  * @return array
  */
-function bibdk_cart_get_items($cart, $items_per_page, $page){
+function bibdk_cart_get_items($cart, $items_per_page, $page) {
   $items = array();
   if (!empty($cart)) {
-    if(count($cart) > $items_per_page){
+    if (count($cart) > $items_per_page) {
       $cart = array_chunk($cart, $items_per_page);
       $current_cart_view = $cart[$page - 1];
-    } else {
+    }
+    else {
       $current_cart_view = $cart;
     }
 
@@ -313,12 +323,18 @@ function bibdk_cart_get_secondary_actions($form) {
   $actions = array();
   $actions = module_invoke_all('cart_actions', $actions);
 
+  if(empty($actions['export']['#links'])){
+    unset($actions['export']);
+  }
+
   if (!empty($actions)) {
     uasort($actions, 'element_sort');
 
+    $items = array();
     foreach ($actions as $action) {
       $items[] = drupal_render($action);
     }
+
     $form['cart_table_secondary_actions'] = array(
       '#theme' => 'item_list',
       '#items' => $items,
