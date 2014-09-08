@@ -3,7 +3,7 @@
 class BibdkCartUnitTestCase extends DrupalUnitTestCase {
   public static function getInfo() {
     return array(
-      'name' => t('Bibdk Cart Unittestcase'),
+      'name' => t('Bibdk Cart Unittests'),
       'description' => t('Unit testing bibdk_cart'),
       'group' => t('Bibliotek.dk - Cart'),
     );
@@ -37,16 +37,15 @@ class BibdkCartUnitTestCase extends DrupalUnitTestCase {
     //one page in total - current page is first page
     $result = _bibdk_cart_get_pager(1, 1);
     $expected = array (
-      '#theme' => 'bibdk_cart_pager',
-      '#first_page' => 1,
-      '#last_page' => 1,
-      '#current_page' => 1,
-      '#links' =>
+      '#theme' => 'html_tag',
+      '#tag' => 'div',
+      '#value' => '<a href="/sandbox/user/cart?page=1" class="bold">1</a>',
+      '#attributes' =>
         array (
-          'first_page' => 1,
-          'last_page' => 1,
-          'current_page' => 1,
-          'total_num_pages' => 1,
+          'id' =>
+            array (
+              0 => 'bibdk-cart-pager',
+            ),
         ),
     );
     $this->assertEqual($result, $expected, 'Arrays are itentical');
@@ -54,16 +53,15 @@ class BibdkCartUnitTestCase extends DrupalUnitTestCase {
     //20 pages in total - current page is first page
     $result = _bibdk_cart_get_pager(20, 1);
     $expected = array (
-      '#theme' => 'bibdk_cart_pager',
-      '#first_page' => 1,
-      '#last_page' => 11,
-      '#current_page' => 1,
-      '#links' =>
+      '#theme' => 'html_tag',
+      '#tag' => 'div',
+      '#value' => '<a href="/sandbox/user/cart?page=1" class="bold">1</a><a href="/sandbox/user/cart?page=2">2</a><a href="/sandbox/user/cart?page=3">3</a><a href="/sandbox/user/cart?page=4">4</a><a href="/sandbox/user/cart?page=5">5</a><a href="/sandbox/user/cart?page=6">6</a><a href="/sandbox/user/cart?page=7">7</a><a href="/sandbox/user/cart?page=8">8</a><a href="/sandbox/user/cart?page=9">9</a><a href="/sandbox/user/cart?page=10">10</a>...<a href="/sandbox/user/cart?page=20">20</a><a href="/sandbox/user/cart?page=2">next &gt;</a>',
+      '#attributes' =>
         array (
-          'first_page' => 1,
-          'last_page' => 11,
-          'current_page' => 1,
-          'total_num_pages' => 20,
+          'id' =>
+            array (
+              0 => 'bibdk-cart-pager',
+            ),
         ),
     );
     $this->assertEqual($result, $expected, 'Arrays are itentical');
@@ -71,16 +69,15 @@ class BibdkCartUnitTestCase extends DrupalUnitTestCase {
     //20 pages in total - current page is 5th page
     $result = _bibdk_cart_get_pager(20, 5);
     $expected = array (
-      '#theme' => 'bibdk_cart_pager',
-      '#first_page' => 1,
-      '#last_page' => 11,
-      '#current_page' => 5,
-      '#links' =>
+      '#theme' => 'html_tag',
+      '#tag' => 'div',
+      '#value' => '<a href="/sandbox/user/cart?page=1">1</a><a href="/sandbox/user/cart?page=2">2</a><a href="/sandbox/user/cart?page=3">3</a><a href="/sandbox/user/cart?page=4">4</a><a href="/sandbox/user/cart?page=5" class="bold">5</a><a href="/sandbox/user/cart?page=6">6</a><a href="/sandbox/user/cart?page=7">7</a><a href="/sandbox/user/cart?page=8">8</a><a href="/sandbox/user/cart?page=9">9</a><a href="/sandbox/user/cart?page=10">10</a>...<a href="/sandbox/user/cart?page=20">20</a><a href="/sandbox/user/cart?page=6">next &gt;</a>',
+      '#attributes' =>
         array (
-          'first_page' => 1,
-          'last_page' => 11,
-          'current_page' => 5,
-          'total_num_pages' => 20,
+          'id' =>
+            array (
+              0 => 'bibdk-cart-pager',
+            ),
         ),
     );
     $this->assertEqual($result, $expected, 'Arrays are itentical');
@@ -88,16 +85,15 @@ class BibdkCartUnitTestCase extends DrupalUnitTestCase {
     //20 pages in total - current page is 10th page
     $result = _bibdk_cart_get_pager(20, 10);
     $expected = array (
-      '#theme' => 'bibdk_cart_pager',
-      '#first_page' => 5,
-      '#last_page' => 15,
-      '#current_page' => 10,
-      '#links' =>
+      '#theme' => 'html_tag',
+      '#tag' => 'div',
+      '#value' => '<a href="/sandbox/user/cart?page=9">&lt; previous</a><a href="/sandbox/user/cart?page=1">1</a>...<a href="/sandbox/user/cart?page=6">6</a><a href="/sandbox/user/cart?page=7">7</a><a href="/sandbox/user/cart?page=8">8</a><a href="/sandbox/user/cart?page=9">9</a><a href="/sandbox/user/cart?page=10" class="bold">10</a><a href="/sandbox/user/cart?page=11">11</a><a href="/sandbox/user/cart?page=12">12</a><a href="/sandbox/user/cart?page=13">13</a><a href="/sandbox/user/cart?page=14">14</a>...<a href="/sandbox/user/cart?page=20">20</a><a href="/sandbox/user/cart?page=11">next &gt;</a>',
+      '#attributes' =>
         array (
-          'first_page' => 5,
-          'last_page' => 15,
-          'current_page' => 10,
-          'total_num_pages' => 20,
+          'id' =>
+            array (
+              0 => 'bibdk-cart-pager',
+            ),
         ),
     );
     $this->assertEqual($result, $expected, 'Arrays are itentical');
@@ -105,16 +101,15 @@ class BibdkCartUnitTestCase extends DrupalUnitTestCase {
     //20 pages in total - current page is 15th page
     $result = _bibdk_cart_get_pager(20, 15);
     $expected = array (
-      '#theme' => 'bibdk_cart_pager',
-      '#first_page' => 10,
-      '#last_page' => 20,
-      '#current_page' => 15,
-      '#links' =>
+      '#theme' => 'html_tag',
+      '#tag' => 'div',
+      '#value' => '<a href="/sandbox/user/cart?page=14">&lt; previous</a><a href="/sandbox/user/cart?page=1">1</a>...<a href="/sandbox/user/cart?page=11">11</a><a href="/sandbox/user/cart?page=12">12</a><a href="/sandbox/user/cart?page=13">13</a><a href="/sandbox/user/cart?page=14">14</a><a href="/sandbox/user/cart?page=15" class="bold">15</a><a href="/sandbox/user/cart?page=16">16</a><a href="/sandbox/user/cart?page=17">17</a><a href="/sandbox/user/cart?page=18">18</a><a href="/sandbox/user/cart?page=19">19</a><a href="/sandbox/user/cart?page=20">20</a>',
+      '#attributes' =>
         array (
-          'first_page' => 10,
-          'last_page' => 20,
-          'current_page' => 15,
-          'total_num_pages' => 20,
+          'id' =>
+            array (
+              0 => 'bibdk-cart-pager',
+            ),
         ),
     );
     $this->assertEqual($result, $expected, 'Arrays are itentical');
@@ -122,16 +117,15 @@ class BibdkCartUnitTestCase extends DrupalUnitTestCase {
     //20 pages in total - current page is 20th page
     $result = _bibdk_cart_get_pager(20, 20);
     $expected = array (
-      '#theme' => 'bibdk_cart_pager',
-      '#first_page' => 10,
-      '#last_page' => 20,
-      '#current_page' => 20,
-      '#links' =>
+      '#theme' => 'html_tag',
+      '#tag' => 'div',
+      '#value' => '<a href="/sandbox/user/cart?page=19">&lt; previous</a><a href="/sandbox/user/cart?page=1">1</a>...<a href="/sandbox/user/cart?page=11">11</a><a href="/sandbox/user/cart?page=12">12</a><a href="/sandbox/user/cart?page=13">13</a><a href="/sandbox/user/cart?page=14">14</a><a href="/sandbox/user/cart?page=15">15</a><a href="/sandbox/user/cart?page=16">16</a><a href="/sandbox/user/cart?page=17">17</a><a href="/sandbox/user/cart?page=18">18</a><a href="/sandbox/user/cart?page=19">19</a><a href="/sandbox/user/cart?page=20" class="bold">20</a>',
+      '#attributes' =>
         array (
-          'first_page' => 10,
-          'last_page' => 20,
-          'current_page' => 20,
-          'total_num_pages' => 20,
+          'id' =>
+            array (
+              0 => 'bibdk-cart-pager',
+            ),
         ),
     );
     $this->assertEqual($result, $expected, 'Arrays are itentical');
@@ -139,16 +133,15 @@ class BibdkCartUnitTestCase extends DrupalUnitTestCase {
     //Total count of pages is lover than current page
     $result = _bibdk_cart_get_pager(1, 20);
     $expected = array (
-      '#theme' => 'bibdk_cart_pager',
-      '#first_page' => 15,
-      '#last_page' => 1,
-      '#current_page' => 20,
-      '#links' =>
+      '#theme' => 'html_tag',
+      '#tag' => 'div',
+      '#value' => '<a href="/sandbox/user/cart?page=19">&lt; previous</a><a href="/sandbox/user/cart?page=1">1</a>...',
+      '#attributes' =>
         array (
-          'first_page' => 15,
-          'last_page' => 1,
-          'current_page' => 20,
-          'total_num_pages' => 1,
+          'id' =>
+            array (
+              0 => 'bibdk-cart-pager',
+            ),
         ),
     );
     $this->assertEqual($result, $expected, 'Arrays are itentical');
