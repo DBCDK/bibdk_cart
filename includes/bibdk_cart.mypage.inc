@@ -19,12 +19,26 @@ function bibdk_cart_bibdk_mypage_tabs($max_rows = 3) {
   return $ret;
 }
 
+/**
+ * @param $max_rows
+ * @return array
+ */
 function bibdk_cart_my_page_get_rows($max_rows) {
   $cart = BibdkCart::getAll();
-  bibdk_cart_set_manifestations($cart);
+  $ret = array();
 
-  if (sizeof($cart) > 0) {
-    $cart = array_slice($cart, 0, $max_rows);
+  if (empty($cart)) {
+    $ret[] = array(
+      'item_row' => t('No items in cart'),
+    );
+  }
+  else {
+    if (count($cart) > $max_rows) {
+      $cart = array_slice($cart, 0, $max_rows, TRUE);
+    }
+
+    bibdk_cart_set_manifestations($cart);
+
     foreach ($cart as $id => $item) {
       $ret[] = array(
         'label_row' => isset($item->manifestation) ? $item->manifestation->getTitle() : '',
@@ -32,11 +46,7 @@ function bibdk_cart_my_page_get_rows($max_rows) {
       );
     }
   }
-  else {
-    $ret[] = array(
-      'item_row' => t('No items in cart'),
-    );
-  }
+
   return $ret;
 }
 

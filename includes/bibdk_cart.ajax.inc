@@ -27,7 +27,7 @@ function bibdk_cart_add_to_cart() {
   $data['saved'] = $saved;
   $data['pid'] = $pids;
   $data['classid'] = strtolower(strtr($pids, array(':' => '-')));
-  $data['cartcount'] = (string)count(BibdkCart::getAll());
+  $data['cartcount'] = BibdkCart::getCartCount();
 
   drupal_json_output($data);
 }
@@ -54,6 +54,6 @@ function bibdk_cart_delete_selected() {
     BibdkCart::remove($pid);
   }
 
-  $data['cartcount'] = (string)count(BibdkCart::getAll());
+  $data['cartcount'] = BibdkCart::getCartCount();
   drupal_json_output($data);
 }
