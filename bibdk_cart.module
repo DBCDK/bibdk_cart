@@ -148,6 +148,7 @@ function bibdk_cart_get_form($form, &$form_state) {
 
   if ($cartcount > $items_per_page) {
     $pager = _bibdk_cart_get_pager($total_num_pages, $current_page);
+    $pager['#value'] =  $links = _bibdk_cart_pager_get_links($pager['#value']);
     $form['pager'] = $pager;
   }
 
@@ -211,12 +212,10 @@ function _bibdk_cart_get_pager($total_num_pages, $current_page) {
   $info['current_page'] = $current_page;
   $info['total_num_pages'] = $total_num_pages;
 
-  $links = _bibdk_cart_pager_get_links($info);
-
   $pager = array(
     '#theme' => 'html_tag',
     '#tag' => 'div',
-    '#value' => $links,
+    '#value' => $info,
     '#attributes' => array(
       'id' => array(
         'bibdk-cart-pager',
