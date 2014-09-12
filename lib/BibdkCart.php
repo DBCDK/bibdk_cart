@@ -49,15 +49,32 @@ class BibdkCart {
    */
   public static function getAll() {
     global $user;
-    if (!isset($_SESSION['bibdk_cart'])) {
-      if ($user->uid && ding_user_is_provider_user($user)) {
-        $_SESSION['bibdk_cart'] = _bibdk_cart_get_cart_on_webservice();
-      }
-      else {
-        $_SESSION['bibdk_cart'] = array();
-      }
+    if ($user->uid && ding_user_is_provider_user($user)) {
+      $_SESSION['bibdk_cart'] = _bibdk_cart_get_cart_on_webservice($user);
+    }
+    else if (empty($_SESSION['bibdk_cart'])) {
+      $_SESSION['bibdk_cart'] = array();
     }
     return $_SESSION['bibdk_cart'];
+  }
+
+  /**
+   * Get count of pids in the cart
+   *
+   * @return string cartcount
+   */
+  public static function getCartCount() {
+    global $user;
+    if ($user->uid && ding_user_is_provider_user($user)) {
+      $cartCount = _bibdk_cart_get_cart_count_webservice();
+      return $cartCount['cartCount'];
+    }
+    else if (!empty($_SESSION['bibdk_cart'])) {
+      return count($_SESSION['bibdk_cart']);
+    }
+    else {
+      return 0;
+    }
   }
 
   /** Get Id's of all elements in cart

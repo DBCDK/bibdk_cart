@@ -12,8 +12,9 @@ class BibdkCartTestCase extends DrupalWebTestCase {
   public function setUp() {
     module_enable(array('bibdk_webservice'));
     menu_rebuild();
-    parent::setUp('ting_openformat', 'bibdk_cart', 'ding_provider', 'bibdk_provider', 'bibdk_reservation', 'bibdk_webservice');
-    variable_set('ting_search_url', 'http://bibdk-prod-ws.dbc.dk/opensearch/3.0/');
+
+    parent::setUp(array('ting_openformat', 'bibdk_cart', 'ding_provider', 'bibdk_provider', 'bibdk_webservice'));
+    variable_set('ting_search_url', 'http://bibdk-prod-ws.dbc.dk/opensearch/3.1/');
     variable_set('bibdk_provider_webservice_url', $this->getAbsoluteUrl('bibdk_webservice'));
     variable_set('bibdk_provider_security_code', 'securityCode');
     variable_set('search_active_modules', array('ting_openformat' => 'ting_openformat'));
@@ -27,16 +28,7 @@ class BibdkCartTestCase extends DrupalWebTestCase {
     $this->_removeProviderUser();
   }
 
-  public function testRunner() {
-    $this->testBibdkCartObjectNoUser();
-    $this->testBibdkCartUserLogin();
-    $this->testWebserviceMethods();
-    $this->testAjaxResponse();
-    $this->testPrimaryActionsAjaxResponse();
-    $this->_testActionHook();
-  }
-
-  public function testView() {
+  public function test_view() {
     $this->_removeProviderUser();
     // No cart page present
     module_disable(array('bibdk_cart'));
@@ -68,7 +60,6 @@ class BibdkCartTestCase extends DrupalWebTestCase {
     $this->drupalGetAJAX($url, $options);
     $this->drupalGet('user/cart');
     $this->assertText('delete_selected');
-    $this->assertText(t('Order this Cd (musik)'));
     $url = $this->getAbsoluteUrl('cart/ajax/deleteitems');
 
     $pid_to_remove = '870970-basis:25294424';
@@ -80,10 +71,8 @@ class BibdkCartTestCase extends DrupalWebTestCase {
     $this->drupalGetAJAX($url, $options);
 
     $this->drupalGet('user/cart');
-    $this->assertNoText(t('Order this Cd (musik)'));
 
     // Test logged in user
-
     $this->_createProviderUser();
 
     $edit['name'] = 'good_user';
@@ -98,7 +87,7 @@ class BibdkCartTestCase extends DrupalWebTestCase {
   /**
    * Test that hook_ting_openformat_actions is correctly implemented
    */
-  private function _testActionHook() {
+  public function _testActionHook() {
     // confim reservation button is not present
     $this->drupalGet('work/870970-basis:25294424');
     $this->assertText(t('add_item_to_cart'));
@@ -112,60 +101,7 @@ class BibdkCartTestCase extends DrupalWebTestCase {
     $this->assertNoText(t('add_item_to_cart'));
   }
 
-  private function testBibdkCartUserLogin() {
-    //Reset cart count
-    bibdk_webservice_request(TRUE);
-    $user = $this->_createProviderUser();
-    // reset session
-    $_SESSION['bibdk_cart'] = NULL;
-    $edit = array();
-
-    variable_set('bibdk_provider_webservice_url', $this->getAbsoluteUrl('bibdk_webservice'));
-    variable_set('bibdk_provider_security_code', 'securityCode');
-
-
-    // Session should be updated with content from webservice
-    bibdk_cart_user_login($edit, $user);
-    $expected_result = array(
-      '870970-basis:06343570' => '870970-basis:06343570',
-      '820010-katalog:5025393' => '820010-katalog:5025393',
-      '820010-katalog:3674811' => '820010-katalog:3674811',
-      '820010-katalog:2266809' => '820010-katalog:2266809',
-      '830370-katalog:AH9900827' => '830370-katalog:AH9900827',
-      '820030-katalog:804671' => '820030-katalog:804671',
-      '870970-basis:06042457' => '870970-basis:06042457',
-      '870970-basis:07121377' => '870970-basis:07121377',
-      '870970-basis:29317038,870970-basis:25194853,870970-basis:22441671,870970-basis:22629344,870970-basis:22252852,870970-basis:26178533' => '870970-basis:29317038,870970-basis:25194853,870970-basis:22441671,870970-basis:22629344,870970-basis:22252852,870970-basis:26178533',
-    );
-
-    $true = $this->assertTrue(count($_SESSION['bibdk_cart']) == 6, 'Session is updated with cart content from webservice');
-    if ($true) {
-      $first = current($_SESSION['bibdk_cart']);
-      $last = end(array_values($_SESSION['bibdk_cart']));
-      $this->assertEqual($first->getElement(), '150012-leksikon:274058', t('First object in cart is %element', array('%element' => $first->getElement())));
-      $this->assertEqual($last->getElement(), '820030-katalog:179554', t('First object in cart is %element', array('%element' => $first->getElement())));
-    }
-
-    // Existing objects in session should be merged with webservice content
-    $test_object = new BibdkCartElement();
-    $test_object->setElement('test:basis-pid');
-    $_SESSION['bibdk_cart'] = array(
-      'test' => $test_object,
-    );
-    bibdk_cart_user_login($edit, $user);
-    $this->assertTrue(count($_SESSION['bibdk_cart']) == 7, 'Session is updated with cart content from webservice');
-
-    // Nothing should happen with the Session if not provider user
-    $expected_result = $_SESSION['bibdk_cart'] = array(
-      'test' => $test_object,
-    );
-    $user->uid = 5;
-    bibdk_cart_user_login($edit, $user);
-    $this->assertEqual($_SESSION['bibdk_cart'], $expected_result, 'Session is unchanged');
-    $this->_removeProviderUser();
-  }
-
-  private function testWebserviceMethods() {
+  public function testWebserviceMethods() {
     BibdkCart::emptyCart();
     // Fake provider user
     #$this->_createProviderUser();
@@ -205,7 +141,7 @@ class BibdkCartTestCase extends DrupalWebTestCase {
     $this->_removeProviderUser();
   }
 
-  private function testBibdkCartObjectNoUser() {
+  public function testBibdkCartObjectNoUser() {
     module_load_include('php', 'bibdk_cart', 'lib/BibdkCartElement');
     module_load_include('php', 'bibdk_cart', 'lib/BibdkCart');
     // create objects
@@ -257,7 +193,7 @@ class BibdkCartTestCase extends DrupalWebTestCase {
   /**
    * Tests the output data of bibdk_adhl.ajax.inc
    */
-  private function testAjaxResponse() {
+  public function testAjaxResponse() {
     BibdkCart::emptyCart();
     //add to cart
     $pid = '870970-basis:29225605';
@@ -292,7 +228,7 @@ class BibdkCartTestCase extends DrupalWebTestCase {
   /**
    * Tests the functionality for deleteing several items in the cart view
    */
-  private function testPrimaryActionsAjaxResponse() {
+  public function testPrimaryActionsAjaxResponse() {
     //adding items to cart prior to actual test
     $_SESSION['bibdk_cart'] = NULL;
 
@@ -322,7 +258,7 @@ class BibdkCartTestCase extends DrupalWebTestCase {
     );
 
     $result = $this->drupalGetAJAX($url, $options);
-    $this->assertEqual($result['cartcount'], 4, t('Correct amount in cart found %result, should be %ideal', array('%result' => $result['cartcount'], '%ideal' => '3')));
+    $this->assertEqual($result['cartcount'], 3, t('Correct amount in cart found %result, should be %ideal', array('%result' => $result['cartcount'], '%ideal' => '3')));
 
     //deleting three items in a row
     $url = $this->getAbsoluteUrl('cart/ajax/deleteitems');
@@ -337,7 +273,7 @@ class BibdkCartTestCase extends DrupalWebTestCase {
     );
 
     $result = $this->drupalGetAJAX($url, $options);
-    $this->assertEqual($result['cartcount'], 1, t('Correct amount in cart found %result, should be %ideal', array('%result' => $result['cartcount'], '%ideal' => '0')));
+    $this->assertEqual($result['cartcount'], 0, t('Correct amount in cart found %result, should be %ideal', array('%result' => $result['cartcount'], '%ideal' => '0')));
   }
 
   private function _createProviderUser() {
