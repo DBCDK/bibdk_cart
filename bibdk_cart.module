@@ -284,7 +284,7 @@ function bibdk_cart_get_items($cart, $items_per_page, $page) {
   $items = array();
   if (!empty($cart)) {
     if (count($cart) > $items_per_page) {
-      $cart = array_chunk($cart, $items_per_page);
+      $cart = array_chunk($cart, $items_per_page, TRUE);
       $current_cart_view = $cart[$page - 1];
     }
     else {
@@ -293,6 +293,7 @@ function bibdk_cart_get_items($cart, $items_per_page, $page) {
 
     bibdk_cart_set_manifestations($current_cart_view);
     foreach ($current_cart_view as $delta => $element) {
+      /* @var $element BibdkCartElement */
       $item = bibdk_cart_manifestation_view($element->getManifestation(), $element->getElementArray());
       $items[$delta]['manifestation'] = drupal_render($item);
       $items[$delta]['status'] = implode(', ', $element->getStatusView());
