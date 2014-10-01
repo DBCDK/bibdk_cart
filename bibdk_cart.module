@@ -358,6 +358,30 @@ function bibdk_cart_get_secondary_actions($form) {
   return $form;
 }
 
+/** Implements hook_ting_openformat_actions
+ * Add actions to work, subwork and manifestations
+ *
+ * @param $type
+ * @param $entity
+ * @param $view_mode
+ * @param $langcode
+ * @return array
+ */
+function bibdk_cart_ting_openformat_actions($type, $entity, $view_mode, $langcode) {
+  $element = array();
+  if ($type == 'bibdkManifestation') {
+
+    $link = bibdk_cart_get_link($entity->id);
+    $link['#id'] = 'selid-cart-single-' . drupal_html_id($link['#data-pid']);
+    $element['cart'] = array(
+      '#markup' => theme('bibdk_cart_button', array('add_to_cart' => $link)),
+      '#weight' => 0.2
+    );
+
+  }
+  return $element;
+}
+
 /**
  * @param array $header
  * @param array $items
@@ -514,28 +538,6 @@ function bibdk_cart_entity_info_alter(&$entity_info) {
     'label' => t('Cart'),
     'custom settings' => TRUE,
   );
-}
-
-/**
- * @param $ordered_subworks
- * @param $type_id
- * @param $subtype_id
- * @return mixed
- */
-function bibdk_cart_ting_openformat_subwork_materialtype_actions($ordered_subworks, $type_id, $subtype_id) {
-  $lookup_pids = array();
-  if (is_array($ordered_subworks[$type_id][$subtype_id]['manifest']['manifestations'])) {
-    $lookup_pids = array_keys($ordered_subworks[$type_id][$subtype_id]['manifest']['manifestations']);
-  }
-  $link = bibdk_cart_get_link($lookup_pids);
-  $link['#title'] = t('add_to_basket_any_edition', array(), array('context' => 'bibdk_cart'));
-  $link['#id'] = 'selid-cart-anyed-' . drupal_html_id(reset($lookup_pids));
-  $render['cart'] = array(
-    '#theme' => 'bibdk_cart_button',
-    '#add_to_cart' => $link,
-  );
-
-  return $render;
 }
 
 /**
