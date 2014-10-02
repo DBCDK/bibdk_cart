@@ -1,4 +1,5 @@
 <?php
+
 class BibdkCartTestCase extends DrupalWebTestCase {
 
   public static function getInfo() {
@@ -13,7 +14,13 @@ class BibdkCartTestCase extends DrupalWebTestCase {
     module_enable(array('bibdk_webservice'));
     menu_rebuild();
 
-    parent::setUp(array('ting_openformat', 'bibdk_cart', 'ding_provider', 'bibdk_provider', 'bibdk_webservice'));
+    parent::setUp(array(
+      'ting_openformat',
+      'bibdk_cart',
+      'ding_provider',
+      'bibdk_provider',
+      'bibdk_webservice'
+    ));
     variable_set('ting_search_url', 'http://bibdk-prod-ws.dbc.dk/opensearch/3.1/');
     variable_set('bibdk_provider_webservice_url', $this->getAbsoluteUrl('bibdk_webservice'));
     variable_set('bibdk_provider_security_code', 'securityCode');
@@ -115,7 +122,10 @@ class BibdkCartTestCase extends DrupalWebTestCase {
     //Get cart from ding_provider user
     $result = _bibdk_cart_get_cart_on_webservice($user);
     $expected = 6;
-    $this->assertTrue(count($result) == $expected, t('%returned number on elements in returned for webservice. %expected expected', array('%returned' => count($result), '%expected' => $expected)));
+    $this->assertTrue(count($result) == $expected, t('%returned number on elements in returned for webservice. %expected expected', array(
+      '%returned' => count($result),
+      '%expected' => $expected
+    )));
 
     //Get cart from anonymous user (no results)
     $result = _bibdk_cart_get_cart_on_webservice($anonymous);
@@ -235,7 +245,8 @@ class BibdkCartTestCase extends DrupalWebTestCase {
       '820030-katalog:804671',
       '870970-basis:06042457',
       '870970-basis:07121377',
-      '870970-basis:06343570');
+      '870970-basis:06343570'
+    );
 
     foreach ($pids as $pid) {
       $url = $this->getAbsoluteUrl('cart/ajax');
@@ -257,14 +268,18 @@ class BibdkCartTestCase extends DrupalWebTestCase {
     );
 
     $result = $this->drupalGetAJAX($url, $options);
-    $this->assertEqual($result['cartcount'], 3, t('Correct amount in cart found %result, should be %ideal', array('%result' => $result['cartcount'], '%ideal' => '3')));
+    $this->assertEqual($result['cartcount'], 3, t('Correct amount in cart found %result, should be %ideal', array(
+      '%result' => $result['cartcount'],
+      '%ideal' => '3'
+    )));
 
     //deleting three items in a row
     $url = $this->getAbsoluteUrl('cart/ajax/deleteitems');
     $pids_to_remove = array(
       '820030-katalog:804671',
       '870970-basis:06042457',
-      '870970-basis:07121377');
+      '870970-basis:07121377'
+    );
     $options = array(
       'query' => array(
         'pids' => $pids_to_remove,
@@ -272,7 +287,10 @@ class BibdkCartTestCase extends DrupalWebTestCase {
     );
 
     $result = $this->drupalGetAJAX($url, $options);
-    $this->assertEqual($result['cartcount'], 0, t('Correct amount in cart found %result, should be %ideal', array('%result' => $result['cartcount'], '%ideal' => '0')));
+    $this->assertEqual($result['cartcount'], 0, t('Correct amount in cart found %result, should be %ideal', array(
+      '%result' => $result['cartcount'],
+      '%ideal' => '0'
+    )));
   }
 
   private function _createProviderUser() {

@@ -61,7 +61,7 @@ function _bibdk_cart_get_cart_on_webservice($user = NULL) {
  * @param null $user
  * @return array|bool
  */
-function _bibdk_cart_get_cart_count_webservice($user = NULL){
+function _bibdk_cart_get_cart_count_webservice($user = NULL) {
   if ($response = _bibdk_cart_call_webservice('get_cart_count', NULL, $user)) {
     $xpath = bibdk_cart_webservice_responce_xpath($response['response']);
     return bibdk_cart_parse_cart_count_response($xpath);
@@ -75,11 +75,11 @@ function _bibdk_cart_get_cart_count_webservice($user = NULL){
  * @param $xpath DOMXPath
  * @return array
  */
-function bibdk_cart_parse_cart_count_response($xpath){
+function bibdk_cart_parse_cart_count_response($xpath) {
   $query = '//oui:cartCount';
   $entries = $xpath->query($query);
 
-  if(!$entries){
+  if (!$entries) {
     return array();
   }
 
@@ -138,7 +138,7 @@ function bibdk_cart_parse_cart_content_id($xpath) {
   if (!isset($xpath)) {
     return array();
   }
-// grap agencies
+  // grap agencies
   $query = '//oui:cartContentId';
   $nodelist = $xpath->query($query);
   foreach ($nodelist as $delta => $node) {
@@ -158,11 +158,11 @@ function bibdk_cart_parse_cart_content($xpath) {
   if (!isset($xpath)) {
     return array();
   }
-// grap agencies
+  // grap agencies
   $query = '//oui:cartContent';
   $nodelist = $xpath->query($query);
 
-// check if empty
+  // check if empty
   if (empty($nodelist)) {
     return array();
   }

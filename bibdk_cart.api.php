@@ -25,7 +25,8 @@ function hook_cart_actions() {
       'query' => NULL,
       'attributes' => array(
         'class' => array(
-          'cart-action-btn', 'inactive'
+          'cart-action-btn',
+          'inactive'
         ),
       ),
       'html' => FALSE,

@@ -148,7 +148,7 @@ function bibdk_cart_get_form($form, &$form_state) {
 
   if ($cartcount > $items_per_page) {
     $pager = _bibdk_cart_get_pager($total_num_pages, $current_page);
-    $pager['#value'] =  $links = _bibdk_cart_pager_get_links($pager['#value']);
+    $pager['#value'] = $links = _bibdk_cart_pager_get_links($pager['#value']);
     $form['pager'] = $pager;
   }
 
@@ -202,7 +202,7 @@ function _bibdk_cart_get_pager($total_num_pages, $current_page) {
     }
   }
 
-  if($total_num_pages < $num_direct_page_links){
+  if ($total_num_pages < $num_direct_page_links) {
     $last_page = $total_num_pages;
   }
 
@@ -284,7 +284,7 @@ function bibdk_cart_get_items($cart, $items_per_page, $page) {
   $items = array();
   if (!empty($cart)) {
     if (count($cart) > $items_per_page) {
-      $cart = array_chunk($cart, $items_per_page);
+      $cart = array_chunk($cart, $items_per_page, TRUE);
       $current_cart_view = $cart[$page - 1];
     }
     else {
@@ -293,6 +293,7 @@ function bibdk_cart_get_items($cart, $items_per_page, $page) {
 
     bibdk_cart_set_manifestations($current_cart_view);
     foreach ($current_cart_view as $delta => $element) {
+      /* @var $element BibdkCartElement */
       $item = bibdk_cart_manifestation_view($element->getManifestation(), $element->getElementArray());
       $items[$delta]['manifestation'] = drupal_render($item);
       $items[$delta]['status'] = implode(', ', $element->getStatusView());
@@ -333,7 +334,7 @@ function bibdk_cart_get_secondary_actions($form) {
   $actions = array();
   $actions = module_invoke_all('cart_actions', $actions);
 
-  if(empty($actions['export']['#links'])){
+  if (empty($actions['export']['#links'])) {
     unset($actions['export']);
   }
 

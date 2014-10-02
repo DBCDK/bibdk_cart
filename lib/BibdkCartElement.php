@@ -33,7 +33,6 @@ class BibdkCartElement {
     return explode(',', $this->element);
   }
 
-
   public function setStatus($status) {
     $status = explode(',', $status);
     foreach ($status as $value) {
