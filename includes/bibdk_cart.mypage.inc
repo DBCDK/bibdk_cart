@@ -7,7 +7,7 @@ function bibdk_cart_bibdk_mypage_tabs($max_rows = 3) {
   global $user;
 
   $ret = array();
-  $ret['bibdk_cart']['header'] = t('Cart');
+  $ret['bibdk_cart']['header'] = 'Cart';
   $ret['bibdk_cart']['rows']['values'] = bibdk_cart_my_page_get_rows($max_rows);
   $ret['bibdk_cart']['link'] = array(
     'title' => t('Go to cart', array(), array('context' => 'bibdk_cart')),
