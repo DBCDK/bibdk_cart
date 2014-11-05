@@ -66,6 +66,13 @@
     });
     $('.cart-view-delete-selected').addClass('inactive');
 
+    if ( items.length == element.length ) {
+      var r = confirm(Drupal.t('confirm_delete_bibdk_cart', {}, {context: 'bibdk_cart'}));
+      if ( r == false ) {
+        return false;
+      }
+    }
+
     $.ajax({
       url: Drupal.settings.basePath + 'cart/ajax/deleteitems',
       type: 'POST',
@@ -74,8 +81,9 @@
       },
       dataType: 'json',
       success: function(data) {
-        if(data.error) {
+        if ( data.error ) {
           alert(Drupal.t('error_please_refresh_page_and_try_again', {}, {context: 'bibdk_cart'}));
+          return false;
         }
         else {
           $('.cart-view-delete-selected').removeClass('ajax-progress');
@@ -83,9 +91,9 @@
           elements.forEach(function(element) {
             $(element).closest('tr').remove();
           });
-
           var text = Drupal.formatPlural(data.cartcount, '1 item in cart', '@count items in cart');
           $('.cartcount').text(text);
+          return true;
         }
       }
     });
@@ -103,15 +111,18 @@
       });
 
       $('.cart-view-delete-selected', context).click(function(e) {
-        e.preventDefault();
+       e.preventDefault();
         if($(this).hasClass('inactive')) {
           return false;
         }
         else {
-          Drupal.deleteSelected();
-          $(this).addClass('ajax-progress');
-          $(this).addClass('inactive');
-          $(this).append('<span class="throbber">&nbsp;</span>');
+          var deleted = Drupal.deleteSelected();
+          if ( deleted ) {
+            $(this).addClass('ajax-progress');
+            $(this).addClass('inactive');
+            $(this).append('<span class="throbber">&nbsp;</span>');
+            return false;
+          }
           return false;
         }
       });
