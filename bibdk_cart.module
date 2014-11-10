@@ -54,14 +54,6 @@ function bibdk_cart_theme() {
       'variables' => array('add_to_cart' => ''),
       'template' => 'theme/bibdk-cart-button',
     ),
-    'bibdk_cart_view_primary_actions' => array(
-      'variables' => array(),
-      'template' => 'theme/bibdk-cart-view-primary-actions'
-    ),
-    'bibdk_cart_view_secondary_actions' => array(
-      'variables' => array('actions' => array()),
-      'template' => 'theme/bibdk-cart-view-secondary-actions'
-    ),
     'bibdk_cart_manifestation' => array(
       'template' => 'theme/bibdk-cart-manifestation',
       'variables' => array(
@@ -114,8 +106,7 @@ function bibdk_cart_get_form($form, &$form_state) {
   $form['cartactions'] = array(
     '#type' => 'item',
   );
-  $form['cartactions'] += bibdk_cart_get_primary_actions(array());
-  $form['cartactions'] += bibdk_cart_get_secondary_actions(array());
+  $form['cartactions'] += bibdk_cart_get_actions(array());
 
   $form['helptext'] = array(
     '#theme' => 'html_tag',
@@ -300,63 +291,56 @@ function bibdk_cart_get_items($cart, $items_per_page, $page) {
       $items[$delta]['actions'] = isset($item['action']) ? $item['action'] : "";
     }
   }
-
   return $items;
 }
 
-/**
+/** Add's all invoks of 'cart_actions' to primary an secondary action arrays
  * @param array $form
  * @return array $form
  */
-function bibdk_cart_get_primary_actions($form) {
-  $form['cart_table_priamry_actions'] = array(
-    '#markup' => theme('bibdk_cart_view_primary_actions', array()),
-    '#attached' => array(
-      'js' => array(
-        drupal_get_path('module', 'bibdk_cart') . '/js/bibdk_cart_view_primary_actions.js',
-      ),
-    ),
-    '#attributes' => array(
-      'class' => array(),
-    ),
-  );
+function bibdk_cart_get_actions($form) {
 
-  return $form;
-}
-
-/**
- * Invokes hook_cart_actions() in order to retrieve actions that should be included in the cart view
- *
- * @param array $form
- * @return array $form
- */
-function bibdk_cart_get_secondary_actions($form) {
   $actions = array();
   $actions = module_invoke_all('cart_actions', $actions);
 
-  if (empty($actions['export']['#links'])) {
-    unset($actions['export']);
-  }
-
   if (!empty($actions)) {
-    uasort($actions, 'element_sort');
-
-    $items = array();
+    $items_primary = array();
+    $items_secondary = array();
     foreach ($actions as $action) {
-      $items[] = drupal_render($action);
+      if ($action['#action_type'] == 'primary' ) {
+        $items_primary[] = drupal_render($action);
+      }
+      if ($action['#action_type'] == 'secondary' ) {
+        $items_secondary[] = drupal_render($action);
+      }
     }
-
+  
+    $form['cart_table_priamry_actions'] = array(
+      '#theme' => 'item_list',
+      '#items' => $items_primary,
+      '#type' => 'ul',
+      '#attributes' => array(
+        'class' => array('cart-view-secondary-actions', 'cart-actions')
+      ),
+      '#attached' => array(
+        'js' => array(
+          drupal_get_path('module', 'bibdk_cart') . '/js/bibdk_cart_view_primary_actions.js',
+        ),
+      ),
+    );
+  
     $form['cart_table_secondary_actions'] = array(
       '#theme' => 'item_list',
-      '#items' => $items,
+      '#items' => $items_secondary,
       '#type' => 'ul',
       '#attributes' => array(
         'class' => array('cart-view-secondary-actions', 'cart-actions')
       ),
     );
-  }
-
-  return $form;
+  
+  } // end empty actions
+ 
+ return $form;
 }
 
 /** Implements hook_ting_openformat_actions
