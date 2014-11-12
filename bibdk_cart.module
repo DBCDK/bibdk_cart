@@ -43,7 +43,7 @@ function bibdk_cart_menu() {
  */
 function bibdk_cart_mypage_link() {
   $items['user/%user/cart'] = array(
-    'title' => 'Cart',
+    'title' => t('cart', array(), array('context' => 'bibdk_frontend')),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('bibdk_cart_view_form'),
     'access callback' => 'user_edit_access',
