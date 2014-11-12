@@ -294,7 +294,8 @@ function bibdk_cart_get_items($cart, $items_per_page, $page) {
   return $items;
 }
 
-/** Add's all invoks of 'cart_actions' to primary an secondary action arrays
+/** 
+ * Add's all invoks of 'cart_actions' to primary an secondary action arrays
  * @param array $form
  * @return array $form
  */
